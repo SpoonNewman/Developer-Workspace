@@ -60,7 +60,7 @@ correctIdOfDistribution = 'CR-420666'
 
 if ( currentCrateId == correctIdOfDistribution ):
     sendToDistribution(currentCrateId)
-else if ( currentCrateId == admiralsWine ):
+elif ( currentCrateId == admiralsWine ):
     sendToAdmiral(currentCrateId)
 else: 
     storeInStorageContainer(currentCrateId)   
