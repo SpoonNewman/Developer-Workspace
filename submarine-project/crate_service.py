@@ -1,35 +1,33 @@
 import requests
+from Models import Crate
 
+class crate_service():
+    def getcratenumbers(self):
+        apiaddress = 'https://my.api.mockaroo.com/spoon-newman-crate-ids.json'
+        headers = {'X-API-Key': 'cf7bbbd0'}
+        data = requests.get(apiaddress, headers=headers)
+        return data.json()
 
-def getcratenumbers():
-    apiaddress = 'https://my.api.mockaroo.com/spoon-newman-crate-ids.json'
-    headers = {'X-API-Key': 'cf7bbbd0'}
-    data = requests.get(apiaddress, headers=headers)
-    return data.json()
+    def processcrates(self):
+        print('Currently processing crates')
+        crates = self.getcratenumbers()
+        listOfCrateObjects = []
+        for crate_data in crates:
+            crateObj = Crate(crate_data['id'], crate_data['weight'], crate_data['height'], crate_data['material'], crate_data['assigned_crewman_id'], crate_data['load_time_elapsed'], crate_data['source_id'], crate_data['destination_id'], crate_data['is_volatile'], crate_data['is_quarantined'], crate_data['require'])
+            listOfCrateObjects.push(crateObj)
 
-def processcrates():
-    print('Currently processing crates')
-    cratenumbers = getcratenumbers()
-    for crate in cratenumbers:
-        if (crate['id'] == 'CR-7787'):
-            senditemtoadmiral(crate)
-        elif (crate['id'] == 'CR-9215'):
-            sendtodistribution(crate) 
-        else: 
-            storeinstoragecontainer(crate)
+    def storeinstoragecontainer(self, item) -> bool:
+        print('Storing Crate into Storage Container...') 
+        # if this fails we want to quarantine the item
 
-def storeinstoragecontainer(item) -> bool:
-    print('Storing Crate into Storage Container...') 
-    # if this fails we want to quarantine the item
+    def quarantineitem(self, item) -> bool:
+        return True
+        # we assume this operation succeeds
 
-def quarantineitem(item) -> bool:
-    return True
-    # we assume this operation succeeds
+    def senditemtoadmiral(self, item) -> bool:
+        print('Sending crate to admiral...')
+        # same thing as last time
 
-def senditemtoadmiral(item) -> bool:
-    print('Sending crate to admiral...')
-    # same thing as last time
-
-def sendtodistribution(item) -> bool:
-    print('Sending container to distribution...')
-    # if this fails item needs to be quarantined
+    def sendtodistribution(self, item) -> bool:
+        print('Sending container to distribution...')
+        # if this fails item needs to be quarantined
