@@ -1,4 +1,4 @@
-import crate_service
+from Services import crate_service
 
 def main():
     print('Start of the program')

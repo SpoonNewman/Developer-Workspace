@@ -61,8 +61,3 @@ class cat(feline):
     def speak (self, sound):
         print('MeOw MeOw ', sound)
 
-bean = cat()
-bean.meow('FOOD')
-
-colt = canine()
-colt.bark('PLAY')

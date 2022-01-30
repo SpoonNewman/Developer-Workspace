@@ -1,3 +1,4 @@
+import location_service
 import requests
 from Models import Crate
 
@@ -14,7 +15,22 @@ class crate_service():
         listOfCrateObjects = []
         for crate_data in crates:
             crateObj = Crate(crate_data['id'], crate_data['weight'], crate_data['height'], crate_data['material'], crate_data['assigned_crewman_id'], crate_data['load_time_elapsed'], crate_data['source_id'], crate_data['destination_id'], crate_data['is_volatile'], crate_data['is_quarantined'], crate_data['require'])
-            listOfCrateObjects.push(crateObj)
+            listOfCrateObjects.append(crateObj)
+        
+        for crate in listOfCrateObjects: 
+            self.analyzecrate(crate)
+
+    def analyzecrate(self, crate):
+        if crate.is_quarantined:
+            self.quarantineitem(crate)
+        elif crate.destination_id == location_service.getlocationid('admiral'):
+            self.senditemtoadmiral(crate)
+        elif crate.destination_id == location_service.getlocationid('storage'):
+            self.storeinstoragecontainer(crate)
+        elif crate.destination_id == location_service.getlocationid('distribution'):
+            self.sendtodistribution(crate)
+        else: 
+            self.quarantineitem(crate)
 
     def storeinstoragecontainer(self, item) -> bool:
         print('Storing Crate into Storage Container...') 
