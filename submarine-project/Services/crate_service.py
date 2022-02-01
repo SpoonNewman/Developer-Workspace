@@ -13,10 +13,12 @@ class crate_service():
         print('Currently processing crates')
         crates = self.getcratenumbers()
         listOfCrateObjects = []
+        # Map the raw data to the crates
         for crate_data in crates:
             crateObj = Crate(crate_data['id'], crate_data['weight'], crate_data['height'], crate_data['material'], crate_data['assigned_crewman_id'], crate_data['load_time_elapsed'], crate_data['source_id'], crate_data['destination_id'], crate_data['is_volatile'], crate_data['is_quarantined'], crate_data['require'])
             listOfCrateObjects.append(crateObj)
         
+        # handler for the crate
         for crate in listOfCrateObjects: 
             self.analyzecrate(crate)
 
