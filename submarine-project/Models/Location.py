@@ -3,5 +3,7 @@ class location():
         self.id = id 
         self.number_of_crates = number_of_crates
         self.max_capacity_crates = max_capacity_of_crates
+        # Add `name: string`
+        # Add `group: string`
 
 
