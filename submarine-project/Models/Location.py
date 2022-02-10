@@ -1,4 +1,4 @@
-class location():
+class Location():
     def __init__(self, id='', number_of_crates=0, max_capacity_of_crates=0, name='', group='', listofcratesatlocation=[]):
         self.id = id 
         self.number_of_crates = number_of_crates
