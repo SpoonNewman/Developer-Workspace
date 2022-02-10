@@ -1,7 +1,7 @@
 import requests
 from Models import Location
 
-class location_service():
+class LocationService():
     ############## 0. Fix the area capacities to be the `base-locations`
     # 1. Set a property to hold all the locations - This will be our in-memory state
     # 2. Flesh out `getLocationId()` to grab a specific location out of the list of locations
@@ -27,3 +27,4 @@ class location_service():
         locations = self.getlocations()
         for location in locations:
             self.all_locations.append(Location(location['id'], location['number_of_crates'], location['max_capacity_of_crates'], location['name'], location['group']))
+        print(self.all_locations)

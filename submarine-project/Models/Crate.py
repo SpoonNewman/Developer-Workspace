@@ -1,4 +1,4 @@
-class crate(): 
+class Crate(): 
     def __init__(self, id='', weight=0, height=0, material='', assigned_crewman_id='', load_time_elapsed=0, source_id='', destination_id='', is_volatile=False, is_quarantined=False, required_machinery=[]):
         self.id = id
         self.weight = weight

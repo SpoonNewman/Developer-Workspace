@@ -1,7 +1,7 @@
-class animal:
+class Animal:
     exists: True
 
-class liveBirthGiver(animal):
+class liveBirthGiver(Animal):
     def __init__(self) -> None:
         pass
     

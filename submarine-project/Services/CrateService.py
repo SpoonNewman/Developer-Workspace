@@ -1,8 +1,8 @@
-import location_service
+from LocationService import LocationService
 import requests
 from Models import Crate
 
-class crate_service():
+class CrateService():
     def getcratenumbers(self):
         apiaddress = 'https://my.api.mockaroo.com/spoon-newman-crate-ids.json'
         headers = {'X-API-Key': 'cf7bbbd0'}
