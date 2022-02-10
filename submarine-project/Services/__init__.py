@@ -1,2 +1,2 @@
-# from CrateService import CrateService
+from .CrateService import CrateService
 from .LocationService import LocationService
