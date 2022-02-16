@@ -50,6 +50,6 @@ class LocationService():
     def get_all_locations(self):
         locations = self.getlocations()
         for location in locations:
-            self.all_locations.append(Location(location['id'], location['number_of_crates'], location['max_capacity_crates'], location['name'], location['group']))
+            self.all_locations.append(Location(location['id'], location['number_of_crates'], location['max_capacity_crates'], location['name'], location['group'], [], location['security_status']))
         return self.all_locations
             

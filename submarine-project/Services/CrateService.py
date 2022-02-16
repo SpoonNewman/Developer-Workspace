@@ -1,26 +1,34 @@
 # from .LocationService import LocationService
 import requests
 from Models import Crate
-
 class CrateService():
+    all_crates = []
+    
     def getcratenumbers(self):
         apiaddress = 'https://my.api.mockaroo.com/spoon-newman-crate-ids.json'
         headers = {'X-API-Key': 'cf7bbbd0'}
         data = requests.get(apiaddress, headers=headers)
         return data.json()
 
-    def processcrates(self):
+    def getallcrates(self):
         print('Currently processing crates')
         crates = self.getcratenumbers()
         listOfCrateObjects = []
         # Map the raw data to the crates
         for crate_data in crates:
-            crateObj = Crate(crate_data['id'], crate_data['weight'], crate_data['height'], crate_data['material'], crate_data['assigned_crewman_id'], crate_data['load_time_elapsed'], crate_data['source_id'], crate_data['destination_id'], crate_data['is_volatile'], crate_data['is_quarantined'], crate_data['require'])
-            listOfCrateObjects.append(crateObj)
-        
-        # handler for the crate
-        for crate in listOfCrateObjects: 
-            self.analyzecrate(crate)
+            crateObj = Crate(crate_data['id'], crate_data['weight'], crate_data['height'], crate_data['material'], crate_data['assigned_crewman_id'], crate_data['load_time_elapsed'], crate_data['source_id'], crate_data['destination_id'], crate_data['is_volatile'], crate_data['is_quarantined'], crate_data['required_machinery'], crate_data['current_location'])
+            self.all_crates.append(crateObj)
+        return self.all_crates
+    
+    def getcratesbylocation(self, locationid):
+        cratesatlocation = []
+        for crate in self.all_crates:
+            if crate.current_location == locationid:
+                cratesatlocation.append(crate)
+
+        return cratesatlocation
+
+
 
     # This should be moved to a controller
     # def analyzecrate(self, crate):
