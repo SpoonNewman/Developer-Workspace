@@ -42,7 +42,8 @@ class LocationService():
     def getlocationbyproperty(self, searchkeyword, property):
         found_locations = []
         for location in self.all_locations:
-            if location[property] == searchkeyword:
+            # location['group']
+            if getattr(location, property) == searchkeyword:
                 found_locations.append(location)
         return found_locations
 

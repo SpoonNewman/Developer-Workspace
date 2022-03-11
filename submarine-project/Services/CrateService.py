@@ -1,10 +1,11 @@
-# from .LocationService import LocationService
 import requests
+import jsonpickle
 from Models import Crate
+
 class CrateService():
     all_crates = []
     
-    def getcratenumbers(self):
+    def getcratenumbersfromAPI(self):
         apiaddress = 'https://my.api.mockaroo.com/spoon-newman-crate-ids.json'
         headers = {'X-API-Key': 'cf7bbbd0'}
         data = requests.get(apiaddress, headers=headers)
@@ -12,7 +13,7 @@ class CrateService():
 
     def getallcrates(self):
         print('Currently processing crates')
-        crates = self.getcratenumbers()
+        crates = self.getcratenumbersfromAPI()
         listOfCrateObjects = []
         # Map the raw data to the crates
         for crate_data in crates:
@@ -28,24 +29,18 @@ class CrateService():
 
         return cratesatlocation
 
+    def storeinstoragecontainer(self, item, locationService) -> bool:
+        list_of_storage_containers = locationService.getlocationbygroup('Storage')
+        # print(len(list_of_storage_containers), jsonpickle.encode(list_of_storage_containers, unpicklable=False))
+        return self.transferCrateToDestination(item, list_of_storage_containers)
 
-
-    # This should be moved to a controller
-    # def analyzecrate(self, crate):
-    #     if crate.is_quarantined:
-    #         self.quarantineitem(crate)
-    #     elif crate.destination_id == location_service.getlocationid('admiral'):
-    #         self.senditemtoadmiral(crate)
-    #     elif crate.destination_id == location_service.getlocationid('storage'):
-    #         self.storeinstoragecontainer(crate)
-    #     elif crate.destination_id == location_service.getlocationid('distribution'):
-    #         self.sendtodistribution(crate)
-    #     else: 
-    #         self.quarantineitem(crate)
-
-    def storeinstoragecontainer(self, item) -> bool:
-        print('Storing Crate into Storage Container...') 
-        # if this fails we want to quarantine the item
+    def transferCrateToDestination (self, item, list_of_locations_in_group):
+        # We need to know which storage container
+        # We want the Crate's `current_location` to equal the `destination_id`
+        # We want to look through the location_group to see which location has capacity
+        # for us to put the crate inside
+        item.current_location = list_of_locations_in_group[0].id
+        return item
 
     def quarantineitem(self, item) -> bool:
         return True

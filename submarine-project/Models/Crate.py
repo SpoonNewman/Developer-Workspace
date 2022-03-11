@@ -11,4 +11,4 @@ class Crate():
         self.is_volatile = is_volatile 
         self.is_quarantined = is_quarantined
         self.required_machinery = required_machinery
-        self.current_location = current_location 
+        self.current_location = current_location # A Location id
