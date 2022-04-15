@@ -18,8 +18,12 @@ def main():
     print(jsonpickle.encode(cratesStored, unpicklable=False))
 
 def initializer():
+    # Referential Data
     locationService.get_all_locations()
     crateService.getallcrates()
+    # __private_variable = ''
+    # _protected_variable = ''
+    # another_variable = ''
 
 if __name__ == '__main__':
     main()
