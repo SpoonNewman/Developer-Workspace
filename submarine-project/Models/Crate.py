@@ -5,7 +5,7 @@ class Crate():
         self.height = height
         self.material = material
         self.assigned_crewman_id = assigned_crewman_id 
-        self. load_time_elapsed = load_time_elapsed
+        self.load_time_elapsed = load_time_elapsed
         self.source_id = source_id # A Location id
         self.destination_id = destination_id # A location id
         self.is_volatile = is_volatile 

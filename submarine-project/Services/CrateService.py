@@ -1,6 +1,6 @@
 import requests
 import jsonpickle
-from Models import Crate
+from Models import Crate, Location
 
 class CrateService():
     all_crates = []
@@ -34,13 +34,48 @@ class CrateService():
         # print(len(list_of_storage_containers), jsonpickle.encode(list_of_storage_containers, unpicklable=False))
         return self.transferCrateToDestination(item, list_of_storage_containers)
 
-    def transferCrateToDestination (self, item, list_of_locations_in_group):
-        # We need to know which storage container
-        # We want the Crate's `current_location` to equal the `destination_id`
-        # We want to look through the location_group to see which location has capacity
-        # for us to put the crate inside
-        item.current_location = list_of_locations_in_group[0].id
-        return item
+    def transferCrateToDestination (self, crate: Crate, list_of_locations_in_group: list[Location]) -> bool:
+        """
+        Transfer crate to a destination within a certain group. This method will analyze
+        and figure out which location within the destination group has capacity and transfer the crate
+        to that destination.
+
+        Args:
+            item (Crate): A crate object that we are transferring to a location
+            list_of_locations_in_group (list[Location]): A list of locations that our crate can be transferred to
+
+        Returns:
+            bool: A status of the result of attemping to transfer the crate to a destination
+        """
+        
+        destination: Location | None = self._get_storage_location_by_capacity(list_of_locations_in_group)
+        status_result: bool = self._transfer_crate(crate, destination)
+        return status_result
+        
+    def _transfer_crate(crate: Crate, destination: Location) -> bool:
+        # change current location to destination
+        result = False
+        if (crate.current_location is not destination.id):
+            # Transfer the crate
+            crate.current_location = destination.id
+            if (crate not in destination.listofcratesatlocation):
+                destination.listofcratesatlocation.append(crate)
+                destination.number_of_crates = destination.number_of_crates + 1 
+
+                result = True
+        return result
+
+    def _get_storage_location_by_capacity(list_of_locations: list[Location]) -> Location | None:
+        # NOTE: We are treating number of crates and max_capacity_crates in units of 1.
+        # In effect, a crate that is 30'x30' counts for one unit.
+        # A crate that is 1'x1' counts as one unit.
+        # No matter the size or properties of a crate it is treated as one unit
+        for location in list_of_locations:
+            if location.number_of_crates < location.max_capacity_crates: 
+                return location
+
+        return None
+        
 
     def quarantineitem(self, item) -> bool:
         return True

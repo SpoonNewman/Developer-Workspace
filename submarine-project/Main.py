@@ -7,10 +7,10 @@ def main():
     initializer()
     
     # Using jsonpickle here to encode the location objects as JSON so it looks decent when we print it.
+    # NOTE: This is just test code so we can ensure this works in place of setting up integration tests
+    # This will get a single location, get all the crates at that location, look at their destination, and
+    # transfer the crates to that destination
     location_id = locationService.get_all_locations()[0].id
-    # .get_all_locations -> [...]
-    # len(someList) -> number of elements in the list
-    # print(len(locationService.get_all_locations()))
     cratesatlocation = crateService.getcratesbylocation(location_id)
     cratesStored = []
     for crate in cratesatlocation:
