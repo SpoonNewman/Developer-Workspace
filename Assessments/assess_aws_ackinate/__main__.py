@@ -15,6 +15,8 @@ from aegis_helper_functions import get_iam_policies
 # Bad data values that is displayed in the fields must be changed to the string 
 # "BAD_DATA" to be reviewed by our SecOps team.
 
+# Bad data will have format of "<event name>-00000"
+
 
 def get_aegis_iam_policies() -> list[dict]:
     # DO NOT CHANGE
