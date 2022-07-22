@@ -42,17 +42,13 @@ if __name__ == '__main__':
     #Assume n is 3 
     # Remainder = 4 % 2
     Remainder = n % 2
-    if Remainder > 0:
-        print("Weird")
-    
     if Remainder == 0:
-        if n >= 2 and n <= 5:
+        if (n >= 2 and n <= 5) or n > 20: 
             print("Not Weird")
-    if Remainder == 0:
+       
         if n >= 6 and n <= 20:
             print("Weird") 
-    if Remainder == 0:
-        if n > 20:
-            print("Not Weird")
+    else:
+        print("Weird")
     print("Exiting Program")
     
