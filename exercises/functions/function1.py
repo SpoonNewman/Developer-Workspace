@@ -40,3 +40,12 @@ def is_leap(year):
 
 year = int(input())
 print(is_leap(year))
+
+assert is_leap(2000) is True
+assert is_leap(2400) is True
+assert is_leap(1800) is False
+assert is_leap(1900) is False
+assert is_leap(2100) is False
+assert is_leap(2200) is False
+assert is_leap(2300) is False
+assert is_leap(2500) is False
