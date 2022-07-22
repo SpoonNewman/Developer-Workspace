@@ -1,42 +1,39 @@
-# An extra day is added to the calendar almost every four years as February 29, and the day is called 
-# a leap day. It corrects the calendar for the fact that our planet takes approximately 365.25 days 
-# to orbit the sun. A leap year contains a leap day.
-
-# In the Gregorian calendar, three conditions are used to identify leap years:
-# - The year can be evenly divided by 4, is a leap year, unless:
-# - The year can be evenly divided by 100, it is NOT a leap year, unless:
-# - The year is also evenly divisible by 400. Then it is a leap year.
-# - This means that in the Gregorian calendar, the years 2000 and 2400 are leap years, while 1800, 1900, 
-# 2100, 2200, 2300 and 2500 are NOT leap years
-
 # Task
-# Given a year, determine whether it is a leap year. If it is a leap year, return the Boolean True, 
-# otherwise return False.
+# Given an integer, n, perform the following conditional actions:
 
-# Note that the code stub provided reads from STDIN and passes arguments to the is_leap function. 
-# It is only necessary to complete the is_leap function.
+# If n is odd, print Weird
+# If n is even and in the inclusive range of 2 to 5, print Not Weird
+# If n is even and in the inclusive range of 6 to 20, print Weird
+# If n is even and greater than 20, print Not Weird
+
+# Input Format
+# A single line containing a positive integer, n.
 
 # Constraints
-# 1900 < year < 10^5
+# 1 <= n <= 100
 
 # Output Format
-# The function must return a Boolean value (True/False). Output is handled by the provided code stub.
+# Print Weird if the number is weird. Otherwise, print Not Weird.
 
 # Sample Input
-# `1900`
+# 3
 
-# Sample Output
-# `False`
+# Sample output
+# Weird
 
 # Explanation
-# 1990 is not a multiple of 4 hence it's not a leap year.
+# n == 3
+# n is odd and odd numbers are weird, so print Weird.
 
-def is_leap(year):
-    leap = False
-    
-    # Write your logic here
-    
-    return leap
+#!/bin/python3
 
-year = int(input())
-print(is_leap(year))
+import math
+import os
+import random
+import re
+import sys
+
+
+
+if __name__ == '__main__':
+    n = int(input().strip())
