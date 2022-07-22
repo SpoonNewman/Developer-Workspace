@@ -1,3 +1,4 @@
+from typing import Optional
 import requests
 import jsonpickle
 from Models import Crate, Location
@@ -31,7 +32,6 @@ class CrateService():
 
     def storeinstoragecontainer(self, item, locationService) -> bool:
         list_of_storage_containers = locationService.getlocationbygroup('Storage')
-        # print(len(list_of_storage_containers), jsonpickle.encode(list_of_storage_containers, unpicklable=False))
         return self.transferCrateToDestination(item, list_of_storage_containers)
 
     def transferCrateToDestination (self, crate: Crate, list_of_locations_in_group: list[Location]) -> bool:
@@ -48,11 +48,11 @@ class CrateService():
             bool: A status of the result of attemping to transfer the crate to a destination
         """
         
-        destination: Location | None = self._get_storage_location_by_capacity(list_of_locations_in_group)
+        destination: Optional[Location] = self._get_storage_location_by_capacity(list_of_locations_in_group)
         status_result: bool = self._transfer_crate(crate, destination)
         return status_result
         
-    def _transfer_crate(crate: Crate, destination: Location) -> bool:
+    def _transfer_crate(self, crate: Crate, destination: Location) -> bool:
         # change current location to destination
         result = False
         if (crate.current_location is not destination.id):
@@ -65,7 +65,7 @@ class CrateService():
                 result = True
         return result
 
-    def _get_storage_location_by_capacity(list_of_locations: list[Location]) -> Location | None:
+    def _get_storage_location_by_capacity(self, list_of_locations: list[Location]) -> Optional[Location]:
         # NOTE: We are treating number of crates and max_capacity_crates in units of 1.
         # In effect, a crate that is 30'x30' counts for one unit.
         # A crate that is 1'x1' counts as one unit.
