@@ -36,6 +36,8 @@ list_of_crates: list[Crate] = []
 def move_create_to_room (crate: Crate, location: CrateLocation):
     crate.location = location
 
+
+# TODO:
 # make a function and additional location to move the the crate to the new location "OTHER"
 # make a function to destroy the crate by setting it's x_size and y_size to 0
 # Modify the Crate class to have a property called "cargo" that should be a list of strings.
