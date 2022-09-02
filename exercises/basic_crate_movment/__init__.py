@@ -1,11 +1,15 @@
-from enum import Enum
-class CrateLocation(Enum):    
-    PRIMARY = "dock",
-    SECONDARY = "barracks",
-    AUXILIARY = "Shitty Bathroom"
 
+import json
+# from enum import Enum
+# class CrateLocation(Enum):    
+#     PRIMARY = "Mess Hall"
+#     SECONDARY = "Barracks"
+#     AUXILIARY = "Shitty Bathroom"
+#     IN_TRANSIT = "Currently being transported"
+configfile = open("configuration.json")
+CrateLocation = json.load(configfile)["Crate_Locations"]
 class Crate:
-    def __init__(self, id_number: str, location: CrateLocation = CrateLocation.PRIMARY, x_size: int = 50, y_size: int = 50):
+    def __init__(self, id_number: str, location: str, x_size: int = 50, y_size: int = 50):
         self.id = id_number
         self.location = location
         self.x_size = x_size
@@ -14,27 +18,34 @@ class Crate:
 
     # we need to make sure that if Location 3 is set then y_size cannot be more than 25 and x_size 32
     def validate_size_of_crate (self):
-        if self.location == CrateLocation.AUXILIARY:
-            try:
-                assert self.y_size <= 25 and self.x_size <= 32, "The crate won't fit you dumb bitch"
-            except AssertionError:
-                raise ValueError(f"The value of the y_size and x_size is greater than we can handle. Please fix it")
-            except Exception:
-                raise Exception("Unexpected item in the bagging area, can't compute.")
-        if self.location == CrateLocation.PRIMARY:
-            try:
-                assert self.y_size <= 50 and self.x_size <= 200, "The crate won't fit you dumb bitch"
-            except AssertionError:
-                raise ValueError(f"The value of the y_size and x_size is greater than we can handle. Please fix it")
-            except Exception:
-                raise Exception("Unexpected item in the bagging area, can't compute.")
+        if self.location == CrateLocation["AUXILIARY"]:
+            self.self_check(Max_xvalue= 25, Max_yvalue= 32)
+        if self.location == CrateLocation['PRIMARY']:
+            self.self_check(Max_xvalue= 50, Max_yvalue= 200)
+        if self.location == CrateLocation['SECONDARY']:
+            self.self_check(Max_xvalue= 25, Max_yvalue= 25)
+    def self_check(self, Max_xvalue, Max_yvalue):
+        try:
+            assert self.y_size <= Max_yvalue and self.x_size <= Max_xvalue, "The crate won't fit you dumb bitch"
+        except AssertionError:
+            raise ValueError(f"The value of the y_size and x_size is greater than we can handle. Please fix it")
+        except Exception:
+            raise Exception("Unexpected item in the bagging area, can't compute.")
 
-some_crate = Crate(y_size=45, id_number="someId", location=CrateLocation.AUXILIARY)
+
+some_crate = Crate(y_size=25, x_size=25, id_number="someId", location=CrateLocation['SECONDARY'])
 
 list_of_crates: list[Crate] = []
+list_of_crates.append(some_crate)
 
-def move_create_to_room (crate: Crate, location: CrateLocation):
+def move_create_to_room (crate: Crate, location: str):
     crate.location = location
+    print(f"Crate is currently being rerouted: {location}")
+move_create_to_room(some_crate, CrateLocation['IN_TRANSIT'])
+move_create_to_room(some_crate, CrateLocation['PRIMARY'])
+print("Crate has reached its destination")
+print("By the way wyoming isnt a real place say goodbye to all of your materials")
+configfile.close()
 
 
 # TODO:
