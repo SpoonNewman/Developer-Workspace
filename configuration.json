@@ -1,0 +1,8 @@
+{
+    "Crate_Locations": {
+        "PRIMARY": "Wyoming", 
+        "SECONDARY": "Barracks", 
+        "AUXILIARY": "Shitty Bathroom", 
+        "IN_TRANSIT": "Currently being transported"
+    }
+}
