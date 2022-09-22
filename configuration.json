@@ -3,6 +3,7 @@
         "PRIMARY": "Wyoming", 
         "SECONDARY": "Barracks", 
         "AUXILIARY": "Shitty Bathroom", 
-        "IN_TRANSIT": "Currently being transported"
+        "IN_TRANSIT": "Currently being transported",
+        "OTHER": "Other Place"
     }
 }
