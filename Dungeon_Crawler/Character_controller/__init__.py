@@ -11,7 +11,7 @@ class Citizen_Character():
         self.IQ = 2
         self.can_die = True
         self.inventory_list = []
-
+        self.profession = ''
 
 class Merchant_Character():
     def __init__(self) -> None:

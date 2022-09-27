@@ -6,7 +6,7 @@ import json
 #     SECONDARY = "Barracks"
 #     AUXILIARY = "Shitty Bathroom"
 #     IN_TRANSIT = "Currently being transported"
-configfile = open("configuration.json")
+configfile = open("./configuration.json")
 CrateLocation = json.load(configfile)["Crate_Locations"]
 class Crate:
 
