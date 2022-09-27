@@ -1,6 +1,3 @@
-from turtle import color
-
-
 class Citizen_Character():
     def __init__(self) -> None:
         pass
