@@ -1,0 +1,6 @@
+you walk into a room and encounter an "enemy" 
+option 1: Attack
+option 2: Flee 
+input("Please select an option:")
+Please select an option: 1
+You rush forward 
