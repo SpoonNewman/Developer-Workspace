@@ -44,7 +44,7 @@ class GameManager():
     def player_take_action(self, current_action):
         # Move forward
         mapped_action = self.get_mapped_action(current_action)
-        if mapped_action == "1":
+        if mapped_action == "2":
             on_death_message = ["You move forward down the tunnel.", " A spear extends from the wall impaling you through the side upon it's tip.", ".", ".", "You feel the life blood slowly leaking out of you.", "\nYou are", ".", ".", ".", "dead"]
             self.messages_controller.display_room_messages(current_room_messages=on_death_message)
             self.is_dead = True
