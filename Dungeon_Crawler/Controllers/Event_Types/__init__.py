@@ -8,3 +8,4 @@ class EventTypes(Enum):
     ON_INTRO_DISPLAY = "on_intro_display"
     ON_GAME_START = "on_game_start"
     ON_PLAYER_ACTION = "on_player_action"
+    ON_ITEM_PICKUP = "on_item_pickup"
