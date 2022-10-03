@@ -19,13 +19,18 @@ Please select an action by entering a number:
         actions_texts = {}
         for index, action in enumerate(self.get_available_actions(player_object, room_object)):
             actions_texts[str(index + 1)] = action
+            # actions_texts["1"] = "Kill Self"
+            # actions_texts["2"] = "Move Forward"
 
         for key, item in actions_texts.items():
             self.display_message(f"{key} - {item}", typewriter_delay=self.action_message_display_delay, message_end_character='')
             sleep(0.4)
             print() # Skips to new line after printing the action
+            
+        return actions_texts
         
-    def get_available_actions(self, player_object: PlayerController, room_object):
+        
+    def get_available_actions(self, player_object: PlayerController, room_object) -> list:
         return player_object.get_available_actions()
 
     def display_intro_message(self):

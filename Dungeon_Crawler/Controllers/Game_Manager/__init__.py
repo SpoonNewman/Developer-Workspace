@@ -1,8 +1,10 @@
+import sys
 from typing import Dict
 from Controllers.Event_Types import EventTypes
 from Controllers.Messages_Controller import MessagesController
-from Controllers.Player_Controller import PlayerController
+from Controllers.Player_Controller import PlayerController, PlayerStandardActions
 from Controllers.Environment_controller import EnvironmentController
+
 from constants import GameConstants
 from events import Events
 
@@ -10,8 +12,18 @@ def initialize_game_controllers():
     return MessagesController(), PlayerController(), EnvironmentController()
 
 class GameManager():
-    is_dead: bool = False
+    __is_dead: bool = False
     valid_event_types = (EventTypes.ON_DIE.value, EventTypes.ON_KILL_SELF.value, EventTypes.ON_GAME_START.value, EventTypes.ON_PLAYER_ACTION.value, EventTypes.ON_ITEM_PICKUP.value)
+
+    @property
+    def is_dead(self):
+        return self.__is_dead
+
+    @is_dead.setter    
+    def is_dead(self, status: bool):
+        self.__is_dead = status
+        if status:
+             self.__events.on_die()
 
     def __init__(self) -> None:
         self.__events = Events((self.valid_event_types))
@@ -23,7 +35,8 @@ class GameManager():
         self.on_game_start += self.initialize_player_settings
         self.on_game_start += self.initialize_enemy_settings
         self.on_item_pickup += self.pickup_item
-        # self.on_die += self.play_dead_message
+        self.on_die_event += self.play_dead_message
+        self.on_die_event += self.kill_program
         #
         self.on_player_action += self.player_controller.take_action
         
@@ -56,10 +69,9 @@ class GameManager():
     def initialize_enemy_settings(self):
         print("Initializing the enemy settings")
 
-    def player_take_action(self, current_action):
+    def player_take_action(self, current_action: str):
         # Move forward
-        mapped_action = self.get_mapped_action(current_action)
-        if mapped_action == "2":
+        if current_action == PlayerStandardActions.MOVE_FORWARD.value:
             on_death_message = ["You move forward down the tunnel.", " A spear extends from the wall impaling you through the side upon it's tip.", ".", ".", "You feel the life blood slowly leaking out of you.", "\nYou are", ".", ".", ".", "dead"]
             self.messages_controller.display_room_messages(current_room_messages=on_death_message)
             self.is_dead = True # TODO: Set this as a property and emit & handle the ON_DEATH event for this as well
@@ -70,4 +82,10 @@ class GameManager():
     def get_mapped_action(self, action) -> Dict[str, str]:
         return action
 
+    def play_dead_message(self):
+        message = "Game Over"
+        self.messages_controller.display_message(message)
+   
+    def kill_program(self):
+        sys.exit()
     # What other things do we initialize?

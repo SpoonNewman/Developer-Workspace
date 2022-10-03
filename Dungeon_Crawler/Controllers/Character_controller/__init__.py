@@ -17,11 +17,8 @@
 import character_events
 
 
-
-
-class Citizen_Character():
+class Base_Character():
     def __init__(self) -> None:
-        pass
         self.color = ''
         self.clothes = ''
         self.annoying = True
@@ -31,7 +28,12 @@ class Citizen_Character():
         self.inventory_list = []
         self.profession = ''
 
-class Merchant_Character():
+class Citizen_Character(Base_Character):
+    def __init__(self) -> None:
+        pass
+        
+
+class Merchant_Character(Base_Character):
     def __init__(self) -> None:
         pass
         self.mysterious = True
@@ -40,13 +42,13 @@ class Merchant_Character():
         self.has_weaponry = True
 
 
-class Guard_Character():
+class Guard_Character(Base_Character):
     pass
 
-class Soldier_Character():
+class Soldier_Character(Base_Character):
     pass
 
-class Noble_Character():
+class Noble_Character(Base_Character):
     pass
 
 def on_die():
