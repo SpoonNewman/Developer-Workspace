@@ -11,14 +11,23 @@ class PlayerStandardActions(Enum):
     CROUCH = "Crouch"
 
 class PlayerController():
+    #TODO: set whitelist keys to room type enum
+    room_actions_whitelist = {
+        "Tunnel": [PlayerStandardActions.MOVE_FORWARD.value, PlayerStandardActions.MOVE_BACKWARD, PlayerStandardActions.JUMP, PlayerStandardActions.CROUCH, PlayerStandardActions.KILL_SELF],
+        "Dead end": [PlayerStandardActions.KILL_SELF, PlayerStandardActions.JUMP, PlayerStandardActions.CROUCH, PlayerStandardActions.MOVE_BACKWARD]
+    }
     def __init__(self) -> None:
-        pass
-
-    def get_available_actions(self):
-        tmp_list = []
+        self.available_actions = []
         for name, member in PlayerStandardActions.__members__.items():
-            tmp_list.append(member.value)
-        return tmp_list
+            self.available_actions.append(member.value)
+
+    def get_available_actions(self, room):  
+        return self.available_actions
 
     def take_action(self, action_type: str):
         pass
+    
+    def actions_by_room_type(self, room_type: str):
+        return self.room_actions_whitelist[room_type]
+        
+
