@@ -25,13 +25,21 @@ class GameManager():
         if status:
              self.__events.on_die()
 
+    
     def __init__(self) -> None:
         self.__events = Events((self.valid_event_types))
         self.initialize_events()
-
         self.messages_controller, self.player_controller, self.environment_controller = initialize_game_controllers()
-        
-        # TODO: Move these to an initialize_game_events()
+        self.initialize_game_events()
+        self.initialize_game_room_map()
+        # self.current_location = GameConstants.player_starting_area
+    
+    
+    def initialize_game_room_map(self):
+        pass
+
+
+    def initialize_game_events(self):
         self.on_game_start += self.begin_intro
         self.on_game_start += self.initialize_player_settings
         self.on_game_start += self.initialize_enemy_settings
@@ -39,11 +47,6 @@ class GameManager():
         self.on_die_event += self.play_dead_message
         self.on_die_event += self.kill_program
         self.on_player_action += self.player_controller.take_action
-
-        # TODO: Implement the initialization of the room map that contains a linked list of the rooms
-        
-        # TODO: Set this to be a room object
-        self.current_location = GameConstants.player_starting_area
 
     def initialize_events(self):
         self.on_die_event = self.__events.on_die
