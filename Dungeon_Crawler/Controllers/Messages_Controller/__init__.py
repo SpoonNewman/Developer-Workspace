@@ -31,7 +31,7 @@ Please select an action by entering a number:
         
         
     def get_available_actions(self, player_object: PlayerController, room_object) -> list:
-        return player_object.get_available_actions()
+        return player_object.get_available_actions(room=room_object)
 
     def display_intro_message(self):
         self.display_message(message=self.standard_messages_list["intro_message"])
