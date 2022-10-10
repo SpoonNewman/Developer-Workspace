@@ -32,10 +32,11 @@ class GameManager():
         self.messages_controller, self.player_controller, self.environment_controller = initialize_game_controllers()
         self.initialize_game_events()
         self.initialize_game_room_map()
-        # self.current_location = GameConstants.player_starting_area
+        self.current_location = self.environment_controller.list_of_rooms["StartingArea"]
     
     
     def initialize_game_room_map(self):
+        self.environment_controller.initialize_rooms()
         pass
 
 
