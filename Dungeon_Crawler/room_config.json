@@ -1,0 +1,46 @@
+[
+    {
+        "name": "start_room",
+        "uuid": "",
+        "events": [],
+        "room_type": "room",
+        "room_exits": [
+            "intro_tunnel_0"
+        ]
+    },
+    {
+        "name": "intro_tunnel_0",
+        "uuid": "",
+        "events": [],
+        "room_type": "tunnel",
+        "room_exits": ["intro_tunnel_1"]
+    },
+    {
+        "name": "intro_tunnel_1",
+        "uuid": "",
+        "events": [],
+        "room_type": "tunnel",
+        "room_exits": ["intro_tunnel_split_0"]
+    },
+    {
+        "name": "intro_tunnel_split_0",
+        "uuid": "",
+        "events": [],
+        "room_type": "tunnel_split",
+        "room_exits": ["intro_tunnel_2", "intro_tunnel_3"]
+    },
+    {
+        "name": "intro_tunnel_2",
+        "uuid": "",
+        "events": [],
+        "room_type": "tunnel",
+        "room_exits": []
+    },
+    {
+        "name": "intro_tunnel_3",
+        "uuid": "",
+        "events": [],
+        "room_type": "tunnel",
+        "room_exits": []
+    }
+]

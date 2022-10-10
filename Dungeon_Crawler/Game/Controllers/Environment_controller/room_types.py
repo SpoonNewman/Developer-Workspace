@@ -6,6 +6,10 @@ class room_shape(Enum):
     RECTANGULAR = "rectangular"
     OBLONG = "oblong"
 
+class types(Enum):
+    ROOM = "room"
+    TUNNEL = "tunnel"
+    TUNNEL_SPLIT = "tunnel_split"
 
 class base_room(ABC):
     @abstractmethod

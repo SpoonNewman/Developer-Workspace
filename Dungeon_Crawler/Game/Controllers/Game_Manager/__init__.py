@@ -30,7 +30,7 @@ class GameManager():
         self.__events = Events((self.valid_event_types))
         self.initialize_events()
         self.messages_controller, self.player_controller, self.environment_controller = initialize_game_controllers()
-        self.initialize_game_events()
+        self.initialize_event_subscriptions()
         self.initialize_game_room_map()
         self.current_location = self.environment_controller.list_of_rooms["StartingArea"]
     
@@ -40,7 +40,7 @@ class GameManager():
         pass
 
 
-    def initialize_game_events(self):
+    def initialize_event_subscriptions(self):
         self.on_game_start += self.begin_intro
         self.on_game_start += self.initialize_player_settings
         self.on_game_start += self.initialize_enemy_settings
