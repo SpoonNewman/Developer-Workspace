@@ -1,5 +1,9 @@
 from enum import Enum
 from abc import ABC, abstractmethod
+from typing import Dict
+from uuid import uuid4
+
+# TODO: Add auto creation of UUID for ID property
 
 class room_shape(Enum):
     ROUND = "round"
@@ -84,52 +88,64 @@ class base_room(ABC):
 
 
 class room(base_room):
-    def __init__(self, room_events=[], room_name="Fart ass room", room_exits=[]) -> None:
+    def __init__(self, room_configuration: Dict) -> None:
+        """Create a basic room object.
+
+        Args:
+            room_exits (list[str]): The list of room names that represent exits from the current room. Defaults to "None"  
+            room_name (str): The name of the room you are creating. Defaults to "None"  
+            room_events (list[RoomEvent]): A list of room events that should be triggered by player action. Defaults to "None"  
+        """
+        if not room_configuration:
+            raise ValueError("No configuration was passed to the room object.")
+        self._id = str(uuid4())
         self.width = 0
         self.height = 0
         self.light = 0
         self.dampness = 0
         self.obstacles = 0
         self.shape = room_shape.OBLONG
-        self.room_exits = room_exits
-        self.room_name = room_name
-        self.room_events = room_events
+        self.room_exits = room_configuration.get("room_exits")
+        self.room_name = room_configuration.get("name")
+        self.room_events = room_configuration.get("room_events")
     
     def trigger_events(self):
         return "Event is triggered"
-        
     
     def get_events(self):
         return self.room_events
 
 class room_tunnel(room):
-    def __init__(self, room_events=[], room_name="Fart ass room", room_exits=[]) -> None:
-        super().__init__(room_events=room_events, room_name=room_name, room_exits=room_exits)
+    """Create a Tunnel object.
+
+        Args:
+            room_exits (list[str]): The list of room names that represent exits from the current room. Defaults to "None"  
+            room_name (str): The name of the room you are creating. Defaults to "None"  
+            room_events (list[RoomEvent]): A list of room events that should be triggered by player action. Defaults to "None"  
+        """
+    def __init__(self, room_configuration: Dict) -> None:
+        super().__init__(room_configuration=room_configuration)
 
 
 class room_intersection(room):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, room_configuration: Dict) -> None:
+        """Create an Intersection object.
 
-        self.left = "left"
-        self.right = "right"
-        self.forward = "forward"
-    pass
+        Args:
+            room_exits (list[str]): The list of room names that represent exits from the current room. Defaults to "None"  
+            room_name (str): The name of the room you are creating. Defaults to "None"  
+            room_events (list[RoomEvent]): A list of room events that should be triggered by player action. Defaults to "None"  
+        """
+        super().__init__(room_configuration)
 
 class room_dead_end(room):
     def __init__(self) -> None:
         super().__init__()
-    pass
 
 class room_tunnel_split(room):
-    def __init__(self) -> None:
-        super().__init__()
-        self.left = "left"
-        self.right = "right"
-    pass
+    def __init__(self, room_configuration: Dict) -> None:
+        super().__init__(room_configuration=room_configuration)
 
 class room_secret(room_dead_end):
     def __init__(self) -> None:
         super().__init__()
-        self.secret = "secret"
-    pass
