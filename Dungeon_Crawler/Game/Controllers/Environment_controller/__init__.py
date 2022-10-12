@@ -1,9 +1,13 @@
 from Controllers.Environment_controller import room_types
+from Controllers.base_controller import BaseController
 import json
 
-class EnvironmentController():
-    def __init__(self) -> None:
-        self.list_of_rooms = []
+
+class EnvironmentController(BaseController):
+    registered_rooms = {}
+
+    def __init__(self, event_registry) -> None:
+        super().__init__(event_registry=event_registry)
     
     def initialize_rooms(self) -> None:
         """Initialize the room map with the correctly parsed depedency tree (sorted Breadth-First).
@@ -18,15 +22,15 @@ class EnvironmentController():
 
         # Build all the rooms
         for room in ordered_rooms_map:
-            self.list_of_rooms.append(self.build_room(room_config=room))
+            self.registered_rooms[room["name"]] = self.build_room(room_config=room)
 
         # Loop over the rooms we've built
-        for room in self.list_of_rooms:
+        for room in self.registered_rooms.values():
             if len(room.room_exits) > 0:
                 # Loop over the exits of the room
                 for exit_name in room.room_exits:
                     # Grab the room object from the name, i.e. room_exit
-                    dependant_rooms = list(filter(lambda dependant_room: exit_name == dependant_room.room_name, self.list_of_rooms))
+                    dependant_rooms = list(filter(lambda dependant_room: exit_name == dependant_room.room_name, self.registered_rooms.values()))
                     if len(dependant_rooms) != 1:
                         raise ValueError("Either the dependant room wasn't registered or there are duplicates.")
 
@@ -37,8 +41,7 @@ class EnvironmentController():
 
                     # Result: Each room dependency, which is our room_exits, now contain UUIDs instead of names to refer to the room
                     # This enables strong identification whereas a name is fairly weak.
-
-            # TODO: Parse and replace the event names with the actual event objects.
+        pass
 
     def get_rooms_from_config(self) -> dict:
         """Loads the configuration object from the json file.

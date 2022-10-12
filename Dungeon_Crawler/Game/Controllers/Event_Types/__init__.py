@@ -1,6 +1,8 @@
 from enum import Enum
 from events import Events
 
+from Controllers.Player_Controller import PlayerStandardActions
+
 class EventTypes(Enum):
     ON_KILL_SELF = "on_kill_self"
     ON_DIE = "on_die"

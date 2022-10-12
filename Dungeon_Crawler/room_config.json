@@ -1,7 +1,7 @@
 [
     {
         "name": "start_room",
-        "events": [],
+        "event_handler": "start_room_sequence",
         "room_type": "room",
         "room_exits": [
             "intro_tunnel_0"
@@ -9,31 +9,31 @@
     },
     {
         "name": "intro_tunnel_0",
-        "events": [],
+        "event_handler": "",
         "room_type": "tunnel",
         "room_exits": ["intro_tunnel_1"]
     },
     {
         "name": "intro_tunnel_1",
-        "events": [],
+        "event_handler": "",
         "room_type": "tunnel",
         "room_exits": ["intro_tunnel_split_0"]
     },
     {
         "name": "intro_tunnel_split_0",
-        "events": [],
+        "event_handler": "",
         "room_type": "tunnel_split",
         "room_exits": ["intro_tunnel_2", "intro_tunnel_3"]
     },
     {
         "name": "intro_tunnel_2",
-        "events": [],
+        "event_handler": "",
         "room_type": "tunnel",
         "room_exits": []
     },
     {
         "name": "intro_tunnel_3",
-        "events": [],
+        "event_handler": "",
         "room_type": "tunnel",
         "room_exits": []
     }

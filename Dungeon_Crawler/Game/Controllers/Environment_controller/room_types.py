@@ -3,6 +3,9 @@ from abc import ABC, abstractmethod
 from typing import Dict
 from uuid import uuid4
 
+from Controllers.Environment_controller.Event_Sequence_Manager.story_events_registry import StoryEventsRegistry
+from Game.Controllers.Environment_controller.Event_Sequence_Manager.story_sequences_registry import StorySequencesRegistry
+
 # TODO: Add auto creation of UUID for ID property
 
 class room_shape(Enum):
@@ -107,10 +110,14 @@ class room(base_room):
         self.shape = room_shape.OBLONG
         self.room_exits = room_configuration.get("room_exits")
         self.room_name = room_configuration.get("name")
-        self.room_events = room_configuration.get("room_events")
+        self.event_handler = room_configuration.get("event_handler")
+
+        if self.event_handler:
+            tmp_event_handler_key = self.event_handler
+            self.event_handler = StorySequencesRegistry.registry[tmp_event_handler_key]
     
-    def trigger_events(self):
-        return "Event is triggered"
+    def trigger_room_sequences(self):
+        self.event_handler.handle_sequence()
     
     def get_events(self):
         return self.room_events
