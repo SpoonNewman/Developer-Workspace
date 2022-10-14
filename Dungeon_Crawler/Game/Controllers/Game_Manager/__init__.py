@@ -8,92 +8,77 @@ from Controllers.Environment_controller import EnvironmentController
 
 # from events import Events
 
-def initialize_game_controllers():
-    return MessagesController(), PlayerController(), EnvironmentController()
-
 class GameManager():
-    __is_dead: bool = False
-    __current_location = None
+    # __is_dead: bool = False
+    # __current_location = None
     # valid_event_types = (EventTypes.ON_DIE.value, EventTypes.ON_MESSAGE_DISPLAY.value, EventTypes.ON_ROOM_MESSAGE_DISPLAY.value, EventTypes.ON_SHOW_AVAILABLE_ACTIONS.value, EventTypes.ON_PLAYER_INVESTIGATE.value, EventTypes.ON_KILL_SELF.value, EventTypes.ON_GAME_START.value, EventTypes.ON_PLAYER_ACTION.value, EventTypes.ON_ITEM_PICKUP.value)
 
-    @property
-    def is_dead(self):
-        return self.__is_dead
+    # # region Class Properties
+    # @property
+    # def is_dead(cls):
+    #     return cls.__is_dead
 
-    @is_dead.setter    
-    def is_dead(self, status: bool):
-        self.__is_dead = status
-        if status:
-            EventController.broadcast_event(EventTypes.ON_DIE)
-            #  self.__events.on_die()
+    # @is_dead.setter    
+    # def is_dead(cls, status: bool):
+    #     cls.__is_dead = status
+    #     if status:
+    #         EventController.broadcast_event(EventTypes.ON_DIE)
+    #         #  cls.__events.on_die()
 
-    @property
-    def current_location(self):
-        return self.__current_location
+    # @property
+    # def current_location(cls):
+    #     return cls.__current_location
 
-    @current_location.setter    
-    def current_location(self, location):
-        self.__current_location = location
-        if location:
-            location.trigger_room_sequences()
+    # @current_location.setter    
+    # def current_location(cls, location):
+    #     cls.__current_location = location
+    #     if location:
+    #         location.trigger_room_sequences()
 
+    # endregion
     
-    def __init__(self) -> None:
-        # self.__events = Events((self.valid_event_types))
-        self.__events = None
-        self.messages_controller, self.player_controller, self.environment_controller = initialize_game_controllers()
-        self.initialize_event_subscriptions()
+    @classmethod
+    def __init__(cls) -> None:
+        cls.__events = None
+        cls.initialize_event_subscriptions()
     
-    def process_game_interval(self):
-        """Process an interval of actions within the game.
-        """
-        # current_actions = self.messages_controller.show_available_actions(game_manager.player_controller, None)
-        # self.current_location.get_available_actions()
-        current_action_input = input("Make your selection:  ") # Show Prompt of things they can do
-        # self.player_take_action(current_actions[current_action_input])
-    
-    def initialize_game_room_map(self):
-        self.environment_controller.initialize_rooms()
-        self.current_location = self.environment_controller.registered_rooms["start_room"]
-
-    def initialize_event_subscriptions(self):
+    @classmethod
+    def initialize_event_subscriptions(cls):
         """Initialize the events and their subscriptions.
         """
-        EventController.add_listener(event_type=EventTypes.ON_GAME_START, handler_functions=[self.initialize_game_room_map, self.begin_intro, self.initialize_player_settings, self.initialize_enemy_settings])
-        EventController.add_listener(event_type=EventTypes.ON_ITEM_PICKUP, handler_functions=[self.pickup_item])
-        EventController.add_listener(event_type=EventTypes.ON_DIE, handler_functions=[self.play_dead_message, self.kill_program])
-        EventController.add_listener(event_type=EventTypes.ON_MESSAGE_DISPLAY, handler_functions=[self.messages_controller.display_message])
-        EventController.add_listener(event_type=EventTypes.ON_ROOM_MESSAGE_DISPLAY, handler_functions=[self.messages_controller.display_room_messages])
-        EventController.add_listener(event_type=EventTypes.ON_SHOW_AVAILABLE_ACTIONS, handler_functions=[self.messages_controller.show_available_actions])
+        EventController.add_listener(event_type=EventTypes.ON_GAME_START, handler_functions=[cls.initialize_game_room_map, cls.begin_intro, cls.initialize_enemy_settings, PlayerController.initialize_player_settings])
+        EventController.add_listener(event_type=EventTypes.ON_ITEM_PICKUP, handler_functions=[PlayerController.pickup_item])
+        EventController.add_listener(event_type=EventTypes.ON_DIE, handler_functions=[cls.play_dead_message, cls.kill_program])
+        EventController.add_listener(event_type=EventTypes.ON_MESSAGE_DISPLAY, handler_functions=[MessagesController.display_message])
+        EventController.add_listener(event_type=EventTypes.ON_ROOM_MESSAGE_DISPLAY, handler_functions=[MessagesController.display_room_messages])
+        EventController.add_listener(event_type=EventTypes.ON_SHOW_AVAILABLE_ACTIONS, handler_functions=[MessagesController.show_available_actions])
 
-    def pickup_item():
-        print("Item has been picked up")
-    
-    
-    def something_that_triggers_itempickup(self):
-        EventController.broadcast_event(EventTypes.ON_ITEM_PICKUP)
+    @classmethod
+    def initialize_game_room_map(cls):
+        EnvironmentController.initialize_rooms()
 
-    def start_game(self):
+    @classmethod
+    def process_game_interval(cls):
+        """Process an interval of actions within the game.
+        """
+        pass
+    
+    @classmethod
+    def start_game(cls):
         EventController.broadcast_event(EventTypes.ON_GAME_START)
 
-    def begin_intro(self):
-        self.messages_controller.display_intro_message()
+    @classmethod
+    def begin_intro(cls):
+        MessagesController.display_intro_message()
 
-    def initialize_player_settings(self):
-        print("Setting up the player settings")
-
-    def initialize_enemy_settings(self):
+    @classmethod
+    def initialize_enemy_settings(cls):
         print("Initializing the enemy settings")
 
-    def get_mapped_action(self, action) -> Dict[str, str]:
-        return action
-
-    def play_dead_message(self):
-        message = "Game Over"
-        EventController.broadcast_event(EventTypes.ON_MESSAGE_DISPLAY, message=message)
+    @classmethod
+    def play_dead_message(cls):
+        EventController.broadcast_event(EventTypes.ON_MESSAGE_DISPLAY, message="Game Over")
    
-    def kill_program(self):
+    @classmethod
+    def kill_program(cls):
         sys.exit()
-    
-    def handle_room_event(self):
-        pass

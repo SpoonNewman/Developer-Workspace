@@ -9,28 +9,29 @@ class EnvironmentController(BaseController):
     def __init__(self) -> None:
         super().__init__()
     
-    def initialize_rooms(self) -> None:
+    @classmethod
+    def initialize_rooms(cls) -> None:
         """Initialize the room map with the correctly parsed depedency tree (sorted Breadth-First).
 
         Raises:
             ValueError: Raised when the searching for the room exit name in our collection of rooms is in error.
         """
-        rooms_map = self.get_rooms_from_config()
+        rooms_map = cls.get_rooms_from_config()
         
         # Order the rooms map by Breadth-First ordering
-        ordered_rooms_map = self.sort_dependency_tree(rooms_map)
+        ordered_rooms_map = cls.sort_dependency_tree(rooms_map)
 
         # Build all the rooms
         for room in ordered_rooms_map:
-            self.registered_rooms[room["name"]] = self.build_room(room_config=room)
+            cls.registered_rooms[room["name"]] = cls.build_room(room_config=room)
 
         # Loop over the rooms we've built
-        for room in self.registered_rooms.values():
+        for room in cls.registered_rooms.values():
             if len(room.room_exits) > 0:
                 # Loop over the exits of the room
                 for exit_name in room.room_exits:
                     # Grab the room object from the name, i.e. room_exit
-                    dependant_rooms = list(filter(lambda dependant_room: exit_name == dependant_room.room_name, self.registered_rooms.values()))
+                    dependant_rooms = list(filter(lambda dependant_room: exit_name == dependant_room.room_name, cls.registered_rooms.values()))
                     if len(dependant_rooms) != 1:
                         raise ValueError("Either the dependant room wasn't registered or there are duplicates.")
 
@@ -43,7 +44,8 @@ class EnvironmentController(BaseController):
                     # This enables strong identification whereas a name is fairly weak.
         pass
 
-    def get_rooms_from_config(self) -> dict:
+    @classmethod
+    def get_rooms_from_config(cls) -> dict:
         """Loads the configuration object from the json file.
 
         Returns:
@@ -52,7 +54,8 @@ class EnvironmentController(BaseController):
         with open("room_config.json") as config:
             return json.load(config)
 
-    def sort_dependency_tree (self, rooms_map) -> dict:
+    @classmethod
+    def sort_dependency_tree (cls, rooms_map) -> dict:
         """Sorts and orders the depedency tree
 
         Args:
@@ -70,7 +73,8 @@ class EnvironmentController(BaseController):
 
         return temp_rooms_map
 
-    def build_room(self, room_config):
+    @classmethod
+    def build_room(cls, room_config):
         """Creates a room object based on a dictionary configuration object.
 
         Args:

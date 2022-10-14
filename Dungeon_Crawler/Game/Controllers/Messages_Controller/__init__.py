@@ -13,31 +13,28 @@ class MessagesController(BaseController):
     def __init__(self) -> None:
         super().__init__()
 
-    def show_available_actions (self, player_object, room_object):
+    @classmethod
+    def show_available_actions (cls, possible_actions):
         display_text: str = """
 Please select an action by entering a number:
-=================
-        """
-
-        actions_texts = {}
-        for index, action in enumerate(self.get_available_actions(player_object, room_object)):
-            actions_texts[str(index + 1)] = action
-            # actions_texts["1"] = "Kill Self"
-            # actions_texts["2"] = "Move Forward"
-
-        for key, item in actions_texts.items():
-            self.display_message(f"{key} - {item}", typewriter_delay=self.action_message_display_delay, message_end_character='')
-            sleep(0.4)
+=============================================
+"""
+        cls.display_message(display_text, typewriter_delay=0.008)
+        # print("\n")
+        sleep(1.25)
+        
+        for key, action in possible_actions.items():
+            cls.display_message(f"{key} - {action}", typewriter_delay=cls.action_message_display_delay)
+            sleep(0.8)
             print() # Skips to new line after printing the action
-            
-        return actions_texts
         
-        
-    def get_available_actions(self, player_object: PlayerController, room_object) -> list:
+    @classmethod
+    def get_available_actions(cls, player_object: PlayerController, room_object) -> list:
         return player_object.get_available_actions(room=room_object)
 
-    def display_intro_message(self):
-        self.display_message(message=self.standard_messages_list["intro_message"])
+    @classmethod
+    def display_intro_message(cls):
+        cls.display_message(message=cls.standard_messages_list["intro_message"])
 
     @classmethod
     def display_message(cls, message: str, typewriter_delay: int = 0.1, message_end_character: str = '') -> None:

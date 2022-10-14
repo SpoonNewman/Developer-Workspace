@@ -14,19 +14,19 @@ class EventTypes(Enum):
     ON_PLAYER_INVESTIGATE = "on_player_investigate"
 
 class EventController():
-    valid_event_types = (
-        EventTypes.ON_DIE.value,
-        EventTypes.ON_MESSAGE_DISPLAY.value,
-        EventTypes.ON_ROOM_MESSAGE_DISPLAY.value,
-        EventTypes.ON_SHOW_AVAILABLE_ACTIONS.value,
-        EventTypes.ON_PLAYER_INVESTIGATE.value,
-        EventTypes.ON_KILL_SELF.value,
-        EventTypes.ON_GAME_START.value,
-        EventTypes.ON_PLAYER_ACTION.value,
-        EventTypes.ON_ITEM_PICKUP.value
-    )
+    # valid_event_types = (
+    #     EventTypes.ON_DIE.value,
+    #     EventTypes.ON_MESSAGE_DISPLAY.value,
+    #     EventTypes.ON_ROOM_MESSAGE_DISPLAY.value,
+    #     EventTypes.ON_SHOW_AVAILABLE_ACTIONS.value,
+    #     EventTypes.ON_PLAYER_INVESTIGATE.value,
+    #     EventTypes.ON_KILL_SELF.value,
+    #     EventTypes.ON_GAME_START.value,
+    #     EventTypes.ON_PLAYER_ACTION.value,
+    #     EventTypes.ON_ITEM_PICKUP.value
+    # )
 
-    __events = Events((valid_event_types))
+    __events = Events((list(map(lambda event: event.value, EventTypes.__members__.values()))))
 
     @classmethod
     def add_listener(cls, event_type: EventTypes, handler_functions: list):

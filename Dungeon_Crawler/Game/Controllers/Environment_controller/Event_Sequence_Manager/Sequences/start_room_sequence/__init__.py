@@ -5,35 +5,39 @@ from Controllers.EventController import EventController, EventTypes
 
 
 class StartRoomSequence():
+    mapped_possible_actions = {
+        "1": PlayerStandardActions.INVESTIGATE.value,
+        "2": PlayerStandardActions.KILL_SELF.value,
+        "3": PlayerStandardActions.MOVE_FORWARD.value,
+    }
+    collection_of_events = {
+        "shrine_start": EventsSecretShrineIntro()
+    }
+    
     def __init__(self) -> None:
-        self.collection_of_events = {
-            "shrine_start": EventsSecretShrineIntro()
-        }
+        pass
 
+    @classmethod
+    def handle_sequence(cls):
+        EventController.broadcast_event(EventTypes.ON_SHOW_AVAILABLE_ACTIONS, possible_actions=cls.mapped_possible_actions)
+        player_input = str(cls.get_player_input())
+        cls.trigger_event_sequence(player_input)
 
-    def handle_sequence(self):
-        self.possible_actions = self.get_room_possible_actions()
-        print("\n\n")
-        for index, action in enumerate(self.possible_actions):
-            pass
-            EventController.broadcast_event(EventTypes.ON_MESSAGE_DISPLAY, message=f"{index + 1} - {action}\n")
-
-        player_input = str(self.get_player_input())
-        self.trigger_event_sequence(player_input)
-
-    def get_player_input(self):
+    @classmethod
+    def get_player_input(cls):
         return input("\nWhat do you choose?")
 
-    def trigger_event_sequence(self, player_action: str):
-        # TODO: match this to the PlayerStandardActions
-        if player_action == "1":
+    @classmethod
+    def trigger_event_sequence(cls, player_action: str):
+        if cls.mapped_possible_actions[player_action] == PlayerStandardActions.INVESTIGATE.value:
             current_event = StoryEventsRegistry.registry["SecretShrineInvestigation"]
             EventController.broadcast_event(EventTypes.ON_MESSAGE_DISPLAY, message=current_event.description)
             current_event.handle_event()
 
-    def get_room_possible_actions(self):
-        return [
-            PlayerStandardActions.INVESTIGATE.value,
-            PlayerStandardActions.KILL_SELF.value,
-            PlayerStandardActions.MOVE_FORWARD.value,
-        ]
+    @classmethod
+    def get_room_possible_actions(cls):
+        return {
+            "1": PlayerStandardActions.INVESTIGATE.value,
+            "2": PlayerStandardActions.KILL_SELF.value,
+            "3": PlayerStandardActions.MOVE_FORWARD.value,
+        }
