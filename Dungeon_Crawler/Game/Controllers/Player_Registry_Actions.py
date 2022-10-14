@@ -8,3 +8,7 @@ class PlayerStandardActions(Enum):
     MOVE_RIGHT = "Move Right"
     JUMP = "Jump"
     CROUCH = "Crouch"
+    PRAY = "Pray"
+    BLASPHEME = "Blaspheme"
+    INVESTIGATE = "Investigate"
+    ACTIVATE_SWITCH = "Activate Switch"

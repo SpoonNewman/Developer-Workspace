@@ -6,8 +6,8 @@ import json
 class EnvironmentController(BaseController):
     registered_rooms = {}
 
-    def __init__(self, event_registry) -> None:
-        super().__init__(event_registry=event_registry)
+    def __init__(self) -> None:
+        super().__init__()
     
     def initialize_rooms(self) -> None:
         """Initialize the room map with the correctly parsed depedency tree (sorted Breadth-First).

@@ -1,4 +1,3 @@
-from Controllers.Event_Types import EventTypes
 from Controllers.Messages_Controller.messages_list import MessagesList
 from Controllers.Player_Controller import PlayerController
 from Controllers.base_controller import BaseController
@@ -11,8 +10,8 @@ class MessagesController(BaseController):
     action_message_display_delay = 0.03
     standard_messages_list = MessagesList.standard_messages
 
-    def __init__(self, event_registry) -> None:
-        super().__init__(event_registry=event_registry)
+    def __init__(self) -> None:
+        super().__init__()
 
     def show_available_actions (self, player_object, room_object):
         display_text: str = """

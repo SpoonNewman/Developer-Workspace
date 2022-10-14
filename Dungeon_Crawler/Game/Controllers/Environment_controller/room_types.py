@@ -4,7 +4,7 @@ from typing import Dict
 from uuid import uuid4
 
 from Controllers.Environment_controller.Event_Sequence_Manager.story_events_registry import StoryEventsRegistry
-from Game.Controllers.Environment_controller.Event_Sequence_Manager.story_sequences_registry import StorySequencesRegistry
+from Controllers.Environment_controller.Event_Sequence_Manager.story_sequences_registry import StorySequencesRegistry
 
 # TODO: Add auto creation of UUID for ID property
 
@@ -18,14 +18,7 @@ class types(Enum):
     TUNNEL = "tunnel"
     TUNNEL_SPLIT = "tunnel_split"
 
-class base_room(ABC):
-    @abstractmethod
-    def get_events(self):
-        pass
-
-    @abstractmethod
-    def trigger_events():
-        pass
+# class base_room(ABC):
         # We need to pop an event off when the event is triggered
     
     #region
@@ -90,7 +83,7 @@ class base_room(ABC):
     #endregion
 
 
-class room(base_room):
+class room():
     def __init__(self, room_configuration: Dict) -> None:
         """Create a basic room object.
 
@@ -114,13 +107,10 @@ class room(base_room):
 
         if self.event_handler:
             tmp_event_handler_key = self.event_handler
-            self.event_handler = StorySequencesRegistry.registry[tmp_event_handler_key]
+            self.event_handler = StorySequencesRegistry().registry[tmp_event_handler_key]
     
     def trigger_room_sequences(self):
         self.event_handler.handle_sequence()
-    
-    def get_events(self):
-        return self.room_events
 
 class room_tunnel(room):
     """Create a Tunnel object.
@@ -132,6 +122,12 @@ class room_tunnel(room):
         """
     def __init__(self, room_configuration: Dict) -> None:
         super().__init__(room_configuration=room_configuration)
+
+    def trigger_room_sequences(self):
+        pass
+    
+    def get_events(self):
+        pass
 
 
 class room_intersection(room):
@@ -152,6 +148,12 @@ class room_dead_end(room):
 class room_tunnel_split(room):
     def __init__(self, room_configuration: Dict) -> None:
         super().__init__(room_configuration=room_configuration)
+
+    def trigger_room_sequences(self):
+        pass
+    
+    def get_events(self):
+        pass
 
 class room_secret(room_dead_end):
     def __init__(self) -> None:

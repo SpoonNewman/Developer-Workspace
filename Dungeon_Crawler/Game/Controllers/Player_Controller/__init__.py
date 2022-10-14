@@ -6,8 +6,8 @@ from Controllers.Player_Registry_Actions import PlayerStandardActions
 
 class PlayerController(BaseController):
     #TODO: set whitelist keys to room type enum
-    def __init__(self, event_registry) -> None:
-        super().__init__(event_registry=event_registry)
+    def __init__(self) -> None:
+        super().__init__()
 
     def get_available_actions(self, room):  
         return self.available_actions
