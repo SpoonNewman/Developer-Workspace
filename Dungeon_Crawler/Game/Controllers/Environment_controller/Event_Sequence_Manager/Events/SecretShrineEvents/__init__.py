@@ -1,5 +1,6 @@
-from Controllers.Environment_controller.Event_Sequence_Manager.base_play_event import BasePlayEvent
 from Controllers.Player_Registry_Actions import PlayerStandardActions
+from Controllers.game_events import OnKillSelfEvent, OnLocationChangeEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent
+from Controllers.EventController import EventController
 
 
 class EventsSecretShrineIntro():
@@ -19,22 +20,25 @@ class EventsSecretShrineIntro():
 
     @classmethod
     def handle_event(cls):
-        # on_display_possible_actions(cls.get_possible_actions())
-        # on_player_input
-        pass
+        show_actions_evt = OnShowAvailableActionsEvent()
+        show_actions_evt.possible_actions = cls.possible_actions
+        EventController.broadcast_event(event_object=show_actions_evt)
+        player_input = str(input("What do you choose?"))
+        if cls.possible_actions[player_input] == PlayerStandardActions.KILL_SELF.value:
+            kill_self_evt = OnKillSelfEvent()
+            EventController.broadcast_event(event_object=kill_self_evt)
+        elif cls.possible_actions[player_input] == PlayerStandardActions.INVESTIGATE.value:
+            pass
+        elif cls.possible_actions[player_input] == PlayerStandardActions.MOVE_BACKWARD.value:
+            pass
+        elif cls.possible_actions[player_input] == PlayerStandardActions.ACTIVATE_SWITCH.value:
+            pass
+        else:
+            raise ValueError("That player action is not yet supported")
 
     @classmethod
     def trigger_next_scene(cls):
         cls.next_scene.handle_event()
-
-    @classmethod
-    def get_possible_actions(cls):
-        return [
-            PlayerStandardActions.KILL_SELF,
-            PlayerStandardActions.INVESTIGATE,
-            PlayerStandardActions.MOVE_BACKWARD,
-            PlayerStandardActions.ACTIVATE_SWITCH
-        ]
 
 
 class EventsSecretShrinePart2():
@@ -50,15 +54,6 @@ class EventsSecretShrinePart2():
     @classmethod
     def __init__(cls) -> None:
         cls.next_scene = None
-
-
-    @classmethod
-    def get_possible_actions(cls):
-        return [
-            PlayerStandardActions.KILL_SELF,
-            PlayerStandardActions.MOVE_FORWARD,
-            PlayerStandardActions.MOVE_BACKWARD,
-        ]
 
     @classmethod
     def handle_event():

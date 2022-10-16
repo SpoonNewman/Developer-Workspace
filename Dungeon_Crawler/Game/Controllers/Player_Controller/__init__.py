@@ -39,7 +39,6 @@ class PlayerController(BaseController):
         print("Setting up the player settings")
         cls.set_current_location(location=cls.registered_rooms["start_room"])
 
-
     @classmethod
     def get_available_actions(cls, room):  
         pass

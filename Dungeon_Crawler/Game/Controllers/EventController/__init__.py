@@ -5,7 +5,7 @@ from Controllers.game_events import EventTypes
 #     ON_KILL_SELF = "on_kill_self"
 #     ON_DIE = "on_die"
 #     ON_MESSAGE_DISPLAY = "on_message_display"
-#     ON_ROOM_MESSAGE_DISPLAY = "on_room_message_display"
+#     ON_STAGGERED_MESSAGE_DISPLAY = "ON_STAGGERED_MESSAGE_DISPLAY"
 #     ON_SHOW_AVAILABLE_ACTIONS = "on_show_available_actions"
 #     ON_INTRO_DISPLAY = "on_intro_display"
 #     ON_GAME_START = "on_game_start"

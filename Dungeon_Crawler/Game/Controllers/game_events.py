@@ -7,7 +7,7 @@ class EventTypes():
         cls.ON_KILL_SELF = OnKillSelfEvent().__class__.__name__
         cls.ON_DIE = OnDieEvent().__class__.__name__
         cls.ON_MESSAGE_DISPLAY = OnMessageDisplayEvent().__class__.__name__
-        cls.ON_ROOM_MESSAGE_DISPLAY = OnRoomMessageDisplayEvent().__class__.__name__
+        cls.ON_STAGGERED_MESSAGE_DISPLAY = OnStaggeredMessageDisplayEvent().__class__.__name__
         cls.ON_SHOW_AVAILABLE_ACTIONS = OnShowAvailableActionsEvent().__class__.__name__
         cls.ON_INTRO_DISPLAY = OnIntroDisplayEvent().__class__.__name__
         cls.ON_GAME_START = OnGameStartEvent().__class__.__name__
@@ -20,7 +20,7 @@ class EventTypes():
             cls.ON_KILL_SELF,
             cls.ON_DIE,
             cls.ON_MESSAGE_DISPLAY,
-            cls.ON_ROOM_MESSAGE_DISPLAY,
+            cls.ON_STAGGERED_MESSAGE_DISPLAY,
             cls.ON_SHOW_AVAILABLE_ACTIONS,
             cls.ON_INTRO_DISPLAY,
             cls.ON_GAME_START,
@@ -51,13 +51,13 @@ class OnMessageDisplayEvent(GameEvent):
 
 class OnKillSelfEvent(GameEvent):
     def __init__(self) -> None:
-        pass
+        self.kill_self_message = "\n\nA creeping hollowness begins to edge it's way into your thoughts drilling deeper to hollow out your hopes and dreams. In the span of heartbeats you lose all compulsion to resist the temptation to give up. You draw your blade and gaze longingly into the silver reflection of light in the metal. You watch as the blade thrusts itself into your throat, piercing cartalage and bone. You fall to the ground while the life blood leaks from your wound to form a puddle of hot blood."
 
 class OnDieEvent(GameEvent):
     def __init__(self) -> None:
-        pass
+        self.dead_message = ["\n\nYou wonder if the stories are true, that a soul's death is welcomed by angel song. ", "As your lifeforce seeps away the only sound that greets you is the laughter of Dark Gods", ".", ".", ".", "\n\nGame Over"]
 
-class OnRoomMessageDisplayEvent(GameEvent):
+class OnStaggeredMessageDisplayEvent(GameEvent):
     def __init__(self) -> None:
         pass
 

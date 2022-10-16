@@ -23,7 +23,6 @@ class StartRoomSequence():
         if room_exits and len(room_exits) > 0:
             cls.room_exits = room_exits
         evt = OnShowAvailableActionsEvent(possible_actions=cls.mapped_possible_actions)
-        # EventController.broadcast_event(EventTypes.ON_SHOW_AVAILABLE_ACTIONS, possible_actions=cls.mapped_possible_actions)
         EventController.broadcast_event(event_object=evt)
         player_input = str(cls.get_player_input())
         cls.trigger_event_sequence(player_input)
@@ -38,7 +37,6 @@ class StartRoomSequence():
             current_event = StoryEventsRegistry.registry["SecretShrineInvestigation"]
             evt = OnMessageDisplayEvent(message=current_event.description)
             EventController.broadcast_event(event_object=evt)
-            # EventController.broadcast_event(EventTypes.ON_MESSAGE_DISPLAY, message=current_event.description)
             current_event.handle_event()
         
         elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.KILL_SELF.value:
@@ -46,11 +44,11 @@ class StartRoomSequence():
             EventController.broadcast_event(event_object=evt)
         
         elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.MOVE_FORWARD.value:
+            move_evt = OnMessageDisplayEvent()
+            move_evt.message = "\n\nYou move forward slowly through the room towards the exit."
             forward_exit = list(filter(lambda exit: exit in cls.registered_rooms.keys(), cls.room_exits))[0]
             evt = OnLocationChangeEvent(location=cls.registered_rooms[forward_exit])
-            # EventController.broadcast_event(EventTypes.ON_LOCATION_CHANGE, event_object=evt)
             EventController.broadcast_event(event_object=evt)
-        
         else:
             raise ValueError("We received an unsupported player action {player_action}")
 

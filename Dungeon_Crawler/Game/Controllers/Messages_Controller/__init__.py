@@ -45,15 +45,15 @@ Please select an action by entering a number:
             print(char, end=message_end_character, flush=True)
 
     @classmethod
-    def display_room_messages(cls, current_room_messages: list[str], **kwargs):
+    def display_staggered_messages(cls, **kwargs):
         event = kwargs.get("event_object")
-        current_room_messages = event.current_room_messages
-        for msg in current_room_messages:
-            cls.display_message(msg)
+        messages = event.messages
+        for msg in messages:
+            cls.display_message(message=msg)
             if (msg == "."):
                 sleep(1)
             else:
                 sleep(2)
 
-            if msg == current_room_messages[-1]:
+            if msg == messages[-1]:
                 print("\n")
