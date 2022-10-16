@@ -12,6 +12,7 @@ class EventTypes(Enum):
     ON_PLAYER_ACTION = "on_player_action"
     ON_ITEM_PICKUP = "on_item_pickup"
     ON_PLAYER_INVESTIGATE = "on_player_investigate"
+    ON_LOCATION_CHANGE = "on_location_change"
 
 class EventController():
     # valid_event_types = (
@@ -36,6 +37,9 @@ class EventController():
 
     @classmethod
     def broadcast_event(cls, event_type: EventTypes, **kwargs):
+        # TODO: Instead of using kwargs here go with the `evt` game event pattern
+        # where we create an evt object, assign whatever kwargs we want to that object
+        # and pass that in a parameter in this function
         event = getattr(cls.__events, event_type.value)
         if kwargs == {}:
             event()

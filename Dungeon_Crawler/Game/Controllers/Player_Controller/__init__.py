@@ -1,34 +1,32 @@
 from Controllers.base_controller import BaseController
 from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.EventController import EventController, EventTypes
-from Controllers.Environment_controller import EnvironmentController
 
 
 
 
-class PlayerController():
+class PlayerController(BaseController):
     __is_dead: bool = False
     __current_location = None
 
     # region Class Properties
     @property
-    def is_dead(self):
-        return self.__is_dead
+    def get_is_dead(cls):
+        return cls.__is_dead
 
-    @is_dead.setter    
-    def is_dead(self, status: bool):
-        self.__is_dead = status
+    @classmethod
+    def set_is_dead(cls, status: bool):
+        cls.__is_dead = status
         if status:
             EventController.broadcast_event(EventTypes.ON_DIE)
-            #  cls.__events.on_die()
 
-    @property
-    def current_location(self):
-        return self.__current_location
+    @classmethod
+    def get_current_location(cls):
+        return cls.__current_location
 
-    @current_location.setter    
-    def current_location(self, location):
-        self.__current_location = location
+    @classmethod
+    def set_current_location(cls, location):
+        cls.__current_location = location
         if location:
             location.trigger_room_sequences()
 
@@ -39,8 +37,7 @@ class PlayerController():
     @classmethod
     def initialize_player_settings(cls):
         print("Setting up the player settings")
-        cls.current_location = EnvironmentController.registered_rooms["start_room"]
-        pass
+        cls.set_current_location(location=cls.registered_rooms["start_room"])
 
 
     @classmethod

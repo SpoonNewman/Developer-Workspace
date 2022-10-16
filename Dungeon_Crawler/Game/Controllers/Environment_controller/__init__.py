@@ -1,13 +1,12 @@
-from Controllers.Environment_controller import room_types
-from Controllers.base_controller import BaseController
+from . import room_types
 import json
 
+from Controllers.base_controller import BaseController
 
 class EnvironmentController(BaseController):
-    registered_rooms = {}
-
+    @classmethod
     def __init__(self) -> None:
-        super().__init__()
+        pass
     
     @classmethod
     def initialize_rooms(cls) -> None:
@@ -25,23 +24,9 @@ class EnvironmentController(BaseController):
         for room in ordered_rooms_map:
             cls.registered_rooms[room["name"]] = cls.build_room(room_config=room)
 
-        # Loop over the rooms we've built
         for room in cls.registered_rooms.values():
-            if len(room.room_exits) > 0:
-                # Loop over the exits of the room
-                for exit_name in room.room_exits:
-                    # Grab the room object from the name, i.e. room_exit
-                    dependant_rooms = list(filter(lambda dependant_room: exit_name == dependant_room.room_name, cls.registered_rooms.values()))
-                    if len(dependant_rooms) != 1:
-                        raise ValueError("Either the dependant room wasn't registered or there are duplicates.")
+            setattr(room, "registered_rooms", cls.registered_rooms)
 
-                    # Should only be one element in dependant_rooms
-                    # Look in our room_exits -> then replace the room_name in our exits with the id instead
-                    for dependant_room in dependant_rooms:
-                        room.room_exits = list(map(lambda exit: exit.replace(dependant_room.room_name, dependant_room._id), room.room_exits))
-
-                    # Result: Each room dependency, which is our room_exits, now contain UUIDs instead of names to refer to the room
-                    # This enables strong identification whereas a name is fairly weak.
         pass
 
     @classmethod

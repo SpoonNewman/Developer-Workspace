@@ -3,40 +3,12 @@ import sys
 from typing import Dict
 from Controllers.EventController import EventTypes, EventController
 from Controllers.Messages_Controller import MessagesController
-from Controllers.Player_Controller import PlayerController, PlayerStandardActions
+from Controllers.Player_Controller import PlayerController
 from Controllers.Environment_controller import EnvironmentController
 
 # from events import Events
 
 class GameManager():
-    # __is_dead: bool = False
-    # __current_location = None
-    # valid_event_types = (EventTypes.ON_DIE.value, EventTypes.ON_MESSAGE_DISPLAY.value, EventTypes.ON_ROOM_MESSAGE_DISPLAY.value, EventTypes.ON_SHOW_AVAILABLE_ACTIONS.value, EventTypes.ON_PLAYER_INVESTIGATE.value, EventTypes.ON_KILL_SELF.value, EventTypes.ON_GAME_START.value, EventTypes.ON_PLAYER_ACTION.value, EventTypes.ON_ITEM_PICKUP.value)
-
-    # # region Class Properties
-    # @property
-    # def is_dead(cls):
-    #     return cls.__is_dead
-
-    # @is_dead.setter    
-    # def is_dead(cls, status: bool):
-    #     cls.__is_dead = status
-    #     if status:
-    #         EventController.broadcast_event(EventTypes.ON_DIE)
-    #         #  cls.__events.on_die()
-
-    # @property
-    # def current_location(cls):
-    #     return cls.__current_location
-
-    # @current_location.setter    
-    # def current_location(cls, location):
-    #     cls.__current_location = location
-    #     if location:
-    #         location.trigger_room_sequences()
-
-    # endregion
-    
     @classmethod
     def __init__(cls) -> None:
         cls.__events = None

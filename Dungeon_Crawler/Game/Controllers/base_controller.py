@@ -1,2 +1,2 @@
 class BaseController():
-    pass
+    registered_rooms = {}

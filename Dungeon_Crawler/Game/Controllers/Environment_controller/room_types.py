@@ -2,11 +2,7 @@ from enum import Enum
 from abc import ABC, abstractmethod
 from typing import Dict
 from uuid import uuid4
-
-from Controllers.Environment_controller.Event_Sequence_Manager.story_events_registry import StoryEventsRegistry
 from Controllers.Environment_controller.Event_Sequence_Manager.story_sequences_registry import StorySequencesRegistry
-
-# TODO: Add auto creation of UUID for ID property
 
 class room_shape(Enum):
     ROUND = "round"
@@ -18,70 +14,11 @@ class types(Enum):
     TUNNEL = "tunnel"
     TUNNEL_SPLIT = "tunnel_split"
 
-# class base_room(ABC):
+class base_room(ABC):
         # We need to pop an event off when the event is triggered
-    
-    #region
-    # @abstractmethod
-    # def on_frequently_visited(self):
-    #     raise NotImplementedError
-
-    # @property
-    # @abstractmethod
-    # def room_name(self):
-    #     raise NotImplementedError       
-   
-    # @property
-    # @abstractmethod
-    # def room_events(self):
-    #     raise NotImplementedError
-
-    # @property
-    # @abstractmethod
-    # def room_entrance(self):
-    #     raise NotImplementedError
-
-    # @property
-    # @abstractmethod
-    # def room_exits(self):
-    #     raise NotImplementedError
-
-    # @property
-    # @abstractmethod
-    # def player_visits_to_room(self):
-    #     raise NotImplementedError
-
-    # @property
-    # @abstractmethod
-    # def width(self):
-    #     raise NotImplementedError
-
-    # @property
-    # @abstractmethod
-    # def height(self):
-    #     raise NotImplementedError
-
-    # @property
-    # @abstractmethod
-    # def light(self):
-    #     raise NotImplementedError
-
-    # @property
-    # @abstractmethod
-    # def dampness(self):
-    #     raise NotImplementedError
-
-    # @property
-    # @abstractmethod
-    # def obstacles(self):
-    #     raise NotImplementedError
-
-    # @property
-    # @abstractmethod
-    # def shape(self):
-    #     raise NotImplementedError
-    #endregion
-
+    @abstractmethod
+    def trigger_room_sequences(self):
+        raise NotImplementedError
 
 class room():
     def __init__(self, room_configuration: Dict) -> None:
@@ -107,10 +44,10 @@ class room():
 
         if self.event_handler:
             tmp_event_handler_key = self.event_handler
-            self.event_handler = StorySequencesRegistry().registry[tmp_event_handler_key]
+            self.event_handler = StorySequencesRegistry.registry[tmp_event_handler_key]
     
     def trigger_room_sequences(self):
-        self.event_handler.handle_sequence()
+        self.event_handler.handle_sequence(room_exits=self.room_exits, registered_rooms=self.registered_rooms)
 
 class room_tunnel(room):
     """Create a Tunnel object.
@@ -141,7 +78,7 @@ class room_intersection(room):
         """
         super().__init__(room_configuration)
 
-class room_dead_end(room):
+class room_dead_end():
     def __init__(self) -> None:
         super().__init__()
 

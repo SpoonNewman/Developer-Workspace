@@ -1,5 +1,4 @@
 from Controllers.Messages_Controller.messages_list import MessagesList
-from Controllers.Player_Controller import PlayerController
 from Controllers.base_controller import BaseController
 from time import sleep
 
@@ -27,14 +26,10 @@ Please select an action by entering a number:
             cls.display_message(f"{key} - {action}", typewriter_delay=cls.action_message_display_delay)
             sleep(0.8)
             print() # Skips to new line after printing the action
-        
-    @classmethod
-    def get_available_actions(cls, player_object: PlayerController, room_object) -> list:
-        return player_object.get_available_actions(room=room_object)
 
     @classmethod
     def display_intro_message(cls):
-        cls.display_message(message=cls.standard_messages_list["intro_message"])
+        cls.display_message(message=cls.standard_messages_list["intro_message"], typewriter_delay=0.05)
 
     @classmethod
     def display_message(cls, message: str, typewriter_delay: int = 0.1, message_end_character: str = '') -> None:
