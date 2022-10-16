@@ -5,6 +5,7 @@ from Controllers.EventController import EventTypes, EventController
 from Controllers.Messages_Controller import MessagesController
 from Controllers.Player_Controller import PlayerController
 from Controllers.Environment_controller import EnvironmentController
+from Controllers.game_events import OnGameStartEvent
 
 # from events import Events
 
@@ -26,7 +27,7 @@ class GameManager():
         EventController.add_listener(event_type=EventTypes.ON_SHOW_AVAILABLE_ACTIONS, handler_functions=[MessagesController.show_available_actions])
 
     @classmethod
-    def initialize_game_room_map(cls):
+    def initialize_game_room_map(cls, **kwargs):
         EnvironmentController.initialize_rooms()
 
     @classmethod
@@ -37,20 +38,21 @@ class GameManager():
     
     @classmethod
     def start_game(cls):
-        EventController.broadcast_event(EventTypes.ON_GAME_START)
+        evt = OnGameStartEvent()
+        EventController.broadcast_event(event_object=evt)
 
     @classmethod
-    def begin_intro(cls):
+    def begin_intro(cls, **kwargs):
         MessagesController.display_intro_message()
 
     @classmethod
-    def initialize_enemy_settings(cls):
+    def initialize_enemy_settings(cls, **kwargs):
         print("Initializing the enemy settings")
 
     @classmethod
-    def play_dead_message(cls):
+    def play_dead_message(cls, **kwargs):
         EventController.broadcast_event(EventTypes.ON_MESSAGE_DISPLAY, message="Game Over")
    
     @classmethod
-    def kill_program(cls):
+    def kill_program(cls, **kwargs):
         sys.exit()

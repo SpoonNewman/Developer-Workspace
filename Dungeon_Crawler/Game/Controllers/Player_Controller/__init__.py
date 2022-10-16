@@ -35,7 +35,7 @@ class PlayerController(BaseController):
         pass
 
     @classmethod
-    def initialize_player_settings(cls):
+    def initialize_player_settings(cls, **kwargs):
         print("Setting up the player settings")
         cls.set_current_location(location=cls.registered_rooms["start_room"])
 
@@ -53,7 +53,7 @@ class PlayerController(BaseController):
         return []
 
     @classmethod
-    def pickup_item(cls):
+    def pickup_item(cls, **kwargs):
         pass
         
 

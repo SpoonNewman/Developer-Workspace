@@ -2,7 +2,8 @@ from typing import Dict
 from Controllers.Environment_controller.Event_Sequence_Manager.Events.SecretShrineEvents import EventsSecretShrineIntro
 from Controllers.Environment_controller.Event_Sequence_Manager.story_events_registry import StoryEventsRegistry
 from Controllers.Player_Registry_Actions import PlayerStandardActions
-from Controllers.EventController import EventController, EventTypes, GameEvent
+from Controllers.EventController import EventController, EventTypes
+from Controllers.game_events import OnLocationChangeEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent, OnKillSelfEvent
 
 
 class StartRoomSequence():
@@ -21,7 +22,9 @@ class StartRoomSequence():
         cls.registered_rooms=registered_rooms
         if room_exits and len(room_exits) > 0:
             cls.room_exits = room_exits
-        EventController.broadcast_event(EventTypes.ON_SHOW_AVAILABLE_ACTIONS, possible_actions=cls.mapped_possible_actions)
+        evt = OnShowAvailableActionsEvent(possible_actions=cls.mapped_possible_actions)
+        # EventController.broadcast_event(EventTypes.ON_SHOW_AVAILABLE_ACTIONS, possible_actions=cls.mapped_possible_actions)
+        EventController.broadcast_event(event_object=evt)
         player_input = str(cls.get_player_input())
         cls.trigger_event_sequence(player_input)
 
@@ -33,17 +36,23 @@ class StartRoomSequence():
     def trigger_event_sequence(cls, player_action: str):
         if cls.mapped_possible_actions[player_action] == PlayerStandardActions.INVESTIGATE.value:
             current_event = StoryEventsRegistry.registry["SecretShrineInvestigation"]
-            EventController.broadcast_event(EventTypes.ON_MESSAGE_DISPLAY, message=current_event.description)
+            evt = OnMessageDisplayEvent(message=current_event.description)
+            EventController.broadcast_event(event_object=evt)
+            # EventController.broadcast_event(EventTypes.ON_MESSAGE_DISPLAY, message=current_event.description)
             current_event.handle_event()
+        
         elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.KILL_SELF.value:
-            EventController.broadcast_event(EventTypes.ON_KILL_SELF)
+            evt = OnKillSelfEvent()
+            EventController.broadcast_event(event_object=evt)
+        
         elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.MOVE_FORWARD.value:
-            evt = GameEvent()
             forward_exit = list(filter(lambda exit: exit in cls.registered_rooms.keys(), cls.room_exits))[0]
-            setattr(evt, "location", cls.registered_rooms[forward_exit])
-            EventController.broadcast_event(EventTypes.ON_LOCATION_CHANGE)
+            evt = OnLocationChangeEvent(location=cls.registered_rooms[forward_exit])
+            # EventController.broadcast_event(EventTypes.ON_LOCATION_CHANGE, event_object=evt)
+            EventController.broadcast_event(event_object=evt)
+        
         else:
-            raise ValueError(f"We received an unsupported player action {player_action}")
+            raise ValueError("We received an unsupported player action {player_action}")
 
 
     @classmethod

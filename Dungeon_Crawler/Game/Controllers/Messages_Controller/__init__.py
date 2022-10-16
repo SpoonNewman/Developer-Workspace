@@ -13,17 +13,19 @@ class MessagesController(BaseController):
         super().__init__()
 
     @classmethod
-    def show_available_actions (cls, possible_actions):
+    def show_available_actions (cls, **kwargs):
+        event = kwargs.get("event_object")
+
         display_text: str = """
 Please select an action by entering a number:
 =============================================
 """
-        cls.display_message(display_text, typewriter_delay=0.008)
+        cls.display_message(message=display_text, typewriter_delay=0.008)
         # print("\n")
         sleep(1.25)
         
-        for key, action in possible_actions.items():
-            cls.display_message(f"{key} - {action}", typewriter_delay=cls.action_message_display_delay)
+        for key, action in event.possible_actions.items():
+            cls.display_message(message=f"{key} - {action}", typewriter_delay=cls.action_message_display_delay)
             sleep(0.8)
             print() # Skips to new line after printing the action
 
@@ -32,13 +34,20 @@ Please select an action by entering a number:
         cls.display_message(message=cls.standard_messages_list["intro_message"], typewriter_delay=0.05)
 
     @classmethod
-    def display_message(cls, message: str, typewriter_delay: int = 0.1, message_end_character: str = '') -> None:
+    def display_message(cls, **kwargs) -> None:
+        event = kwargs.get("event_object")
+        message: str = event.message if event and event.message else kwargs.get("message")
+        typewriter_delay: int = event.typewriter_delay if event and hasattr(event, "typewriter_delay") else kwargs.get("typewriter_delay", 0.1)
+        message_end_character: str = event.message_end_character if event and hasattr(event, "message_end_character") else kwargs.get("message_end_character", '')
+
         for char in message:
             sleep(typewriter_delay)
             print(char, end=message_end_character, flush=True)
 
     @classmethod
-    def display_room_messages(cls, current_room_messages: list[str]):
+    def display_room_messages(cls, current_room_messages: list[str], **kwargs):
+        event = kwargs.get("event_object")
+        current_room_messages = event.current_room_messages
         for msg in current_room_messages:
             cls.display_message(msg)
             if (msg == "."):
