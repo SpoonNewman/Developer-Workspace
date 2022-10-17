@@ -4,8 +4,9 @@ from Controllers.EventController import EventController
 
 
 class EventsSecretShrineIntro():
+    typewritter_delay = 0.05
     name = "Intro scene of investigating the hidden shrine"
-    description = "You approach a book case in front of you and begin investigating the books resting in the book case. You run your finger over every book wiggling them around as you go until you land on a book that doesnt move left to right. You grab the top of the book and begin pulling it towards you. There is a slight grinding noise as metal scrapes agaisnt metal. You hear a loud click and the book case begins to shift. The book case grinds against rails attatched to the wall behind it. Revealing a hole barely large enough for you to fit through. In front of you is the opening to a small crawl space barely wide enough for you to lay on your stomach and crawl through. You hear faint echos of noises from the other end of the tunnel."
+    description = "You approach a book case in front of you and begin investigating the books resting in the book case. You run your finger over every book wiggling them around as you go until you land on a book that doesnt move left to right.\n\n"
     possible_actions = {
         "1": PlayerStandardActions.KILL_SELF.value,
         "2": PlayerStandardActions.INVESTIGATE.value,
@@ -32,7 +33,11 @@ class EventsSecretShrineIntro():
         elif cls.possible_actions[player_input] == PlayerStandardActions.MOVE_BACKWARD.value:
             pass
         elif cls.possible_actions[player_input] == PlayerStandardActions.ACTIVATE_SWITCH.value:
-            pass
+            switch_description = "You grab the top of the book and begin pulling it towards you. There is a slight grinding noise as metal scrapes agaisnt metal. You hear a loud click and the book case begins to shift. The book case grinds against rails attatched to the wall behind it. Revealing a hole barely large enough for you to fit through. In front of you is the opening to a small crawl space barely wide enough for you to lay on your stomach and crawl through. You hear faint echos of noises from the other end of the tunnel."
+            switch_evt = OnMessageDisplayEvent()
+            switch_evt.message = switch_description
+            setattr(switch_evt, "typewriter_delay", cls.typewritter_delay)
+            EventController.broadcast_event(event_object=switch_evt)
         else:
             raise ValueError("That player action is not yet supported")
 

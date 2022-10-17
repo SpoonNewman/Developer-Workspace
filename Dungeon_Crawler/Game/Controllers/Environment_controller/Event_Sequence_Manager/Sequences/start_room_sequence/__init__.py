@@ -36,6 +36,7 @@ class StartRoomSequence():
         if cls.mapped_possible_actions[player_action] == PlayerStandardActions.INVESTIGATE.value:
             current_event = StoryEventsRegistry.registry["SecretShrineInvestigation"]
             evt = OnMessageDisplayEvent(message=current_event.description)
+            setattr(evt, "typewriter_delay", 0.02)
             EventController.broadcast_event(event_object=evt)
             current_event.handle_event()
         

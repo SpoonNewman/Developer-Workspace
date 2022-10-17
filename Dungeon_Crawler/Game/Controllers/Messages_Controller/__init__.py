@@ -37,7 +37,7 @@ Please select an action by entering a number:
     def display_message(cls, **kwargs) -> None:
         event = kwargs.get("event_object")
         message: str = event.message if event and event.message else kwargs.get("message")
-        typewriter_delay: int = event.typewriter_delay if event and hasattr(event, "typewriter_delay") else kwargs.get("typewriter_delay", 0.1)
+        typewriter_delay: int = event.typewriter_delay if event and hasattr(event, "typewriter_delay") else kwargs.get("typewriter_delay", 0.09)
         message_end_character: str = event.message_end_character if event and hasattr(event, "message_end_character") else kwargs.get("message_end_character", '')
 
         for char in message:
