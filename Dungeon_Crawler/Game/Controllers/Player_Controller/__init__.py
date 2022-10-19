@@ -25,7 +25,10 @@ class PlayerController(BaseController):
         return cls.__current_location
 
     @classmethod
-    def set_current_location(cls, location):
+    def set_current_location(cls, **kwargs):
+        event = kwargs.get("event_object")
+        location = event.location if event and hasattr(event, "location") else kwargs.get("location")
+
         cls.__current_location = location
         if location:
             location.trigger_room_sequences()

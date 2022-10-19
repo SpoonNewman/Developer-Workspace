@@ -4,7 +4,7 @@
         "event_handler": "start_room_sequence",
         "room_type": "room",
         "room_exits": [
-            "intro_tunnel_0"
+            "some_room"
         ]
     },
     {
@@ -13,6 +13,15 @@
         "room_type": "tunnel",
         "room_exits": ["intro_tunnel_1"]
     },
+    {
+        "name": "some_room",
+        "event_handler": "some_room_sequence",
+        "room_type": "room",
+        "room_exits": ["start_room"]
+    },
+
+
+
     {
         "name": "intro_tunnel_1",
         "event_handler": "",

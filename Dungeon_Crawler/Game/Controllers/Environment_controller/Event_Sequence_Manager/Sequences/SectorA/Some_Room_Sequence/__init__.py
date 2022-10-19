@@ -6,15 +6,13 @@ from Controllers.EventController import EventController, EventTypes
 from Controllers.game_events import OnLocationChangeEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent, OnKillSelfEvent
 
 
-class StartRoomSequence():
+class SomeRoomSequence():
     mapped_possible_actions = {
-        "1": PlayerStandardActions.INVESTIGATE.value,
-        "2": PlayerStandardActions.KILL_SELF.value,
-        "3": PlayerStandardActions.MOVE_FORWARD.value,
+        "1": PlayerStandardActions.KILL_SELF.value,
+        "2": PlayerStandardActions.MOVE_BACKWARD.value,
     }
     
     collection_of_events = {
-        "shrine_start": EventsSecretShrineIntro()
     }
 
     @classmethod
@@ -33,33 +31,29 @@ class StartRoomSequence():
 
     @classmethod
     def trigger_event_sequence(cls, player_action: str):
-        if cls.mapped_possible_actions[player_action] == PlayerStandardActions.INVESTIGATE.value:
-            current_event = StoryEventsRegistry.registry["SecretShrineInvestigation"]
-            evt = OnMessageDisplayEvent(message=current_event.description)
-            setattr(evt, "typewriter_delay", 0.02)
-            EventController.broadcast_event(event_object=evt)
-            current_event.handle_event()
-        
-        elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.KILL_SELF.value:
+        if cls.mapped_possible_actions[player_action] == PlayerStandardActions.KILL_SELF.value:
             evt = OnKillSelfEvent()
             EventController.broadcast_event(event_object=evt)
-        
-        elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.MOVE_FORWARD.value:
-            move_evt = OnMessageDisplayEvent()
-            move_evt.message = "\n\nYou move forward slowly through the room towards the exit."
-            EventController.broadcast_event(event_object=move_evt)
 
+        elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.MOVE_BACKWARD.value:
+            move_evt = OnMessageDisplayEvent()
+            move_evt.message = "\n\nYou move backward slowly through the room towards the exit to where we came from."
+            EventController.broadcast_event(event_object=move_evt)
+            
             forward_exit = list(filter(lambda exit: exit in cls.registered_rooms.keys(), cls.room_exits))[0]
-            evt = OnLocationChangeEvent()
+            
+            evt = OnLocationChangeEvent(location=cls.registered_rooms[forward_exit])
             evt.location = cls.registered_rooms[forward_exit]
             EventController.broadcast_event(event_object=evt)
-        else:
-            raise ValueError("We received an unsupported player action {player_action}")
 
-    @classmethod
-    def get_room_possible_actions(cls):
-        return {
-            "1": PlayerStandardActions.INVESTIGATE.value,
-            "2": PlayerStandardActions.KILL_SELF.value,
-            "3": PlayerStandardActions.MOVE_FORWARD.value,
-        }
+        else:
+            raise ValueError(f"We received an unsupported player action {player_action}")
+
+
+    # @classmethod
+    # def get_room_possible_actions(cls):
+    #     return {
+    #         "1": PlayerStandardActions.INVESTIGATE.value,
+    #         "2": PlayerStandardActions.KILL_SELF.value,
+    #         "3": PlayerStandardActions.MOVE_FORWARD.value,
+    #     }

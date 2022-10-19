@@ -61,7 +61,7 @@ class room_tunnel(room):
         super().__init__(room_configuration=room_configuration)
 
     def trigger_room_sequences(self):
-        pass
+        self.event_handler.handle_sequence(room_exits=self.room_exits, registered_rooms=self.registered_rooms)
     
     def get_events(self):
         pass
