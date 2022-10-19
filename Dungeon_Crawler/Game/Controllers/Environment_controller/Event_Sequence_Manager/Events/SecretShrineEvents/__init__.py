@@ -33,7 +33,7 @@ class EventsSecretShrineIntro():
         elif cls.possible_actions[player_input] == PlayerStandardActions.MOVE_BACKWARD.value:
             pass
         elif cls.possible_actions[player_input] == PlayerStandardActions.ACTIVATE_SWITCH.value:
-            switch_description = "You grab the top of the book and begin pulling it towards you. There is a slight grinding noise as metal scrapes agaisnt metal. You hear a loud click and the book case begins to shift. The book case grinds against rails attatched to the wall behind it. Revealing a hole barely large enough for you to fit through. In front of you is the opening to a small crawl space barely wide enough for you to lay on your stomach and crawl through. You hear faint echos of noises from the other end of the tunnel."
+            switch_description = "You grab the top of the book and begin pulling it towards you. There is a slight grinding noise as metal scrapes agaisnt metal. You hear a loud click and the book case begins to shift. The book case grinds against rails attatched to the wall behind it. Revealing a hole barely large enough for you to fit through."
             switch_evt = OnMessageDisplayEvent()
             switch_evt.message = switch_description
             setattr(switch_evt, "typewriter_delay", cls.typewritter_delay)
@@ -47,8 +47,8 @@ class EventsSecretShrineIntro():
 
 
 class EventsSecretShrinePart2():
-    name = "Intro scene of investigating the hidden shrine"
-    description = "You study the wall and notice a hidden switch on the wall"
+    name = "Intro scene of entering crawl space after eventshrine part 1"
+    description = "You lay on your stomach and begin shifting into the hole... You crawl for what feels like minutes and finally see light and movement at the end of the tunnel."
     possible_actions = [
         PlayerStandardActions.KILL_SELF,
         PlayerStandardActions.MOVE_FORWARD,
