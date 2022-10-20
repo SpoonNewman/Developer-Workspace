@@ -1,4 +1,4 @@
-class MessagesList():
+class StandardMessages():
     intro_message = """
 Welcome to the world of...DungeonCrawl.
 
@@ -14,7 +14,8 @@ Please select an action by entering a number:
 2 - Kill self
 
 """
-    standard_messages = {
+
+    messages = {
         "intro_message": intro_message,
         "show_actions": show_actions
     }

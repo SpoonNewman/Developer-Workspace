@@ -57,7 +57,6 @@ class GameManager():
     def play_kill_self(cls, **kwargs):
         evt = OnMessageDisplayEvent()
         evt.message = kwargs["event_object"].kill_self_message
-        evt.typewriter_delay = 0.08
         EventController.broadcast_event(event_object=evt)
 
         dead_event = OnDieEvent()

@@ -12,15 +12,14 @@ class room_shape(Enum):
 class types(Enum):
     ROOM = "room"
     TUNNEL = "tunnel"
-    TUNNEL_SPLIT = "tunnel_split"
-
-class base_room(ABC):
+    CHAMBER = "chamber"
+class BaseRoom(ABC):
         # We need to pop an event off when the event is triggered
     @abstractmethod
     def trigger_room_sequences(self):
-        raise NotImplementedError
+        raise NotImplementedError("This is using base class abstract property, please make your own!")
 
-class room():
+class room(BaseRoom):
     def __init__(self, room_configuration: Dict) -> None:
         """Create a basic room object.
 
@@ -62,9 +61,6 @@ class room_tunnel(room):
 
     def trigger_room_sequences(self):
         self.event_handler.handle_sequence(room_exits=self.room_exits, registered_rooms=self.registered_rooms)
-    
-    def get_events(self):
-        pass
 
 
 class room_intersection(room):
@@ -78,20 +74,26 @@ class room_intersection(room):
         """
         super().__init__(room_configuration)
 
+    def trigger_room_sequences(self):
+        pass
+
 class room_dead_end():
     def __init__(self) -> None:
         super().__init__()
 
-class room_tunnel_split(room):
-    def __init__(self, room_configuration: Dict) -> None:
-        super().__init__(room_configuration=room_configuration)
-
     def trigger_room_sequences(self):
-        pass
-    
-    def get_events(self):
         pass
 
 class room_secret(room_dead_end):
     def __init__(self) -> None:
         super().__init__()
+
+    def trigger_room_sequences(self):
+        pass
+
+class chamber(room):
+    def __init__(self, room_configuration: Dict) -> None:
+        super().__init__(room_configuration)
+
+    def trigger_room_sequences(self):
+        pass

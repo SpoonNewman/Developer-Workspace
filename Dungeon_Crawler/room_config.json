@@ -26,12 +26,12 @@
         "name": "intro_tunnel_1",
         "event_handler": "",
         "room_type": "tunnel",
-        "room_exits": ["intro_tunnel_split_0"]
+        "room_exits": ["intro_chamber_0"]
     },
     {
-        "name": "intro_tunnel_split_0",
+        "name": "intro_chamber_0",
         "event_handler": "",
-        "room_type": "tunnel_split",
+        "room_type": "chamber",
         "room_exits": ["intro_tunnel_2", "intro_tunnel_3"]
     },
     {

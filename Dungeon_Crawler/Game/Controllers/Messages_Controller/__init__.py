@@ -1,13 +1,15 @@
-from Controllers.Messages_Controller.messages_list import MessagesList
+from Controllers.Messages_Controller.standard_messages import StandardMessages
 from Controllers.base_controller import BaseController
 from time import sleep
+
+from constants import GameConstants
 
 
 
 
 class MessagesController(BaseController):
-    action_message_display_delay = 0.03
-    standard_messages_list = MessagesList.standard_messages
+    default_typewriter_delay = GameConstants.typewriter_speeds.VERY_FAST.value
+    standard_messages_list = StandardMessages.messages
 
     def __init__(self) -> None:
         super().__init__()
@@ -20,24 +22,24 @@ class MessagesController(BaseController):
 Please select an action by entering a number:
 =============================================
 """
-        cls.display_message(message=display_text, typewriter_delay=0.008)
+        cls.display_message(message=display_text)
         # print("\n")
         sleep(1.25)
         
         for key, action in event.possible_actions.items():
-            cls.display_message(message=f"{key} - {action}", typewriter_delay=cls.action_message_display_delay)
+            cls.display_message(message=f"{key} - {action}")
             sleep(0.8)
             print() # Skips to new line after printing the action
 
     @classmethod
     def display_intro_message(cls):
-        cls.display_message(message=cls.standard_messages_list["intro_message"], typewriter_delay=0.05)
+        cls.display_message(message=cls.standard_messages_list["intro_message"])
 
     @classmethod
     def display_message(cls, **kwargs) -> None:
         event = kwargs.get("event_object")
         message: str = event.message if event and event.message else kwargs.get("message")
-        typewriter_delay: int = event.typewriter_delay if event and hasattr(event, "typewriter_delay") else kwargs.get("typewriter_delay", 0.09)
+        typewriter_delay: int = event.typewriter_delay if event and hasattr(event, "typewriter_delay") else kwargs.get("typewriter_delay", cls.default_typewriter_delay)
         message_end_character: str = event.message_end_character if event and hasattr(event, "message_end_character") else kwargs.get("message_end_character", '')
 
         for char in message:

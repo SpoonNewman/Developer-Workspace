@@ -76,7 +76,7 @@ class EnvironmentController(BaseController):
             return room_types.room(room_configuration=room_config)
         elif room_type == room_types.types.TUNNEL.value:
             return room_types.room_tunnel(room_configuration=room_config)
-        elif room_type == room_types.types.TUNNEL_SPLIT.value:
-            return room_types.room_tunnel_split(room_configuration=room_config)
+        elif room_type == room_types.types.CHAMBER.value:
+            return room_types.chamber(room_configuration=room_config)
         else:
             raise NotImplementedError("The room type that you passed in is not yet supported! Please create it or bug the devs")
