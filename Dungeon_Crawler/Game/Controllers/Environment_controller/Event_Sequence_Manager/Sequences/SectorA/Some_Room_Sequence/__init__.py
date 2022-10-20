@@ -4,9 +4,10 @@ from Controllers.Environment_controller.Event_Sequence_Manager.story_events_regi
 from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.EventController import EventController, EventTypes
 from Controllers.game_events import OnLocationChangeEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent, OnKillSelfEvent
+from Controllers.Environment_controller.Event_Sequence_Manager.Sequences.Base_Sequence import BaseSequence
 
 
-class SomeRoomSequence():
+class SomeRoomSequence(BaseSequence):
     mapped_possible_actions = {
         "1": PlayerStandardActions.KILL_SELF.value,
         "2": PlayerStandardActions.MOVE_BACKWARD.value,
@@ -48,12 +49,3 @@ class SomeRoomSequence():
 
         else:
             raise ValueError(f"We received an unsupported player action {player_action}")
-
-
-    # @classmethod
-    # def get_room_possible_actions(cls):
-    #     return {
-    #         "1": PlayerStandardActions.INVESTIGATE.value,
-    #         "2": PlayerStandardActions.KILL_SELF.value,
-    #         "3": PlayerStandardActions.MOVE_FORWARD.value,
-    #     }

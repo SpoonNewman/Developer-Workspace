@@ -1,9 +1,10 @@
 from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.game_events import OnKillSelfEvent, OnLocationChangeEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent
 from Controllers.EventController import EventController
+from Controllers.Environment_controller.Event_Sequence_Manager.Events.base_story_event import BaseStoryEvent
 
 
-class EventsSecretShrineIntro():
+class EventsSecretShrineIntro(BaseStoryEvent):
     typewritter_delay = 0.02
     name = "Intro scene of investigating the hidden shrine"
     description = "You approach a book case in front of you and begin investigating the books resting in the book case. You run your finger over every book wiggling them around as you go until you land on a book that doesnt move left to right.\n\n"
