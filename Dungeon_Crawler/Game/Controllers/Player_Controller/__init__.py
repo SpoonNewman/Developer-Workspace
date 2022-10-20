@@ -45,10 +45,6 @@ class PlayerController(BaseController):
     @classmethod
     def get_available_actions(cls, room):  
         pass
-
-    @classmethod
-    def get_player_input(cls, action_type: str):
-        pass
     
     @classmethod
     def actions_by_room_type(cls, room_type: str):

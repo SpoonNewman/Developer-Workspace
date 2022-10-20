@@ -8,9 +8,8 @@ class BaseSequence():
         raise NotImplementedError("This is using base class abstract property, please make your own!")
 
     @classmethod
-    @abstractmethod
-    def get_player_input():
-        raise NotImplementedError("This is using base class abstract property, please make your own!")
+    def get_player_input(cls):
+        return input("\nWhat do you choose?  ")
 
     @classmethod
     @abstractmethod

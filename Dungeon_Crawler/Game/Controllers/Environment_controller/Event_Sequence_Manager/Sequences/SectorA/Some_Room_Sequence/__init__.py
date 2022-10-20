@@ -27,10 +27,6 @@ class SomeRoomSequence(BaseSequence):
         cls.trigger_event_sequence(player_input)
 
     @classmethod
-    def get_player_input(cls):
-        return input("\nWhat do you choose?")
-
-    @classmethod
     def trigger_event_sequence(cls, player_action: str):
         if cls.mapped_possible_actions[player_action] == PlayerStandardActions.KILL_SELF.value:
             evt = OnKillSelfEvent()

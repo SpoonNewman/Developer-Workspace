@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class GameConstants():
-    player_starting_area = "Opening of the dungeon."
-    
+    starting_music = "./Game/assets/The-Road-Home.mp3"
+    default_music_volume = 0.6
     class typewriter_speeds(Enum):
         SLOW = 0.1
         MEDIUM = 0.065
