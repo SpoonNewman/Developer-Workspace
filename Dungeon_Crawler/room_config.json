@@ -4,24 +4,21 @@
         "event_handler": "start_room_sequence",
         "room_type": "room",
         "room_exits": [
-            "some_room"
+            "intro_tunnel_0"
         ]
     },
     {
         "name": "intro_tunnel_0",
-        "event_handler": "",
+        "event_handler": "tunnel_a1_sequence",
         "room_type": "tunnel",
-        "room_exits": ["intro_tunnel_1"]
+        "room_exits": ["intro_chamber_0", "start_room"]
     },
     {
         "name": "some_room",
         "event_handler": "some_room_sequence",
         "room_type": "room",
-        "room_exits": ["start_room"]
+        "room_exits": [""]
     },
-
-
-
     {
         "name": "intro_tunnel_1",
         "event_handler": "",
@@ -30,20 +27,8 @@
     },
     {
         "name": "intro_chamber_0",
-        "event_handler": "",
+        "event_handler": "chamber_a1_sequence",
         "room_type": "chamber",
-        "room_exits": ["intro_tunnel_2", "intro_tunnel_3"]
-    },
-    {
-        "name": "intro_tunnel_2",
-        "event_handler": "",
-        "room_type": "tunnel",
-        "room_exits": []
-    },
-    {
-        "name": "intro_tunnel_3",
-        "event_handler": "",
-        "room_type": "tunnel",
-        "room_exits": []
+        "room_exits": ["intro_tunnel_1"]
     }
 ]

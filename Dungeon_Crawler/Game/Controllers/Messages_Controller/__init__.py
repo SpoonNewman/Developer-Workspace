@@ -8,7 +8,7 @@ from constants import GameConstants
 
 
 class MessagesController(BaseController):
-    default_typewriter_delay = GameConstants.typewriter_speeds.VERY_FAST.value
+    default_typewriter_delay = None
     standard_messages_list = StandardMessages.messages
 
     def __init__(self) -> None:

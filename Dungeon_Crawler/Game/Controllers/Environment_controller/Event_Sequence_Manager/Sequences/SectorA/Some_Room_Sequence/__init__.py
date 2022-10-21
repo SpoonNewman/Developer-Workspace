@@ -1,6 +1,4 @@
 from typing import Dict
-from Controllers.Environment_controller.Event_Sequence_Manager.Events.SecretShrineEvents import EventsSecretShrineIntro
-from Controllers.Environment_controller.Event_Sequence_Manager.story_events_registry import StoryEventsRegistry
 from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.EventController import EventController, EventTypes
 from Controllers.game_events import OnLocationChangeEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent, OnKillSelfEvent

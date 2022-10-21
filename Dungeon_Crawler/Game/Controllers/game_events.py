@@ -15,6 +15,7 @@ class EventTypes():
         cls.ON_ITEM_PICKUP = OnItemPickupEvent().__class__.__name__
         cls.ON_PLAYER_INVESTIGATE = OnPlayerInvestgateEvent().__class__.__name__
         cls.ON_LOCATION_CHANGE = OnLocationChangeEvent().__class__.__name__
+        cls.ON_MUSIC_TRACK_PLAY = OnMusicTrackPlayEvent().__class__.__name__
 
         return [
             cls.ON_KILL_SELF,
@@ -27,7 +28,8 @@ class EventTypes():
             cls.ON_PLAYER_ACTION,
             cls.ON_ITEM_PICKUP,
             cls.ON_PLAYER_INVESTIGATE,
-            cls.ON_LOCATION_CHANGE
+            cls.ON_LOCATION_CHANGE,
+            cls.ON_MUSIC_TRACK_PLAY
         ]
 
 class GameEvent():
@@ -58,8 +60,8 @@ class OnDieEvent(GameEvent):
         self.dead_message = ["\n\nYou wonder if the stories are true, that a soul's death is welcomed by angel song. ", "As your lifeforce seeps away the only sound that greets you is the laughter of Dark Gods", ".", ".", ".", "\n\nGame Over"]
 
 class OnStaggeredMessageDisplayEvent(GameEvent):
-    def __init__(self) -> None:
-        pass
+    def __init__(self, messages: list[str] = None) -> None:
+        self.messages = messages
 
 class OnIntroDisplayEvent(GameEvent):
     def __init__(self) -> None:
@@ -76,3 +78,7 @@ class OnItemPickupEvent(GameEvent):
 class OnPlayerInvestgateEvent(GameEvent):
     def __init__(self) -> None:
         pass
+
+class OnMusicTrackPlayEvent(GameEvent):
+    def __init__(self, track_name: str = None) -> None:
+        self.track_name = track_name

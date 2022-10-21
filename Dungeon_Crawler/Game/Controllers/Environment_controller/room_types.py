@@ -95,5 +95,5 @@ class chamber(room):
     def __init__(self, room_configuration: Dict) -> None:
         super().__init__(room_configuration)
 
-    def trigger_room_sequences(self):
-        pass
+    # def trigger_room_sequences(self):
+    #     pass

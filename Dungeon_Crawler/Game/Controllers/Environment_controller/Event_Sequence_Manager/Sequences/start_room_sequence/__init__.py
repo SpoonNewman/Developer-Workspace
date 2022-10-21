@@ -9,9 +9,8 @@ from Controllers.Environment_controller.Event_Sequence_Manager.Sequences.Base_Se
 
 class StartRoomSequence(BaseSequence):
     mapped_possible_actions = {
-        "1": PlayerStandardActions.INVESTIGATE.value,
+        "1": PlayerStandardActions.MOVE_FORWARD.value,
         "2": PlayerStandardActions.KILL_SELF.value,
-        "3": PlayerStandardActions.MOVE_FORWARD.value,
     }
     
     collection_of_events = {
@@ -30,17 +29,7 @@ class StartRoomSequence(BaseSequence):
 
     @classmethod
     def trigger_event_sequence(cls, player_action: str):
-        if cls.mapped_possible_actions[player_action] == PlayerStandardActions.INVESTIGATE.value:
-            current_event = StoryEventsRegistry.registry["SecretShrineInvestigation"]
-            evt = OnMessageDisplayEvent(message=current_event.description)
-            EventController.broadcast_event(event_object=evt)
-            current_event.handle_event()
-        
-        elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.KILL_SELF.value:
-            evt = OnKillSelfEvent()
-            EventController.broadcast_event(event_object=evt)
-        
-        elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.MOVE_FORWARD.value:
+        if cls.mapped_possible_actions[player_action] == PlayerStandardActions.MOVE_FORWARD.value:
             move_evt = OnMessageDisplayEvent()
             move_evt.message = "\n\nYou move forward slowly through the room towards the exit."
             EventController.broadcast_event(event_object=move_evt)
@@ -49,5 +38,9 @@ class StartRoomSequence(BaseSequence):
             evt = OnLocationChangeEvent()
             evt.location = cls.registered_rooms[forward_exit]
             EventController.broadcast_event(event_object=evt)
+        
+        elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.KILL_SELF.value:
+            evt = OnKillSelfEvent()
+            EventController.broadcast_event(event_object=evt)
         else:
-            raise ValueError("We received an unsupported player action {player_action}")
+            raise ValueError(f"We received an unsupported player action {player_action}")
