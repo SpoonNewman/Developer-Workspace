@@ -39,7 +39,7 @@ class PlayerController(BaseController):
 
     @classmethod
     def initialize_player_settings(cls, **kwargs):
-        print("Setting up the player settings")
+        # print("Setting up the player settings")
         cls.set_current_location(location=cls.registered_rooms["start_room"])
 
     @classmethod
@@ -52,6 +52,9 @@ class PlayerController(BaseController):
 
     @classmethod
     def pickup_item(cls, **kwargs):
+        # On pickup we need to confirm that the item is not already in the inventory
+        # Ensure that the item is registered
+        # Add the item to the inventory
+            # Are we going to handle inventory management?
         pass
-        
 

@@ -64,7 +64,8 @@ class GameManager():
 
     @classmethod
     def initialize_enemy_settings(cls, **kwargs):
-        print("Initializing the enemy settings")
+        # print("Initializing the enemy settings")
+        pass
 
     @classmethod
     def play_dead_message(cls, **kwargs):
