@@ -26,12 +26,12 @@ class AdventuringItem(GameItem):
 class BookItem(AdventuringItem):
     def __init__(self) -> None:
         super().__init__()
-        self.name = "book"
+        self.name = "Book"
 
 class TorchItem(AdventuringItem):
     def __init__(self) -> None:
         super().__init__()
-        self.name = "torch"
+        self.name = "Torch"
         self.description = "A wooden stick with oil and rag. When lit aflame it provides light. Careful in small areas."
 
 class ChestItem(AdventuringItem):
