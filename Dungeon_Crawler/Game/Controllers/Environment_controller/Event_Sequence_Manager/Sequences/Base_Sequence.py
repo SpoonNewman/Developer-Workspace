@@ -33,8 +33,11 @@ class BaseSequence():
         if room_exits and len(room_exits) > 0:
             cls.room_exits = room_exits
 
+        if room_description:
+            cls.display_room_description(description=room_description)
+
     @classmethod
-    def handle_actions(cls, mapped_possible_actions):
-        evt = OnShowAvailableActionsEvent(possible_actions=mapped_possible_actions)
+    def handle_actions(cls, possible_actions):
+        evt = OnShowAvailableActionsEvent(possible_actions=possible_actions)
         EventController.broadcast_event(evt)
         return str(cls.get_player_input())

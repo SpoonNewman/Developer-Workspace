@@ -16,12 +16,20 @@ class PlayerStandardActions(Enum):
     ACTIVATE_SWITCH = "Activate Switch"
     PICKUP_BOOK = "Pickup Book"
     INVENTORY = "Inventory"
+    LOOK_AROUND = "Look Around"
+
+class UniversalPlayerActionKeys(Enum):
+    KILL_SELF = "k"
+    PRAY = "p"
+    INVENTORY = "i"
+    LOOK_AROUND = "l"
 
 class UniversalPlayerActions():
     actions = {
-        "k": PlayerStandardActions.KILL_SELF.value,
-        "p": PlayerStandardActions.PRAY.value,
-        "i": PlayerStandardActions.INVENTORY.value
+        UniversalPlayerActionKeys.KILL_SELF.value : PlayerStandardActions.KILL_SELF.value,
+        UniversalPlayerActionKeys.PRAY.value : PlayerStandardActions.PRAY.value,
+        UniversalPlayerActionKeys.INVENTORY.value : PlayerStandardActions.INVENTORY.value,
+        UniversalPlayerActionKeys.LOOK_AROUND.value : PlayerStandardActions.LOOK_AROUND.value
     }
 
     @classmethod

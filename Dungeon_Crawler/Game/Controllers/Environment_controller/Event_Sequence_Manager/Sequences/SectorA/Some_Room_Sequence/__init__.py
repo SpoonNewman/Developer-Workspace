@@ -7,7 +7,7 @@ from Controllers.Player_Registry_Actions import UniversalPlayerActions
 
 
 class SomeRoomSequence(BaseSequence):
-    mapped_possible_actions = {
+    possible_actions = {
         "1": PlayerStandardActions.KILL_SELF.value,
         "2": PlayerStandardActions.MOVE_BACKWARD.value,
     }
@@ -19,12 +19,12 @@ class SomeRoomSequence(BaseSequence):
     
     @classmethod
     def action_input_handler(cls):
-        player_input = cls.handle_actions(mapped_possible_actions=cls.mapped_possible_actions)
+        player_input = cls.handle_actions(possible_actions=cls.possible_actions)
         cls.trigger_event_sequence(player_action=player_input)
 
     @classmethod
     def trigger_event_sequence(cls, player_action: str):
-        if player_action in cls.mapped_possible_actions.keys() and cls.mapped_possible_actions[player_action] == PlayerStandardActions.MOVE_BACKWARD.value:
+        if player_action in cls.possible_actions.keys() and cls.possible_actions[player_action] == PlayerStandardActions.MOVE_BACKWARD.value:
             move_evt = OnMessageDisplayEvent()
             move_evt.message = "\n\nYou move backward slowly through the room towards the exit to where we came from."
             EventController.broadcast_event(move_evt)
