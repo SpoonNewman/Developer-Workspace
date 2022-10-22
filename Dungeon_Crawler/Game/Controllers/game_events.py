@@ -11,6 +11,7 @@ class EventTypes():
         cls.ON_MESSAGE_DISPLAY = OnMessageDisplayEvent().__class__.__name__
         cls.ON_STAGGERED_MESSAGE_DISPLAY = OnStaggeredMessageDisplayEvent().__class__.__name__
         cls.ON_SHOW_AVAILABLE_ACTIONS = OnShowAvailableActionsEvent().__class__.__name__
+        cls.ON_SHOW_ITEM_ACTIONS = OnShowItemActionsEvent().__class__.__name__
         cls.ON_INTRO_DISPLAY = OnIntroDisplayEvent().__class__.__name__
         cls.ON_GAME_START = OnGameStartEvent().__class__.__name__
         cls.ON_PLAYER_ACTION = OnPlayerActionEvent().__class__.__name__
@@ -19,6 +20,7 @@ class EventTypes():
         cls.ON_LOCATION_CHANGE = OnLocationChangeEvent().__class__.__name__
         cls.ON_MUSIC_TRACK_PLAY = OnMusicTrackPlayEvent().__class__.__name__
         cls.ON_SFX_PLAY = OnSfxPlayEvent().__class__.__name__
+        cls.ON_SFX_STOP = OnSfxStopEvent().__class__.__name__
 
         return [
             cls.ON_KILL_SELF,
@@ -28,6 +30,7 @@ class EventTypes():
             cls.ON_MESSAGE_DISPLAY,
             cls.ON_STAGGERED_MESSAGE_DISPLAY,
             cls.ON_SHOW_AVAILABLE_ACTIONS,
+            cls.ON_SHOW_ITEM_ACTIONS,
             cls.ON_INTRO_DISPLAY,
             cls.ON_GAME_START,
             cls.ON_PLAYER_ACTION,
@@ -35,7 +38,8 @@ class EventTypes():
             cls.ON_PLAYER_INVESTIGATE,
             cls.ON_LOCATION_CHANGE,
             cls.ON_MUSIC_TRACK_PLAY,
-            cls.ON_SFX_PLAY
+            cls.ON_SFX_PLAY,
+            cls.ON_SFX_STOP
         ]
 
 class GameEvent():
@@ -53,6 +57,10 @@ class OnLocationChangeEvent(GameEvent):
 class OnShowAvailableActionsEvent(GameEvent):
     def __init__(self, possible_actions = {}) -> None:
         self.possible_actions = possible_actions
+
+class OnShowItemActionsEvent(GameEvent):
+    def __call__(self) -> None:
+        self.possible_actions = None
 
 class OnMessageDisplayEvent(GameEvent):
     def __init__(self, message: str = None) -> None:
@@ -91,8 +99,13 @@ class OnMusicTrackPlayEvent(GameEvent):
         self.track_name = track_name
 
 class OnSfxPlayEvent(GameEvent):
-    def __init__(self, sfx_name: str = None) -> None:
-        self.sfx_name = sfx_name
+    def __init__(self) -> None:
+        self.sfx_name = None
+        self.sfx_loops = 0
+
+class OnSfxStopEvent(GameEvent):
+    def __init__(self) -> None:
+        self.sfx_name = None
 
 class OnInventoryDisplay(GameEvent):
     def __init__(self) -> None:

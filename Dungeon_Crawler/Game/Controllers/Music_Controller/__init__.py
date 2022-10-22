@@ -4,6 +4,9 @@ from pygame import mixer
 class MusicSoundRegistry():
     BOOK_PAGE = "book-page-turn.wav"
     PLAYER_DEATH_CRY = "player-death-cry.mp3"
+    MATCH_LIGHT = "flame-match-ignite.wav"
+    FLAME_CRACKLE = "flame-crackling.wav"
+    FLAME_DOUSE = "flame-douse.wav"
 
 class MusicTrackRegistry():
     music_library = [
@@ -23,6 +26,8 @@ class MusicController(BaseController):
     default_music_volume = 0.6
     default_music_fadeout_time = 2200
     default_fade_in_time = 1600
+
+    active_sounds = {}
 
     @classmethod
     def initialize_music(cls, **kwargs):
@@ -49,5 +54,15 @@ class MusicController(BaseController):
         if not event.sfx_name in MusicSoundRegistry.__dict__.values():
             raise ValueError("The sound effect you attempted to play is not registered in the Music Sound Registry.")
         sound = f"{cls.sfx_path}{event.sfx_name}"
-        item_sfx = mixer.Sound(sound)
-        mixer.Sound.play(item_sfx)
+        cls.active_sounds[event.sfx_name] = mixer.Sound(sound)
+        mixer.Sound.play(cls.active_sounds[event.sfx_name], loops=event.sfx_loops)
+
+    @classmethod
+    def stop_sfx(cls, event):
+        if not event.sfx_name in MusicSoundRegistry.__dict__.values():
+            raise ValueError("The sound effect you attempted to play is not registered in the Music Sound Registry.")
+        if not event.sfx_name in cls.active_sounds.keys():
+            raise ValueError("That sound is not currently active.")
+        
+        mixer.Sound.stop(cls.active_sounds[event.sfx_name])
+        cls.active_sounds.pop(event.sfx_name)

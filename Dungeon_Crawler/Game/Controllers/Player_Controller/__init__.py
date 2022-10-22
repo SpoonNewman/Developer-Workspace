@@ -1,10 +1,12 @@
 from itertools import accumulate
+from time import sleep
 from Controllers.base_controller import BaseController
 from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.EventController import EventController, EventTypes
 from Controllers.Item_Manager.Item_Registry import ItemRegistry
 from Controllers.game_events import OnMessageDisplayEvent, OnSfxPlayEvent
 from Controllers.Item_Manager.Adventuring_Items import TorchItem
+from Controllers.game_events import OnShowItemActionsEvent
 
 
 
@@ -98,9 +100,9 @@ class PlayerController(BaseController):
         result = cls.add_to_inventory(item=item)
 
         if result:
-            if item.on_pickup_sfx_name:
+            if item.pickup_sfx_name:
                 sfx_evt = OnSfxPlayEvent()
-                sfx_evt.sfx_name = item.on_pickup_sfx_name
+                sfx_evt.sfx_name = item.pickup_sfx_name
                 EventController.broadcast_event(sfx_evt)
 
             item_pickup_message = f"\n\nA {item.name} has been added to your inventory!"
@@ -111,9 +113,28 @@ class PlayerController(BaseController):
     @classmethod
     def display_inventory(cls, event = None):
         print("\nINVENTORY\n=========")
-        for index, item in enumerate(cls.get_inventory()):
+        sleep(0.8)
+        inventory = enumerate(cls.get_inventory())
+        for index, item in inventory:
             message = f"{index+1}\t{item.name}\t\t{item.description}"
-            item_message_evt = OnMessageDisplayEvent()
-            item_message_evt.message = message
-            EventController.broadcast_event(item_message_evt)
+            print(message)
+            sleep(0.5)
+            
         print("\n")
+        player_input = input("Choose a number to select the item (q to exit inventory):    ")
+        if player_input != "q":
+            cls.select_inventory_item(cls.get_inventory()[int(player_input)-1])
+
+    @classmethod
+    def select_inventory_item(cls, item):
+        item_message_evt = OnMessageDisplayEvent()
+        item_message_evt.message = f"You have selected {item.name}"
+        EventController.broadcast_event(item_message_evt)
+        
+        evt = OnShowItemActionsEvent()
+        evt.possible_actions = item.actions
+        EventController.broadcast_event(evt)
+
+        player_input = str(input("Choose an action:    "))
+        item.use_item(player_input)
+        

@@ -39,4 +39,5 @@ class StartRoomSequence(BaseSequence):
             UniversalPlayerActions.take_action(action=player_action)
             cls.action_input_handler()
         else:
-            raise ValueError(f"We received an unsupported player action {player_action}")
+            print("That action is unsupported, try again")
+            cls.trigger_event_sequence(player_action=player_action)

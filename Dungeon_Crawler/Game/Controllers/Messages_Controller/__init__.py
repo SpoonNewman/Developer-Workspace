@@ -19,10 +19,8 @@ class MessagesController(BaseController):
     def show_available_actions (cls, event):
         display_text: str = """
 Please select an action by entering a number:
-=============================================
-"""
-        cls.display_message(message=display_text)
-        # print("\n")
+============================================="""
+        print(display_text)
         sleep(1.25)
         
         for key, action in event.possible_actions.items():
@@ -30,8 +28,21 @@ Please select an action by entering a number:
             sleep(0.8)
             print() # Skips to new line after printing the action
         
-        print("\n")
         for key, action in UniversalPlayerActions.actions.items():
+            cls.display_message(message=f"{key} - {action}")
+            sleep(0.8)
+            print() # Skips to new line after printing the action
+
+    @classmethod
+    def show_item_actions(cls, event = None):
+        display_text = """
+\nSelect an action to perform with this item:
+==========================================="""
+        print(display_text)
+
+        sleep(1.25)
+        
+        for key, action in event.possible_actions.items():
             cls.display_message(message=f"{key} - {action}")
             sleep(0.8)
             print() # Skips to new line after printing the action
