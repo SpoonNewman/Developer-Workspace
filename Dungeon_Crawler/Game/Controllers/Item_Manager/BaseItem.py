@@ -11,3 +11,4 @@ class GameItem():
     def __init__(self) -> None:
         self.name = "unknown item"
         self.inv_socket_weight = 0
+        self.description = ""

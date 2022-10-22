@@ -1,6 +1,7 @@
 from Controllers.Messages_Controller.standard_messages import StandardMessages
 from Controllers.base_controller import BaseController
 from time import sleep
+from Controllers.Player_Registry_Actions import UniversalPlayerActions
 
 from constants import GameConstants
 
@@ -27,6 +28,12 @@ Please select an action by entering a number:
         sleep(1.25)
         
         for key, action in event.possible_actions.items():
+            cls.display_message(message=f"{key} - {action}")
+            sleep(0.8)
+            print() # Skips to new line after printing the action
+        
+        print("\n")
+        for key, action in UniversalPlayerActions.actions.items():
             cls.display_message(message=f"{key} - {action}")
             sleep(0.8)
             print() # Skips to new line after printing the action

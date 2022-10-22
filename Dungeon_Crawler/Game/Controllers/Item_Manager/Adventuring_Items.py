@@ -29,7 +29,10 @@ class BookItem(AdventuringItem):
         self.name = "book"
 
 class TorchItem(AdventuringItem):
-    pass
+    def __init__(self) -> None:
+        super().__init__()
+        self.name = "torch"
+        self.description = "A wooden stick with oil and rag. When lit aflame it provides light. Careful in small areas."
 
 class ChestItem(AdventuringItem):
     pass

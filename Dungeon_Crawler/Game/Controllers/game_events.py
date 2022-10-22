@@ -5,6 +5,8 @@ class EventTypes():
     @classmethod
     def get_registered_events(cls) -> None:
         cls.ON_KILL_SELF = OnKillSelfEvent().__class__.__name__
+        cls.ON_INVENTORY_DISPLAY = OnInventoryDisplay().__class__.__name__
+        cls.ON_PRAY = OnPrayEvent().__class__.__name__
         cls.ON_DIE = OnDieEvent().__class__.__name__
         cls.ON_MESSAGE_DISPLAY = OnMessageDisplayEvent().__class__.__name__
         cls.ON_STAGGERED_MESSAGE_DISPLAY = OnStaggeredMessageDisplayEvent().__class__.__name__
@@ -20,6 +22,8 @@ class EventTypes():
 
         return [
             cls.ON_KILL_SELF,
+            cls.ON_INVENTORY_DISPLAY,
+            cls.ON_PRAY,
             cls.ON_DIE,
             cls.ON_MESSAGE_DISPLAY,
             cls.ON_STAGGERED_MESSAGE_DISPLAY,
@@ -35,7 +39,8 @@ class EventTypes():
         ]
 
 class GameEvent():
-    pass
+    def __init__(self) -> None:
+        pass
 
 class OnGameStartEvent(GameEvent):
     def __init__(self) -> None:
@@ -88,3 +93,11 @@ class OnMusicTrackPlayEvent(GameEvent):
 class OnSfxPlayEvent(GameEvent):
     def __init__(self, sfx_name: str = None) -> None:
         self.sfx_name = sfx_name
+
+class OnInventoryDisplay(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+
+class OnPrayEvent(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()

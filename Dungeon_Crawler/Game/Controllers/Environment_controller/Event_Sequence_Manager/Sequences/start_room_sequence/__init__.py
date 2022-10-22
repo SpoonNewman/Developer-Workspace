@@ -5,12 +5,12 @@ from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.EventController import EventController, EventTypes
 from Controllers.game_events import OnLocationChangeEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent, OnKillSelfEvent
 from Controllers.Environment_controller.Event_Sequence_Manager.Sequences.Base_Sequence import BaseSequence
+from Controllers.Player_Registry_Actions import UniversalPlayerActions
 
 
 class StartRoomSequence(BaseSequence):
     mapped_possible_actions = {
         "1": PlayerStandardActions.MOVE_FORWARD.value,
-        "2": PlayerStandardActions.KILL_SELF.value,
     }
     
     collection_of_events = {
@@ -24,12 +24,12 @@ class StartRoomSequence(BaseSequence):
             cls.room_exits = room_exits
         evt = OnShowAvailableActionsEvent(possible_actions=cls.mapped_possible_actions)
         EventController.broadcast_event(event_object=evt)
-        player_input = str(cls.get_player_input())
-        cls.trigger_event_sequence(player_input)
+        cls.player_input = str(cls.get_player_input())
+        cls.trigger_event_sequence(cls.player_input)
 
     @classmethod
     def trigger_event_sequence(cls, player_action: str):
-        if cls.mapped_possible_actions[player_action] == PlayerStandardActions.MOVE_FORWARD.value:
+        if player_action in cls.mapped_possible_actions.keys() and cls.mapped_possible_actions[player_action] == PlayerStandardActions.MOVE_FORWARD.value:
             move_evt = OnMessageDisplayEvent()
             move_evt.message = "\n\nYou move forward slowly through the room towards the exit."
             EventController.broadcast_event(event_object=move_evt)
@@ -39,8 +39,7 @@ class StartRoomSequence(BaseSequence):
             evt.location = cls.registered_rooms[forward_exit]
             EventController.broadcast_event(event_object=evt)
         
-        elif cls.mapped_possible_actions[player_action] == PlayerStandardActions.KILL_SELF.value:
-            evt = OnKillSelfEvent()
-            EventController.broadcast_event(event_object=evt)
+        elif cls.player_input in UniversalPlayerActions.actions.keys():
+            UniversalPlayerActions.take_action(action=cls.player_input)
         else:
             raise ValueError(f"We received an unsupported player action {player_action}")

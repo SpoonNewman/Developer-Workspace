@@ -4,6 +4,7 @@ from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.EventController import EventController, EventTypes
 from Controllers.Item_Manager.Item_Registry import ItemRegistry
 from Controllers.game_events import OnMessageDisplayEvent
+from Controllers.Item_Manager.Adventuring_Items import TorchItem
 
 
 
@@ -13,7 +14,7 @@ class PlayerController(BaseController):
     __current_location = None
     __inventory = []
 
-    max_inventory_capacity = 1
+    max_inventory_capacity = 30
 
     @classmethod
     def get_current_capacity(cls):
@@ -65,7 +66,13 @@ class PlayerController(BaseController):
     @classmethod
     def initialize_player_settings(cls, **kwargs):
         # print("Setting up the player settings")
+        cls.set_starting_inventory()
         cls.set_current_location(location=cls.registered_rooms["start_room"])
+
+    @classmethod
+    def set_starting_inventory(cls, **kwargs):
+        torch = TorchItem()
+        cls.add_to_inventory(item=torch)
 
     @classmethod
     def get_available_actions(cls, room):  
@@ -92,3 +99,12 @@ class PlayerController(BaseController):
             EventController.broadcast_event(event_object=item_message_evt)
             pass
 
+    @classmethod
+    def display_inventory(cls, **kwargs):
+        print("\nINVENTORY\n=========")
+        for index, item in enumerate(cls.get_inventory()):
+            message = f"{index+1}\t{item.name}\t\t{item.description}"
+            item_message_evt = OnMessageDisplayEvent()
+            item_message_evt.message = message
+            EventController.broadcast_event(event_object=item_message_evt)
+        print("\n")
