@@ -1,4 +1,5 @@
 from Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem
+from Controllers.Music_Controller import MusicSoundRegistry
 
 
 class AdventuringItemsRegistry(BaseItemRegistry):
@@ -27,6 +28,7 @@ class BookItem(AdventuringItem):
     def __init__(self) -> None:
         super().__init__()
         self.name = "Book"
+        self.on_pickup_sfx_name = MusicSoundRegistry.BOOK_PAGE
 
 class TorchItem(AdventuringItem):
     def __init__(self) -> None:

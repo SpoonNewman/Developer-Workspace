@@ -34,4 +34,4 @@ class UniversalPlayerActions():
         elif cls.actions[action] == PlayerStandardActions.PRAY.value:
             evt = OnPrayEvent()
             
-        EventController.broadcast_event(event_object=evt)
+        EventController.broadcast_event(evt)

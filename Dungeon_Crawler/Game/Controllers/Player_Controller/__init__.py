@@ -3,7 +3,7 @@ from Controllers.base_controller import BaseController
 from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.EventController import EventController, EventTypes
 from Controllers.Item_Manager.Item_Registry import ItemRegistry
-from Controllers.game_events import OnMessageDisplayEvent
+from Controllers.game_events import OnMessageDisplayEvent, OnSfxPlayEvent
 from Controllers.Item_Manager.Adventuring_Items import TorchItem
 
 
@@ -18,7 +18,12 @@ class PlayerController(BaseController):
 
     @classmethod
     def get_current_capacity(cls):
-        return accumulate(list(map(lambda item: item.socket_weight, cls.__inventory)))[-1] if cls.__inventory else 0
+        current_capacity = 0
+        if len(cls.__inventory) > 0:
+            for item in cls.__inventory:
+                current_capacity += item.inv_socket_weight
+        return current_capacity
+        # return accumulate(list(filter(lambda item: item.inv_socket_weight, cls.__inventory)))[-1] if cls.__inventory else 0
 
     @classmethod
     def get_inventory(cls):
@@ -52,7 +57,7 @@ class PlayerController(BaseController):
 
     @classmethod
     def set_current_location(cls, **kwargs):
-        event = kwargs.get("event_object")
+        event = kwargs.get("event")
         location = event.location if event and hasattr(event, "location") else kwargs.get("location")
 
         cls.__current_location = location
@@ -65,9 +70,11 @@ class PlayerController(BaseController):
 
     @classmethod
     def initialize_player_settings(cls, **kwargs):
-        # print("Setting up the player settings")
+        game_settings = kwargs.get("settings")
         cls.set_starting_inventory()
-        cls.set_current_location(location=cls.registered_rooms["start_room"])
+        config_start_room = game_settings["starting_room"]
+        starting_room = cls.registered_rooms[config_start_room] if game_settings["starting_room"] else cls.registered_rooms["start_room"]
+        cls.set_current_location(location=starting_room)
 
     @classmethod
     def set_starting_inventory(cls, **kwargs):
@@ -83,21 +90,24 @@ class PlayerController(BaseController):
         return []
 
     @classmethod
-    def pickup_item(cls, **kwargs):
+    def pickup_item(cls, event):
         # On pickup we need to confirm that the item is not already in the inventory
         # Ensure that the item is registered
         # Add the item to the inventory
             # Are we going to handle inventory management?
-        event_object = kwargs.get("event_object")
-        item = event_object.item
+        item = event.item
         result = cls.add_to_inventory(item=item)
 
         if result:
-            item_pickup_message = f"\nA {item.name} has been added to your inventory!"
+            if item.on_pickup_sfx_name:
+                sfx_evt = OnSfxPlayEvent()
+                sfx_evt.sfx_name = item.on_pickup_sfx_name
+                EventController.broadcast_event(sfx_evt)
+
+            item_pickup_message = f"\n\nA {item.name} has been added to your inventory!"
             item_message_evt = OnMessageDisplayEvent()
             item_message_evt.message = item_pickup_message
-            EventController.broadcast_event(event_object=item_message_evt)
-            pass
+            EventController.broadcast_event(item_message_evt)
 
     @classmethod
     def display_inventory(cls, **kwargs):
@@ -106,5 +116,5 @@ class PlayerController(BaseController):
             message = f"{index+1}\t{item.name}\t\t{item.description}"
             item_message_evt = OnMessageDisplayEvent()
             item_message_evt.message = message
-            EventController.broadcast_event(event_object=item_message_evt)
+            EventController.broadcast_event(item_message_evt)
         print("\n")

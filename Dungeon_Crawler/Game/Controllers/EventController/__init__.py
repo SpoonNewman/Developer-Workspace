@@ -11,13 +11,12 @@ class EventController():
             event += handler
 
     @classmethod
-    def broadcast_event(cls, **kwargs):
+    def broadcast_event(cls, event_object = None):
         # TODO: Instead of using kwargs here go with the `evt` game event pattern
         # where we create an evt object, assign whatever kwargs we want to that object
         # and pass that in a parameter in this function
-        event_object = kwargs.get("event_object")
         event = getattr(cls.__events, event_object.__class__.__name__)
-        if kwargs == {}:
-            event()
+        if event_object:
+            event(event_object)
         else:
-            event(**kwargs)
+            event()

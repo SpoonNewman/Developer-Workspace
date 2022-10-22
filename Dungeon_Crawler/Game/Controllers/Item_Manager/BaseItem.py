@@ -12,3 +12,4 @@ class GameItem():
         self.name = "unknown item"
         self.inv_socket_weight = 0
         self.description = ""
+        self.on_pickup_sfx_name = None

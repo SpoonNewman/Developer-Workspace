@@ -2,6 +2,10 @@ from Controllers.base_controller import BaseController
 from constants import GameConstants
 from pygame import mixer
 
+class MusicSoundRegistry():
+    BOOK_PAGE = "book-page-turn.wav"
+    PLAYER_DEATH_CRY = "player-death-cry.mp3"
+
 class MusicController(BaseController):
     music_path = "./Game/assets/music/"
     sfx_path = "./Game/assets/sfx/"
@@ -11,10 +15,6 @@ class MusicController(BaseController):
         "Come-Out-And-Play.mp3",
         "Labyrinth-of-Lost-Dreams.mp3",
     ]
-
-    sfx_registry = {
-        "book_page": "pg10.wav"
-    }
 
     default_track = "a-really-dark-alley.mp3"
     default_music_volume = 0.6
@@ -42,9 +42,9 @@ class MusicController(BaseController):
             mixer.music.play(loops=-1, fade_ms=cls.default_fade_in_time)
 
     @classmethod
-    def play_sfx(cls, **kwargs):
-        event_object = kwargs.get("event_object")
-        sound = f"{cls.sfx_path}{cls.sfx_registry[event_object.sfx_name]}"
+    def play_sfx(cls, event):
+        if not event.sfx_name in MusicSoundRegistry.__dict__.values():
+            raise ValueError("The sound effect you attempted to play is not registered in the Music Sound Registry.")
+        sound = f"{cls.sfx_path}{event.sfx_name}"
         item_sfx = mixer.Sound(sound)
         mixer.Sound.play(item_sfx)
-        # mixer.Sound.stop(item_sfx)

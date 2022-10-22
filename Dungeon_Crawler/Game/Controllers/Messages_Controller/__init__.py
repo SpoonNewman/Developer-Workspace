@@ -16,9 +16,7 @@ class MessagesController(BaseController):
         super().__init__()
 
     @classmethod
-    def show_available_actions (cls, **kwargs):
-        event = kwargs.get("event_object")
-
+    def show_available_actions (cls, event):
         display_text: str = """
 Please select an action by entering a number:
 =============================================
@@ -43,19 +41,17 @@ Please select an action by entering a number:
         cls.display_message(message=cls.standard_messages_list["intro_message"])
 
     @classmethod
-    def display_message(cls, **kwargs) -> None:
-        event = kwargs.get("event_object")
-        message: str = event.message if event and event.message else kwargs.get("message")
-        typewriter_delay: int = event.typewriter_delay if event and hasattr(event, "typewriter_delay") else kwargs.get("typewriter_delay", cls.default_typewriter_delay)
-        message_end_character: str = event.message_end_character if event and hasattr(event, "message_end_character") else kwargs.get("message_end_character", '')
+    def display_message(cls, event = None, message = None) -> None:
+        msg: str = event.message if event and event.message else message
+        typewriter_delay: int = event.typewriter_delay if event and hasattr(event, "typewriter_delay") else cls.default_typewriter_delay
+        message_end_character: str = event.message_end_character if event and hasattr(event, "message_end_character") else ''
 
-        for char in message:
+        for char in msg:
             sleep(typewriter_delay)
             print(char, end=message_end_character, flush=True)
 
     @classmethod
-    def display_staggered_messages(cls, **kwargs):
-        event = kwargs.get("event_object")
+    def display_staggered_messages(cls, event):
         messages = event.messages
         for msg in messages:
             cls.display_message(message=msg)

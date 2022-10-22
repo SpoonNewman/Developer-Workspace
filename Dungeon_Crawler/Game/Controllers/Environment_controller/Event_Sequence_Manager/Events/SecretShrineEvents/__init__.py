@@ -6,6 +6,7 @@ from Controllers.Item_Manager.Adventuring_Items import BookItem
 from Controllers.game_events import OnItemPickupEvent
 from Controllers.game_events import OnSfxPlayEvent
 from Controllers.Player_Registry_Actions import UniversalPlayerActions
+from Controllers.Music_Controller import MusicSoundRegistry
 
 
 class EventsSecretShrineIntro(BaseStoryEvent):
@@ -13,7 +14,9 @@ class EventsSecretShrineIntro(BaseStoryEvent):
     possible_actions = {
         "1": PlayerStandardActions.PICKUP_BOOK.value,
     }
-    # cls.is_completed = None # OnStudyWallSwitchActivated
+    
+    is_completed = None # OnStudyWallSwitchActivated
+    is_book_pickup = False
 
     @classmethod
     def __init__(cls) -> None:
@@ -24,23 +27,23 @@ class EventsSecretShrineIntro(BaseStoryEvent):
     def handle_event(cls):
         show_actions_evt = OnShowAvailableActionsEvent()
         show_actions_evt.possible_actions = cls.possible_actions
-        EventController.broadcast_event(event_object=show_actions_evt)
+        EventController.broadcast_event(show_actions_evt)
         player_input = str(input("What do you choose?"))
         
-        if cls.possible_actions[player_input] == PlayerStandardActions.PICKUP_BOOK.value:
-            switch_description = "You grab the top of the book and begin pulling it towards you. There is a slight grinding noise as metal scrapes agaisnt metal. You hear a loud click and the book case begins to shift. The book case grinds against rails attatched to the wall behind it. Revealing a hole barely large enough for you to fit through."
-            switch_evt = OnMessageDisplayEvent()
-            switch_evt.message = switch_description
-            EventController.broadcast_event(event_object=switch_evt)
+        if player_input in cls.possible_actions:
+            if cls.possible_actions[player_input] == PlayerStandardActions.PICKUP_BOOK.value and not cls.is_book_pickup:
+                switch_description = "You grab the top of the book and begin pulling it towards you. There is a slight grinding noise as metal scrapes agaisnt metal. You hear a loud click and the book case begins to shift. The book case grinds against rails attatched to the wall behind it. Revealing a hole barely large enough for you to fit through."
+                switch_evt = OnMessageDisplayEvent()
+                switch_evt.message = switch_description
+                EventController.broadcast_event(switch_evt)
 
-            book_pickup_sound_evt = OnSfxPlayEvent()
-            book_pickup_sound_evt.sfx_name = "book_page"
-            EventController.broadcast_event(event_object=book_pickup_sound_evt)
-
-            pickup_book_evt = OnItemPickupEvent()
-            cls.book_item.name = "mouldering book"
-            pickup_book_evt.item = cls.book_item
-            EventController.broadcast_event(event_object=pickup_book_evt)
+                pickup_book_evt = OnItemPickupEvent()
+                cls.book_item.name = "mouldering book"
+                pickup_book_evt.item = cls.book_item
+                EventController.broadcast_event(pickup_book_evt)
+                cls.is_book_pickup = True
+                cls.possible_actions.pop(player_input)
+                cls.handle_event()
         elif player_input in UniversalPlayerActions.actions.keys():
             UniversalPlayerActions.take_action(action=player_input)
             cls.handle_event()
@@ -67,12 +70,12 @@ class EventsSecretShrinePart2():
     def handle_event(cls):
         show_actions_evt = OnShowAvailableActionsEvent()
         show_actions_evt.possible_actions = cls.possible_actions
-        EventController.broadcast_event(event_object=show_actions_evt)
+        EventController.broadcast_event(show_actions_evt)
         player_input = str(input("What do you choose?"))
         
         if cls.possible_actions[player_input] == PlayerStandardActions.KILL_SELF.value:
             kill_self_evt = OnKillSelfEvent()
-            EventController.broadcast_event(event_object=kill_self_evt)
+            EventController.broadcast_event(kill_self_evt)
         elif cls.possible_actions[player_input] == PlayerStandardActions.MOVE_BACKWARD.value:
             pass
         elif cls.possible_actions[player_input] == PlayerStandardActions.MOVE_FORWARD.value:

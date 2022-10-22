@@ -13,26 +13,26 @@ class ChamberA1Sequence(BaseSequence):
         "1": PlayerStandardActions.INVESTIGATE.value,
     }
 
-    collection_of_events = {
-        "shrine_start": EventsSecretShrineIntro()
-    }
-
     @classmethod
     def handle_sequence(cls, room_exits = None, registered_rooms: Dict = {}):
-        cls.handle(room_exits=room_exits, registered_rooms=registered_rooms, room_description=cls.room_description, mapped_possible_actions=cls.mapped_possible_actions)
-        cls.player_input = str(cls.get_player_input())
-        cls.trigger_event_sequence(cls.player_input)
+        cls.setup_rooms(room_exits=room_exits, registered_rooms=registered_rooms)
+        cls.action_input_handler()
+
+    @classmethod
+    def action_input_handler(cls):
+        player_input = cls.handle_actions(mapped_possible_actions=cls.mapped_possible_actions)
+        cls.trigger_event_sequence(player_action=player_input)
 
     @classmethod
     def trigger_event_sequence(cls, player_action: str):
         if player_action in cls.mapped_possible_actions.keys() and cls.mapped_possible_actions[player_action] == PlayerStandardActions.INVESTIGATE.value:
             current_event = StoryEventsRegistry.registry["SecretShrineInvestigation"]
             evt = OnMessageDisplayEvent(message=current_event.description)
-            EventController.broadcast_event(event_object=evt)
+            EventController.broadcast_event(evt)
             current_event.handle_event()
-        elif cls.player_input in UniversalPlayerActions.actions.keys():
-            UniversalPlayerActions.take_action(action=cls.player_input)
-            # cls.handle_event()
+        elif player_action in UniversalPlayerActions.actions.keys():
+            UniversalPlayerActions.take_action(action=player_action)
+            cls.action_input_handler()
         else:
             raise ValueError(f"We received an unsupported player action {player_action}")
         
