@@ -1,14 +1,11 @@
 from Controllers.base_controller import BaseController
-from constants import GameConstants
 from pygame import mixer
 
 class MusicSoundRegistry():
     BOOK_PAGE = "book-page-turn.wav"
     PLAYER_DEATH_CRY = "player-death-cry.mp3"
 
-class MusicController(BaseController):
-    music_path = "./Game/assets/music/"
-    sfx_path = "./Game/assets/sfx/"
+class MusicTrackRegistry():
     music_library = [
         "The-Road-Home.mp3",
         "a-really-dark-alley.mp3",
@@ -16,7 +13,13 @@ class MusicController(BaseController):
         "Labyrinth-of-Lost-Dreams.mp3",
     ]
 
-    default_track = "a-really-dark-alley.mp3"
+    DEFAULT_BACKGROUND_MUSIC = "a-really-dark-alley.mp3"
+
+
+class MusicController(BaseController):
+    music_path = "./Game/assets/music/"
+    sfx_path = "./Game/assets/sfx/"
+
     default_music_volume = 0.6
     default_music_fadeout_time = 2200
     default_fade_in_time = 1600
@@ -29,12 +32,12 @@ class MusicController(BaseController):
 
     @classmethod
     def play_default_music(cls, **kwargs):
-        cls.play_music_by_track(track_name=cls.default_track)
+        cls.play_music_by_track(track_name=MusicTrackRegistry.DEFAULT_BACKGROUND_MUSIC)
 
     @classmethod
     def play_music_by_track(cls, **kwargs):
         track_name = kwargs.get("track_name")
-        if track_name in cls.music_library:
+        if track_name in MusicTrackRegistry.music_library:
             if mixer.music.get_busy():
                 mixer.music.fadeout(cls.default_music_fadeout_time)
             mixer.music.load(f"{cls.music_path}{track_name}")
