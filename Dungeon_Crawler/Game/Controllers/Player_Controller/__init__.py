@@ -56,9 +56,8 @@ class PlayerController(BaseController):
         return cls.__current_location
 
     @classmethod
-    def set_current_location(cls, **kwargs):
-        event = kwargs.get("event")
-        location = event.location if event and hasattr(event, "location") else kwargs.get("location")
+    def set_current_location(cls, event = None, location = None):
+        location = event.location if event and hasattr(event, "location") else location
 
         cls.__current_location = location
         if location:
@@ -110,7 +109,7 @@ class PlayerController(BaseController):
             EventController.broadcast_event(item_message_evt)
 
     @classmethod
-    def display_inventory(cls, **kwargs):
+    def display_inventory(cls, event = None):
         print("\nINVENTORY\n=========")
         for index, item in enumerate(cls.get_inventory()):
             message = f"{index+1}\t{item.name}\t\t{item.description}"
