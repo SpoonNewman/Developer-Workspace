@@ -38,7 +38,8 @@ class EventsSecretShrineIntro(BaseStoryEvent):
                 EventController.broadcast_event(switch_evt)
 
                 pickup_book_evt = OnItemPickupEvent()
-                cls.book_item.name = "mouldering book"
+                cls.book_item.name = "Mouldering Book"
+                cls.book_item.description = "An old book that is damp and covererd in mold."
                 pickup_book_evt.item = cls.book_item
                 EventController.broadcast_event(pickup_book_evt)
                 cls.is_book_pickup = True

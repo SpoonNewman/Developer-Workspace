@@ -11,6 +11,7 @@ from constants import GameConstants
 class MessagesController(BaseController):
     default_typewriter_delay = None
     standard_messages_list = StandardMessages.messages
+    show_action_delay = 0.3
 
     def __init__(self) -> None:
         super().__init__()
@@ -25,12 +26,12 @@ Please select an action by entering a number:
         
         for key, action in event.possible_actions.items():
             cls.display_message(message=f"{key} - {action}")
-            sleep(0.8)
+            sleep(cls.show_action_delay)
             print() # Skips to new line after printing the action
         
         for key, action in UniversalPlayerActions.actions.items():
             cls.display_message(message=f"{key} - {action}")
-            sleep(0.8)
+            sleep(cls.show_action_delay)
             print() # Skips to new line after printing the action
 
     @classmethod
@@ -44,7 +45,7 @@ Please select an action by entering a number:
         
         for key, action in event.possible_actions.items():
             cls.display_message(message=f"{key} - {action}")
-            sleep(0.8)
+            sleep(cls.show_action_delay)
             print() # Skips to new line after printing the action
 
     @classmethod

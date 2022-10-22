@@ -92,10 +92,6 @@ class PlayerController(BaseController):
 
     @classmethod
     def pickup_item(cls, event):
-        # On pickup we need to confirm that the item is not already in the inventory
-        # Ensure that the item is registered
-        # Add the item to the inventory
-            # Are we going to handle inventory management?
         item = event.item
         result = cls.add_to_inventory(item=item)
 

@@ -26,6 +26,9 @@ class GameItem():
             UniversalAction.EQUIP.value: "Equip",
             UniversalAction.CANCEL.value: "Cancel"
         }
+        self.actions = {
+            **self.universal_actions
+        }
 
     def perform_universal_action(self, player_action):
         if player_action == self.universal_actions[UniversalAction.CANCEL.value]:
