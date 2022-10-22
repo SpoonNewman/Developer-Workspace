@@ -1,4 +1,4 @@
-from Game.Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem
+from Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem
 
 
 class AdventuringItemsRegistry(BaseItemRegistry):
@@ -8,16 +8,25 @@ class AdventuringItemsRegistry(BaseItemRegistry):
         cls.CHEST = ChestItem().__class__.__name__
         cls.CHAIN = ChainItem().__class__.__name__
         cls.ROPE = RopeItem().__class__.__name__
+        cls.BOOK = BookItem().__class__.__name__
 
         return [
            cls.TORCH,
            cls.CHEST,
            cls.CHAIN,
-           cls.ROPE 
+           cls.ROPE,
+           cls.BOOK
         ]
 
 class AdventuringItem(GameItem):
-    pass
+    def __init__(self) -> None:
+        super().__init__()
+        self.inv_socket_weight = 1
+
+class BookItem(AdventuringItem):
+    def __init__(self) -> None:
+        super().__init__()
+        self.name = "book"
 
 class TorchItem(AdventuringItem):
     pass

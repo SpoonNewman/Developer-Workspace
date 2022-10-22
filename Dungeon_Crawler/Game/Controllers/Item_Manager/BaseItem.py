@@ -8,4 +8,6 @@ class BaseItemRegistry():
         raise NotImplementedError("")
 
 class GameItem():
-    pass
+    def __init__(self) -> None:
+        self.name = "unknown item"
+        self.inv_socket_weight = 0

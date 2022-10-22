@@ -1,6 +1,9 @@
+from itertools import accumulate
 from Controllers.base_controller import BaseController
 from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.EventController import EventController, EventTypes
+from Controllers.Item_Manager.Item_Registry import ItemRegistry
+from Controllers.game_events import OnMessageDisplayEvent
 
 
 
@@ -8,9 +11,31 @@ from Controllers.EventController import EventController, EventTypes
 class PlayerController(BaseController):
     __is_dead: bool = False
     __current_location = None
+    __inventory = []
+
+    max_inventory_capacity = 1
+
+    @classmethod
+    def get_current_capacity(cls):
+        return accumulate(list(map(lambda item: item.socket_weight, cls.__inventory)))[-1] if cls.__inventory else 0
+
+    @classmethod
+    def get_inventory(cls):
+        return cls.__inventory
+
+    @classmethod
+    def add_to_inventory(cls, item):
+        current_capacity = cls.get_current_capacity()
+        if current_capacity + item.inv_socket_weight < cls.max_inventory_capacity:
+            if item.__class__.__name__ in ItemRegistry.get_registered_items():
+                cls.__inventory.append(item)
+                return True
+        else:
+            print("Cannot add item to inventory. You are at max capacity.")
+            return False
 
     # region Class Properties
-    @property
+    @classmethod
     def get_is_dead(cls):
         return cls.__is_dead
 
@@ -56,5 +81,14 @@ class PlayerController(BaseController):
         # Ensure that the item is registered
         # Add the item to the inventory
             # Are we going to handle inventory management?
-        pass
+        event_object = kwargs.get("event_object")
+        item = event_object.item
+        result = cls.add_to_inventory(item=item)
+
+        if result:
+            item_pickup_message = f"\nA {item.name} has been added to your inventory!"
+            item_message_evt = OnMessageDisplayEvent()
+            item_message_evt.message = item_pickup_message
+            EventController.broadcast_event(event_object=item_message_evt)
+            pass
 

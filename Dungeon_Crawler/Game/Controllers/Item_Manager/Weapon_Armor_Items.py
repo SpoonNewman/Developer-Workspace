@@ -1,4 +1,4 @@
-from Game.Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem
+from Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem
 
 
 class WeaponItemsRegistry(BaseItemRegistry):
@@ -26,19 +26,22 @@ class ArmorItemsRegistry(BaseItemRegistry):
         ]
 
 class WeaponItem(GameItem):
-    pass
+    def __init__(self) -> None:
+        self.inv_socket_weight = 1
 
 class ArmorItem(GameItem):
     pass
 
 class SwordItem(WeaponItem):
-    pass
+    def __init__(self) -> None:
+        self.inv_socket_weight = 2
 
 class KnifeItem(WeaponItem):
     pass
 
 class ClubItem(WeaponItem):
-    pass
+    def __init__(self) -> None:
+        self.inv_socket_weight = 2
 
 class ShieldItem(ArmorItem):
     pass

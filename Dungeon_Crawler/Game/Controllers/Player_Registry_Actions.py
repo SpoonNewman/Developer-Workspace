@@ -12,3 +12,4 @@ class PlayerStandardActions(Enum):
     BLASPHEME = "Blaspheme"
     INVESTIGATE = "Investigate"
     ACTIVATE_SWITCH = "Activate Switch"
+    PICKUP_BOOK = "Pickup Book"

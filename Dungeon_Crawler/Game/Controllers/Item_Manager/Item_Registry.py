@@ -12,8 +12,10 @@ class ItemRegistry():
         weapon_items = WeaponItemsRegistry.get_registered_items()
         armor_items = ArmorItemsRegistry.get_registered_items()
 
-        return [
+        cls.items = [
             *adventuring_items,
             *weapon_items,
             *armor_items
         ]
+
+        return cls.items

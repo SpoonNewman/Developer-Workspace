@@ -16,6 +16,7 @@ class EventTypes():
         cls.ON_PLAYER_INVESTIGATE = OnPlayerInvestgateEvent().__class__.__name__
         cls.ON_LOCATION_CHANGE = OnLocationChangeEvent().__class__.__name__
         cls.ON_MUSIC_TRACK_PLAY = OnMusicTrackPlayEvent().__class__.__name__
+        cls.ON_SFX_PLAY = OnSfxPlayEvent().__class__.__name__
 
         return [
             cls.ON_KILL_SELF,
@@ -29,7 +30,8 @@ class EventTypes():
             cls.ON_ITEM_PICKUP,
             cls.ON_PLAYER_INVESTIGATE,
             cls.ON_LOCATION_CHANGE,
-            cls.ON_MUSIC_TRACK_PLAY
+            cls.ON_MUSIC_TRACK_PLAY,
+            cls.ON_SFX_PLAY
         ]
 
 class GameEvent():
@@ -72,8 +74,8 @@ class OnPlayerActionEvent(GameEvent):
         pass
 
 class OnItemPickupEvent(GameEvent):
-    def __init__(self) -> None:
-        pass
+    def __init__(self, item = None) -> None:
+        self.item = item
 
 class OnPlayerInvestgateEvent(GameEvent):
     def __init__(self) -> None:
@@ -82,3 +84,7 @@ class OnPlayerInvestgateEvent(GameEvent):
 class OnMusicTrackPlayEvent(GameEvent):
     def __init__(self, track_name: str = None) -> None:
         self.track_name = track_name
+
+class OnSfxPlayEvent(GameEvent):
+    def __init__(self, sfx_name: str = None) -> None:
+        self.sfx_name = sfx_name
