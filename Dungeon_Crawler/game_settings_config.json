@@ -1,5 +1,5 @@
 {
     "play_audio": true,
     "message_typewriter_speed": "FAST",
-    "starting_room": ""
+    "starting_room": "intro_chamber_0"
 }

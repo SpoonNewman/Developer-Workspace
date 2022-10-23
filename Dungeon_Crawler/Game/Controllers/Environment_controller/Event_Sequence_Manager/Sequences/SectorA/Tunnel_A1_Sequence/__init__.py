@@ -5,8 +5,7 @@ from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.game_events import OnMessageDisplayEvent
 from Controllers.Environment_controller.Event_Sequence_Manager.Events.SecretShrineEvents import EventsSecretShrineIntro
 from Controllers.game_events import OnShowAvailableActionsEvent, OnLocationChangeEvent
-from Controllers.Player_Registry_Actions import UniversalPlayerActions
-from Game.Controllers.Player_Registry_Actions import UniversalPlayerActionKeys
+from Controllers.Player_Registry_Actions import UniversalPlayerActions, UniversalPlayerActionKeys
 
 
 class TunnelA1Sequence(BaseSequence):

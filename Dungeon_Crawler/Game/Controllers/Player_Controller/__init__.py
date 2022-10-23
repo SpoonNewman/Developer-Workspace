@@ -41,6 +41,17 @@ class PlayerController(BaseController):
         else:
             print("Cannot add item to inventory. You are at max capacity.")
             return False
+    @classmethod
+    def drop_from_inventory(cls, event):
+        item = event.item
+        selected_item = list(filter(lambda i: i == item, cls.__inventory))
+        if selected_item:
+            index = cls.__inventory.index(item)
+            cls.__inventory.pop(index)
+            print(f"You have dropped {item.name} from your satchel")
+        #item is removed from inventory
+
+
 
     # region Class Properties
     @classmethod
@@ -132,5 +143,5 @@ class PlayerController(BaseController):
         EventController.broadcast_event(evt)
 
         player_input = str(input("Choose an action:    "))
-        item.use_item(player_input)
+        item.use_item(action_input=player_input)
         

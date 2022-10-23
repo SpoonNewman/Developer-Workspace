@@ -21,6 +21,7 @@ class EventTypes():
         cls.ON_MUSIC_TRACK_PLAY = OnMusicTrackPlayEvent().__class__.__name__
         cls.ON_SFX_PLAY = OnSfxPlayEvent().__class__.__name__
         cls.ON_SFX_STOP = OnSfxStopEvent().__class__.__name__
+        cls.ON_ITEM_DROP = OnItemDrop().__class__.__name__
 
         return [
             cls.ON_KILL_SELF,
@@ -39,7 +40,8 @@ class EventTypes():
             cls.ON_LOCATION_CHANGE,
             cls.ON_MUSIC_TRACK_PLAY,
             cls.ON_SFX_PLAY,
-            cls.ON_SFX_STOP
+            cls.ON_SFX_STOP,
+            cls.ON_ITEM_DROP
         ]
 
 class GameEvent():
@@ -114,3 +116,8 @@ class OnInventoryDisplay(GameEvent):
 class OnPrayEvent(GameEvent):
     def __init__(self) -> None:
         super().__init__()
+
+class OnItemDrop(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+        self.item = None

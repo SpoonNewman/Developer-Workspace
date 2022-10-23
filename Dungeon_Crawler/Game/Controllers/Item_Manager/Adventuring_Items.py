@@ -52,7 +52,8 @@ class TorchItem(AdventuringItem):
             elif action == "Douse":
                 self.douse_torch()
             elif action in self.universal_actions.values():
-                self.perform_universal_action(action)
+
+                self.perform_universal_action(action, self)
 
 
     def light_torch(self):
