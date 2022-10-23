@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from enum import Enum
+from operator import itemgetter
 from Controllers.EventController import EventController
-from Controllers.game_events import OnSfxPlayEvent, OnSfxStopEvent
-
+from Controllers.game_events import OnSfxPlayEvent, OnSfxStopEvent, OnItemDrop
 
 class BaseItemRegistry():
     @classmethod
@@ -30,11 +30,13 @@ class GameItem():
             **self.universal_actions
         }
 
-    def perform_universal_action(self, player_action):
+    def perform_universal_action(self, player_action, item):
         if player_action == self.universal_actions[UniversalAction.CANCEL.value]:
             pass
         elif player_action == self.universal_actions[UniversalAction.DROP.value]:
-            pass
+            evt = OnItemDrop()
+            evt.item = item
+            EventController.broadcast_event(evt)
         elif player_action == self.universal_actions[UniversalAction.EQUIP.value]:
             pass
         else:
@@ -50,3 +52,7 @@ class GameItem():
         evt = OnSfxStopEvent()
         evt.sfx_name = sfx_name
         EventController.broadcast_event(evt)
+    
+    def use_item(self, **kwargs):
+        print("This item has no use to you right now.")
+
