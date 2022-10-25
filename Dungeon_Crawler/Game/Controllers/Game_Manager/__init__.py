@@ -1,4 +1,3 @@
-from cgitb import handler
 import sys
 import json
 from Controllers.EventController import EventTypes, EventController
@@ -6,14 +5,11 @@ from Controllers.Messages_Controller import MessagesController
 from Controllers.Player_Controller import PlayerController
 from Controllers.Environment_controller import EnvironmentController
 from Controllers.game_events import OnGameStartEvent, OnDieEvent, OnMessageDisplayEvent, OnStaggeredMessageDisplayEvent
-from Controllers.Music_Controller import MusicController
+from Controllers.Music_Controller import MusicController, MusicSoundRegistry
 from pygame import mixer
 from Controllers.game_events import OnSfxPlayEvent
-from Controllers.Music_Controller import MusicSoundRegistry
-
+from Controllers.UI_Controller import UIManager
 from constants import GameConstants
-
-# from events import Events
 
 class GameManager():
     game_settings = {}
@@ -50,6 +46,7 @@ class GameManager():
 
     @classmethod
     def initialize_game_settings(cls, event):
+        UIManager.initialize()
         cls.initialize_message_settings()
         MusicController.initialize_music(play_audio=cls.game_settings["play_audio"])
 

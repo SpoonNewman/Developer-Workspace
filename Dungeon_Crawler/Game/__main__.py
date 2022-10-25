@@ -1,89 +1,89 @@
 from Controllers.Game_Manager import GameManager
 
-class Cursor(pygame.sprite.Sprite):
-    def __init__(self, board):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10, 20))
-        self.image.fill((0,255,0))
-        self.text_height = 17
-        self.text_width = 10
-        self.rect = self.image.get_rect(topleft=(self.text_width, self.text_height))
-        self.board = board
-        self.text = ''
-        self.cooldown = 0
-        self.cooldowns = {'.': 12,
-                        '[': 18,
-                        ']': 18,
-                        ' ': 5,
-                        '\n': 30}
+# WIDTH = 500
+# HEIGHT = 500
+# standard_delay = 0.05
 
-    def write(self, text):
-        self.text = list(text)
+# class Cursor(pygame.sprite.Sprite):
+#     @classmethod
+#     def __init__(cls) -> None:
+#         cls.initialize()
 
-    def update(self):
-        if not self.cooldown and self.text:
-            letter = self.text.pop(0)
-            if letter == '\n':
-                self.rect.move_ip((0, self.text_height))
-                self.rect.x = self.text_width
-            else:
-                self.board.add(letter, self.rect.topleft)
-                self.rect.move_ip((self.text_width, 0))
-            self.cooldown = self.cooldowns.get(letter, 8)
+#     @classmethod
+#     def initialize(cls):
+#         pygame.sprite.Sprite.__init__(cls)
+#         cls.image = pygame.Surface((10, 20))
+#         cls.image.fill((0,255,0))
+#         cls.text_height = 17
+#         cls.text_width = 10
+#         cls.rect = cls.image.get_rect(topleft=(cls.text_width, cls.text_height))
 
-        if self.cooldown:
-            self.cooldown -= 1
+#     @classmethod
+#     def update(cls, text):
+#         if text:
+#             for index, letter in enumerate(text):
+#                 if letter == '\n' or index == 50:
+#                     cls.rect.move_ip((0, cls.text_height))
+#                     cls.rect.x = cls.text_width
+#                 else:
+#                     Board.add(letter, cls.rect.topleft)
+#                     cls.rect.move_ip((cls.text_width, 0))
+#                 sleep(standard_delay)
+#                 EntryPoint.screen.fill((0, 0, 0)) # set screen to block
+#                 EntryPoint.all_sprites.draw(EntryPoint.screen) # draw images
+#                 pygame.display.flip() # redraw everything
+#             # self.cooldown = self.cooldowns.get(letter, 8)
 
-class Board(pygame.sprite.Sprite):
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((WIDTH, HEIGHT))
-        self.image.fill((13,13,13))
-        self.image.set_colorkey((13,13,13))
-        self.rect = self.image.get_rect()
-        self.font = pygame.font.SysFont("monospace", 18)
+# class Board(pygame.sprite.Sprite):
+#     @classmethod
+#     def __init__(cls) -> None:
+#         cls.initialize()
 
-    def add(self, letter, pos):
-        s = self.font.render(letter, 1, (255, 255, 0))
-        self.image.blit(s, pos)
+#     @classmethod
+#     def initialize(cls):
+#         pygame.sprite.Sprite.__init__(cls)
+#         cls.image = pygame.Surface((WIDTH, HEIGHT))
+#         cls.image.fill((13,13,13))
+#         cls.image.set_colorkey((13,13,13))
+#         cls.rect = cls.image.get_rect()
+#         cls.font = pygame.font.SysFont("monospace", 18)
 
-def main():
-    #Initializes the screen - Careful: all pygame commands must come after the init
-    pygame.init()
-    clock = pygame.time.Clock()
+#     @classmethod
+#     def add(cls, letter, pos):
+#         s = cls.font.render(letter, 1, (255, 255, 0))
+#         cls.image.blit(s, pos)
 
-    #Sets mouse cursor visibility
-    pygame.mouse.set_visible(False)
-    #Sets the screen note: must be after pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+class EntryPoint:
+    @classmethod
+    def main(cls):
+        #Initializes the screen - Careful: all pygame commands must come after the init
+    #     cls.intro_message = """
+    # Welcome to the world of...DungeonCrawl.
 
-    all_sprites = pygame.sprite.Group()
-    board = Board()
-    cursor = Cursor(board)
-    all_sprites.add(cursor, board)
+    # You stand on the precipice of glory and greatness which await beyond the gates of this dungeon.
 
-    text = """[i] Initializing ...
-    [i] Entering ghost mode ...
+    # Move forward into darkness...if you dare
+    # """
+        # pygame.init()
+        # pygame.mouse.set_visible(False)
+        # cls.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        # board = Board()
+        # cursor = Cursor()
+        # cls.all_sprites = pygame.sprite.Group()
+        # cls.all_sprites.add(cursor, board)
 
-    done ...
+        # cls.all_sprites.update(cls.intro_message) # update all sprite images
 
-    """
-
-    cursor.write(text)
-
-    game_manager = GameManager()
-    game_manager.start_game()
-    # region Loop, this is where the update happens
-    running = True
-    while running:
-        all_sprites.update() # update all sprite images
-        screen.fill((0, 0, 0)) # set screen to block
-        all_sprites.draw(screen) # draw images
-        pygame.display.flip() # redraw everything
-        clock.tick(60) # increase the clock tick
-        
+        # cls.screen.fill((0, 0, 0)) # set screen to block
+        # cls.all_sprites.draw(cls.screen) # draw images
+        # pygame.display.flip() # redraw everything
+        # clock.tick(60) # increase the clock tick
+            
+        game_manager = GameManager()
+        # game_manager.ui_sprites = cls.all_sprites
+        game_manager.start_game()
 
 if "__main__" == __name__:
-    main()
+    EntryPoint.main()
 
     

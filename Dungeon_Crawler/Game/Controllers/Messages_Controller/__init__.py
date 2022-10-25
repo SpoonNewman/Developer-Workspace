@@ -2,11 +2,7 @@ from Controllers.Messages_Controller.standard_messages import StandardMessages
 from Controllers.base_controller import BaseController
 from time import sleep
 from Controllers.Player_Registry_Actions import UniversalPlayerActions
-
-from constants import GameConstants
-
-
-
+from Controllers.UI_Controller import UIManager
 
 class MessagesController(BaseController):
     default_typewriter_delay = None
@@ -21,7 +17,7 @@ class MessagesController(BaseController):
         display_text: str = """
 Please select an action by entering a number:
 ============================================="""
-        print(display_text)
+        cls.display_message(message=display_text)
         sleep(1.25)
         
         for key, action in event.possible_actions.items():
@@ -58,9 +54,12 @@ Please select an action by entering a number:
         typewriter_delay: int = event.typewriter_delay if event and hasattr(event, "typewriter_delay") else cls.default_typewriter_delay
         message_end_character: str = event.message_end_character if event and hasattr(event, "message_end_character") else ''
 
-        for char in msg:
-            sleep(typewriter_delay)
-            print(char, end=message_end_character, flush=True)
+        msg += "\n" # Add the new line to the end to account for the window
+        UIManager.update_sprites(message=msg, typewriter_delay=typewriter_delay)
+        pass
+        # for char in msg:
+        #     sleep(typewriter_delay)
+        #     print(char, end=message_end_character, flush=True)
 
     @classmethod
     def display_staggered_messages(cls, event):
