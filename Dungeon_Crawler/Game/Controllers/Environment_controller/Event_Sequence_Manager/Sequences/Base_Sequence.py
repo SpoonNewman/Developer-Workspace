@@ -2,8 +2,8 @@ from abc import abstractmethod
 from typing import Dict
 from Controllers.EventController import EventController
 
-from Controllers.game_events import OnStaggeredMessageDisplayEvent
-from Controllers.game_events import OnShowAvailableActionsEvent
+from Controllers.game_events import OnStaggeredMessageDisplayEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent
+from Controllers.UI_Controller import TextInput
 
 
 class BaseSequence():
@@ -19,7 +19,23 @@ class BaseSequence():
 
     @classmethod
     def get_player_input(cls):
-        return input("\nWhat do you choose?  ")
+        evt = OnMessageDisplayEvent()
+        evt.message = "\nWhat do you choose?  "
+        evt.typewriter_display = 0
+        EventController.broadcast_event(evt)
+
+        # Do an event loop and grab the input, then return it
+        while True:
+            input_obj = TextInput()
+            user_input = input_obj.get_input()
+            del input_obj
+            return user_input
+            # Create the text input object
+            # Get input from player
+            # break the loop
+            # del object
+            # return the input
+        # return input("\nWhat do you choose?  ")
 
     @classmethod
     def display_room_description(cls, description: list[str] = None):
