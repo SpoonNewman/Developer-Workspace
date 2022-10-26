@@ -1,3 +1,4 @@
+
 from itertools import accumulate
 from time import sleep
 from Controllers.base_controller import BaseController
@@ -7,6 +8,7 @@ from Controllers.Item_Manager.Item_Registry import ItemRegistry
 from Controllers.game_events import OnMessageDisplayEvent, OnSfxPlayEvent
 from Controllers.Item_Manager.Adventuring_Items import TorchItem
 from Controllers.game_events import OnShowItemActionsEvent
+from Controllers.Player_Controller.item_slots import ItemSlots
 
 
 
@@ -15,6 +17,12 @@ class PlayerController(BaseController):
     __is_dead: bool = False
     __current_location = None
     __inventory = []
+
+    equipped_items = {
+        ItemSlots.RIGHT_HAND.value : "",
+        ItemSlots.LEFT_HAND.value : ""
+
+    }
 
     max_inventory_capacity = 30
 
@@ -26,6 +34,14 @@ class PlayerController(BaseController):
                 current_capacity += item.inv_socket_weight
         return current_capacity
         # return accumulate(list(filter(lambda item: item.inv_socket_weight, cls.__inventory)))[-1] if cls.__inventory else 0
+
+    @classmethod
+    def equip_item(cls, event_object):
+        item = event_object.item
+        slot = event_object.slot
+        cls.equipped_items [slot.value] = item
+        print(f"You have grabbed the {item.name} from your satchel with your right hand")
+        
 
     @classmethod
     def get_inventory(cls):

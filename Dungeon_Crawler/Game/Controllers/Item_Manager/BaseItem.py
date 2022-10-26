@@ -1,8 +1,9 @@
 from abc import abstractmethod
 from enum import Enum
-from operator import itemgetter
 from Controllers.EventController import EventController
 from Controllers.game_events import OnSfxPlayEvent, OnSfxStopEvent, OnItemDrop
+from Controllers.Player_Controller.item_slots import ItemSlots
+from Controllers.game_events import OnItemEquip
 
 class BaseItemRegistry():
     @classmethod
@@ -38,7 +39,12 @@ class GameItem():
             evt.item = item
             EventController.broadcast_event(evt)
         elif player_action == self.universal_actions[UniversalAction.EQUIP.value]:
-            pass
+            # PlayerController.equip_item(item=item, slot=item_slots.RIGHT_HAND)
+            equip_evt = OnItemEquip()
+            equip_evt.item = item
+            equip_evt.slot = ItemSlots.RIGHT_HAND
+            EventController.broadcast_event(equip_evt)
+
         else:
             raise ValueError("That item action is not yet supported!")
 
