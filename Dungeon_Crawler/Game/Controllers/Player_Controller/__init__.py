@@ -47,8 +47,10 @@ class PlayerController(BaseController):
         selected_item = list(filter(lambda i: i == item, cls.__inventory))
         if selected_item:
             index = cls.__inventory.index(item)
-            cls.__inventory.pop(index)
-            print(f"You have dropped {item.name} from your satchel")
+            player_input = input(f"Are you sure you want to drop {item.name} Y/N:    ")
+            if player_input.lower() == "y":
+                cls.__inventory.pop(index)
+                print(f"You have dropped {item.name} from your satchel")
         #item is removed from inventory
 
 
