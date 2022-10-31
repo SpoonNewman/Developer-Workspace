@@ -3,10 +3,10 @@ from typing import Dict
 from Controllers.EventController import EventController
 
 from Controllers.game_events import OnStaggeredMessageDisplayEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent
-from Controllers.UI_Controller import TextInput
+from Controllers.Environment_controller.Event_Sequence_Manager.Sequences.Base_Story import BaseStory
 
 
-class BaseSequence():
+class BaseSequence(BaseStory):
     @classmethod
     @abstractmethod
     def handle_sequence():
@@ -17,25 +17,19 @@ class BaseSequence():
     def trigger_event_sequence():
         raise NotImplementedError("This is using base class abstract property, please make your own!")
 
-    @classmethod
-    def get_player_input(cls):
-        evt = OnMessageDisplayEvent()
-        evt.message = "\nWhat do you choose?  "
-        evt.typewriter_display = 0
-        EventController.broadcast_event(evt)
+    # @classmethod
+    # def get_player_input(cls):
+    #     evt = OnMessageDisplayEvent()
+    #     evt.message = "\nWhat do you choose?  "
+    #     evt.typewriter_display = 0
+    #     EventController.broadcast_event(evt)
 
-        # Do an event loop and grab the input, then return it
-        while True:
-            input_obj = TextInput()
-            user_input = input_obj.get_input()
-            del input_obj
-            return user_input
-            # Create the text input object
-            # Get input from player
-            # break the loop
-            # del object
-            # return the input
-        # return input("\nWhat do you choose?  ")
+    #     # Do an event loop and grab the input, then return it
+    #     while True:
+    #         input_obj = TextInput()
+    #         user_input = input_obj.get_input()
+    #         del input_obj
+    #         return user_input
 
     @classmethod
     def display_room_description(cls, description: list[str] = None):

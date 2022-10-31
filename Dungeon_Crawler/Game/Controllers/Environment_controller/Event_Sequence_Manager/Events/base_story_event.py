@@ -1,7 +1,7 @@
 from abc import abstractmethod
+from Controllers.Environment_controller.Event_Sequence_Manager.Sequences.Base_Story import BaseStory
 
-
-class BaseStoryEvent():
+class BaseStoryEvent(BaseStory):
     @classmethod
     @abstractmethod
     def handle_event(cls):

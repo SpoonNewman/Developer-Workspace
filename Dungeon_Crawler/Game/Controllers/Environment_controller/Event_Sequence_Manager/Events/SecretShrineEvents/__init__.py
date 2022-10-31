@@ -28,7 +28,7 @@ class EventsSecretShrineIntro(BaseStoryEvent):
         show_actions_evt = OnShowAvailableActionsEvent()
         show_actions_evt.possible_actions = cls.possible_actions
         EventController.broadcast_event(show_actions_evt)
-        player_input = str(input("What do you choose?"))
+        player_input = cls.get_player_input() # str(input("What do you choose?"))
         
         if player_input in cls.possible_actions:
             if cls.possible_actions[player_input] == PlayerStandardActions.PICKUP_BOOK.value and not cls.is_book_pickup:
@@ -72,7 +72,7 @@ class EventsSecretShrinePart2():
         show_actions_evt = OnShowAvailableActionsEvent()
         show_actions_evt.possible_actions = cls.possible_actions
         EventController.broadcast_event(show_actions_evt)
-        player_input = str(input("What do you choose?"))
+        player_input = cls.get_player_input() # str(input("What do you choose?"))
         
         if cls.possible_actions[player_input] == PlayerStandardActions.KILL_SELF.value:
             kill_self_evt = OnKillSelfEvent()

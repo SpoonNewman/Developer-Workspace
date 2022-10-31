@@ -55,7 +55,7 @@ Please select an action by entering a number:
         message_end_character: str = event.message_end_character if event and hasattr(event, "message_end_character") else ''
 
         msg += "\n" # Add the new line to the end to account for the window
-        UIManager.update_sprites(message=msg, typewriter_delay=typewriter_delay)
+        UIManager.display_message(message=msg, typewriter_delay=typewriter_delay)
         pass
         # for char in msg:
         #     sleep(typewriter_delay)
