@@ -1,5 +1,6 @@
 import sys
 import json
+import pygame
 from Controllers.EventController import EventTypes, EventController
 from Controllers.Messages_Controller import MessagesController
 from Controllers.Player_Controller import PlayerController
@@ -13,6 +14,7 @@ from constants import GameConstants
 
 class GameManager():
     game_settings = {}
+    is_new_game = True
 
     @classmethod
     def __init__(cls) -> None:
@@ -29,7 +31,8 @@ class GameManager():
     def initialize_event_subscriptions(cls):
         """Initialize the events and their subscriptions.
         """
-        EventController.add_listener(event_type=EventTypes.ON_GAME_START, handler_functions=[cls.initialize_game_settings, cls.initialize_game_room_map, cls.begin_intro, cls.initialize_enemy_settings, cls.initialize_player_settings, cls.begin_game_loop])
+        EventController.add_listener(event_type=EventTypes.ON_GAME_INITIALIZE, handler_functions=[cls.initialize_game_settings, cls.initialize_game_room_map, cls.initialize_enemy_settings, cls.initialize_player_settings])
+        EventController.add_listener(event_type=EventTypes.ON_GAME_START, handler_functions=[cls.begin_game_loop])
         EventController.add_listener(event_type=EventTypes.ON_ITEM_PICKUP, handler_functions=[PlayerController.pickup_item])
         EventController.add_listener(event_type=EventTypes.ON_KILL_SELF, handler_functions=[cls.play_kill_self])
         EventController.add_listener(event_type=EventTypes.ON_DIE, handler_functions=[cls.play_dead_message, cls.kill_program])
@@ -78,7 +81,23 @@ class GameManager():
 
     @classmethod
     def begin_game_loop(cls):
-        pass
+        while True:
+            current_room = ""
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    cls.kill_program()
+                else:
+                    if cls.is_new_game:
+                        cls.begin_intro()
+                        cls.is_new_game = False
+                    current_location = PlayerController.get_current_location() # Check that player location is set
+                    if current_location:
+                        current_location.trigger_room_sequence()
+                        
+                    # Trigger Sequence
+                    # Get input
+                    # repeat
+                    # KeyDown
 
     @classmethod
     def play_dead_message(cls, event):

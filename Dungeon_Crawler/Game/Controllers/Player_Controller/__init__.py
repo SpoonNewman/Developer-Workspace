@@ -73,8 +73,8 @@ class PlayerController(BaseController):
         location = event.location if event and hasattr(event, "location") else location
 
         cls.__current_location = location
-        if location:
-            location.trigger_room_sequences()
+        # if location:
+        #     location.trigger_room_sequences()
 
     @classmethod
     def __init__(cls) -> None:
