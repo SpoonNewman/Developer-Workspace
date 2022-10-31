@@ -38,8 +38,17 @@ class PlayerController(BaseController):
     @classmethod
     def equip_item(cls, event_object):
         item = event_object.item
-        slot = event_object.slot
-        cls.equipped_items [slot.value] = item
+        if item not in cls.equipped_items.values():
+            if not cls.equipped_items[ItemSlots.RIGHT_HAND.value] and not cls.equipped_items[ItemSlots.LEFT_HAND.value]:
+                cls.equipped_items[ItemSlots.RIGHT_HAND.value] = item
+            elif cls.equipped_items[ItemSlots.RIGHT_HAND.value] and not cls.equipped_items[ItemSlots.LEFT_HAND.value]:
+                cls.equipped_items[ItemSlots.LEFT_HAND.value] = item
+            elif not cls.equipped_items[ItemSlots.RIGHT_HAND.value] and cls.equipped_items[ItemSlots.LEFT_HAND.value]:
+                cls.equipped_items[ItemSlots.RIGHT_HAND.value] = item 
+            else:
+                print("Cannot equip item. There are no free hands.")
+
+        # slot = event_object.slot
         print(f"You have grabbed the {item.name} from your satchel with your right hand")
         
 

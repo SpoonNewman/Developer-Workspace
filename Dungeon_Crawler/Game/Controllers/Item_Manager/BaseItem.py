@@ -42,7 +42,9 @@ class GameItem():
             # PlayerController.equip_item(item=item, slot=item_slots.RIGHT_HAND)
             equip_evt = OnItemEquip()
             equip_evt.item = item
-            equip_evt.slot = ItemSlots.RIGHT_HAND
+            equip_evt.slot = None
+            if issubclass(item.__class__, EquippableItem) and hasattr(item, "preferred_slot"):
+                equip_evt.slot = item.preferred_slot
             EventController.broadcast_event(equip_evt)
 
         else:
@@ -62,3 +64,5 @@ class GameItem():
     def use_item(self, **kwargs):
         print("This item has no use to you right now.")
 
+class EquippableItem(GameItem):
+    preferred_slot = None

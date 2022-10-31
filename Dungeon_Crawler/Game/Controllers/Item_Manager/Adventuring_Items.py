@@ -1,5 +1,6 @@
-from Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem
+from Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem, EquippableItem
 from Controllers.Music_Controller import MusicSoundRegistry
+
 
 
 class AdventuringItemsRegistry(BaseItemRegistry):
@@ -24,13 +25,13 @@ class AdventuringItem(GameItem):
         super().__init__()
         self.inv_socket_weight = 1
 
-class BookItem(AdventuringItem):
+class BookItem(AdventuringItem, EquippableItem):
     def __init__(self) -> None:
         super().__init__()
         self.name = "Book"
         self.pickup_sfx_name = MusicSoundRegistry.BOOK_PAGE
 
-class TorchItem(AdventuringItem):
+class TorchItem(AdventuringItem, EquippableItem):
     def __init__(self) -> None:
         super().__init__()
         self.name = "Torch"
