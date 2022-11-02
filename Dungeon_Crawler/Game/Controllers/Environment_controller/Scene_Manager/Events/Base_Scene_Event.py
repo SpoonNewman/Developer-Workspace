@@ -1,7 +1,8 @@
 from abc import abstractmethod
-from Controllers.Environment_controller.Event_Sequence_Manager.Sequences.Base_Story import BaseStory
+from Controllers.EventController import EventController
+from Controllers.game_events import OnStaggeredMessageDisplayEvent
 
-class BaseStoryEvent(BaseStory):
+class BaseSceneEvent():
     @classmethod
     @abstractmethod
     def handle_event(cls):
@@ -11,3 +12,9 @@ class BaseStoryEvent(BaseStory):
     @abstractmethod
     def trigger_next_scene(cls):
         raise NotImplementedError("This is using base class abstract property, please make your own!")
+
+    @classmethod
+    def display_description(cls, description: list[str] = None):
+        evt = OnStaggeredMessageDisplayEvent()
+        evt.messages = description
+        EventController.broadcast_event(evt)

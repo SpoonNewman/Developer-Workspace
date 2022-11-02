@@ -14,6 +14,7 @@ class EventTypes():
         cls.ON_SHOW_ITEM_ACTIONS = OnShowItemActionsEvent().__class__.__name__
         cls.ON_INTRO_DISPLAY = OnIntroDisplayEvent().__class__.__name__
         cls.ON_GAME_START = OnGameStartEvent().__class__.__name__
+        cls.ON_GAME_INITIALIZE = OnGameInitializeEvent().__class__.__name__
         cls.ON_PLAYER_ACTION = OnPlayerActionEvent().__class__.__name__
         cls.ON_ITEM_PICKUP = OnItemPickupEvent().__class__.__name__
         cls.ON_PLAYER_INVESTIGATE = OnPlayerInvestgateEvent().__class__.__name__
@@ -22,6 +23,7 @@ class EventTypes():
         cls.ON_SFX_PLAY = OnSfxPlayEvent().__class__.__name__
         cls.ON_SFX_STOP = OnSfxStopEvent().__class__.__name__
         cls.ON_ITEM_DROP = OnItemDrop().__class__.__name__
+        cls.ON_NEXT_EVENT_CHANGE = OnNextEventChange().__class__.__name__
 
         return [
             cls.ON_KILL_SELF,
@@ -34,6 +36,7 @@ class EventTypes():
             cls.ON_SHOW_ITEM_ACTIONS,
             cls.ON_INTRO_DISPLAY,
             cls.ON_GAME_START,
+            cls.ON_GAME_INITIALIZE,
             cls.ON_PLAYER_ACTION,
             cls.ON_ITEM_PICKUP,
             cls.ON_PLAYER_INVESTIGATE,
@@ -41,7 +44,8 @@ class EventTypes():
             cls.ON_MUSIC_TRACK_PLAY,
             cls.ON_SFX_PLAY,
             cls.ON_SFX_STOP,
-            cls.ON_ITEM_DROP
+            cls.ON_ITEM_DROP,
+            cls.ON_NEXT_EVENT_CHANGE
         ]
 
 class GameEvent():
@@ -121,3 +125,12 @@ class OnItemDrop(GameEvent):
     def __init__(self) -> None:
         super().__init__()
         self.item = None
+
+class OnGameInitializeEvent(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+
+class OnNextEventChange(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+        self.next_event = None 

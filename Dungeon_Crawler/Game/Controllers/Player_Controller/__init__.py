@@ -15,6 +15,9 @@ class PlayerController(BaseController):
     __is_dead: bool = False
     __current_location = None
     __inventory = []
+    __next_event = None
+    __is_in_event_sequence = False
+    # __is_show_room_description = True
 
     max_inventory_capacity = 30
 
@@ -41,6 +44,7 @@ class PlayerController(BaseController):
         else:
             print("Cannot add item to inventory. You are at max capacity.")
             return False
+
     @classmethod
     def drop_from_inventory(cls, event):
         item = event.item
@@ -51,6 +55,17 @@ class PlayerController(BaseController):
             print(f"You have dropped {item.name} from your satchel")
         #item is removed from inventory
 
+    @classmethod
+    def trigger_next_event(cls):
+        cls.__next_event.handle_event()
+
+    @classmethod
+    def get_is_in_event_sequence(cls, *args, **kwargs):
+        return cls.__is_in_event_sequence
+
+    @classmethod
+    def set_is_in_event_sequence(cls, event):
+        cls.__is_in_event_sequence = event.is_in_event_sequence
 
 
     # region Class Properties
@@ -74,7 +89,19 @@ class PlayerController(BaseController):
 
         cls.__current_location = location
         # if location:
-        #     location.trigger_room_sequences()
+        #     location.trigger_description()
+
+    @classmethod
+    def set_next_event(cls, event):
+        cls.__next_event = event.next_event
+        if event.next_event:
+            cls.__is_in_event_sequence = True
+        else:
+            cls.__is_in_event_sequence = False
+
+    @classmethod
+    def get_next_event(cls, event):
+        return cls.__next_event
 
     @classmethod
     def __init__(cls) -> None:

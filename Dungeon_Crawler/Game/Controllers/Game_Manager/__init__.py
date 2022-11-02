@@ -10,11 +10,14 @@ from Controllers.Music_Controller import MusicController, MusicSoundRegistry
 from pygame import mixer
 from Controllers.game_events import OnSfxPlayEvent
 from Controllers.UI_Controller import UIManager
+from Controllers.game_events import OnGameInitializeEvent
 from constants import GameConstants
 
 class GameManager():
     game_settings = {}
     is_new_game = True
+    clock = pygame.time.Clock()
+    fps = 60
 
     @classmethod
     def __init__(cls) -> None:
@@ -46,6 +49,7 @@ class GameManager():
         EventController.add_listener(event_type=EventTypes.ON_INVENTORY_DISPLAY, handler_functions=[PlayerController.display_inventory])
         EventController.add_listener(event_type=EventTypes.ON_SHOW_ITEM_ACTIONS, handler_functions=[MessagesController.show_item_actions])
         EventController.add_listener(event_type=EventTypes.ON_ITEM_DROP, handler_functions=[PlayerController.drop_from_inventory])
+        EventController.add_listener(event_type=EventTypes.ON_NEXT_EVENT_CHANGE, handler_functions=[PlayerController.set_next_event])
 
     @classmethod
     def initialize_game_settings(cls, event):
@@ -63,11 +67,20 @@ class GameManager():
     
     @classmethod
     def start_game(cls):
-        evt = OnGameStartEvent()
+        evt = OnGameInitializeEvent()
         EventController.broadcast_event(evt)
 
+        cls.update_clock()
+
+        start_evt = OnGameStartEvent()
+        EventController.broadcast_event(start_evt)
+
     @classmethod
-    def begin_intro(cls, event):
+    def update_clock(cls):
+        cls.clock.tick(cls.fps)
+
+    @classmethod
+    def begin_intro(cls):
         MessagesController.display_intro_message()
 
     @classmethod
@@ -80,7 +93,7 @@ class GameManager():
         pass
 
     @classmethod
-    def begin_game_loop(cls):
+    def begin_game_loop(cls, event):
         while True:
             current_room = ""
             for event in pygame.event.get():
@@ -92,12 +105,14 @@ class GameManager():
                         cls.is_new_game = False
                     current_location = PlayerController.get_current_location() # Check that player location is set
                     if current_location:
-                        current_location.trigger_room_sequence()
-                        
-                    # Trigger Sequence
-                    # Get input
+                        if PlayerController.get_is_in_event_sequence():
+                            PlayerController.trigger_next_event()
+                        else:
+                            current_location.trigger_description() # Trigger Sequence
+                            # available_scene_events = current_location.get_scene_events()
+                        player_input = input("What do you do?    ") # Get input
+                        current_location.trigger_event(player_input) # Perform actions/updates
                     # repeat
-                    # KeyDown
 
     @classmethod
     def play_dead_message(cls, event):
