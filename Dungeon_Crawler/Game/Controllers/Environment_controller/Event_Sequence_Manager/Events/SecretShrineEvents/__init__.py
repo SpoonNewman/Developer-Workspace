@@ -7,21 +7,25 @@ from Controllers.game_events import OnItemPickupEvent
 from Controllers.game_events import OnSfxPlayEvent
 from Controllers.Player_Registry_Actions import UniversalPlayerActions
 from Controllers.Music_Controller import MusicSoundRegistry
+from Controllers.Item_Manager.Weapon_Armor_Items import ShieldItem
 
 
 class EventsSecretShrineIntro(BaseStoryEvent):
     description = "You approach a book case in front of you and begin investigating the books resting in the book case. You run your finger over every book wiggling them around as you go until you land on a book that doesnt move left to right.\n\n"
     possible_actions = {
         "1": PlayerStandardActions.PICKUP_BOOK.value,
+        "2": PlayerStandardActions.PICKUP_SHIELD.value
     }
     
     is_completed = None # OnStudyWallSwitchActivated
     is_book_pickup = False
+    is_shield_pickup = False
 
     @classmethod
     def __init__(cls) -> None:
         cls.next_scene = EventsSecretShrinePart2
         cls.book_item = BookItem()
+        cls.shield_item = ShieldItem()
 
     @classmethod
     def handle_event(cls):
@@ -45,11 +49,22 @@ class EventsSecretShrineIntro(BaseStoryEvent):
                 cls.is_book_pickup = True
                 cls.possible_actions.pop(player_input)
                 cls.handle_event()
+            elif cls.possible_actions[player_input] == PlayerStandardActions.PICKUP_SHIELD.value:
+                pickup_shield_evt = OnItemPickupEvent()
+                cls.shield_item.name = "A wooden shield"
+                cls.shield_item.description = "A dry rotted wooden shield."
+                pickup_shield_evt.item = cls.shield_item
+                EventController.broadcast_event(pickup_shield_evt)
+                cls.is_shield_pickup = True
+                cls.possible_actions.pop(player_input)
+                cls.handle_event()
+
         elif player_input in UniversalPlayerActions.actions.keys():
             UniversalPlayerActions.take_action(action=player_input)
             cls.handle_event()
         else:
             raise ValueError("That player action is not yet supported")
+            
 
     @classmethod
     def trigger_next_scene(cls):

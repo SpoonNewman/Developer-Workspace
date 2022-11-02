@@ -1,4 +1,5 @@
 from Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem
+from Controllers.Item_Manager.BaseItem import EquippableItem
 
 
 class WeaponItemsRegistry(BaseItemRegistry):
@@ -43,8 +44,23 @@ class ClubItem(WeaponItem):
     def __init__(self) -> None:
         self.inv_socket_weight = 2
 
-class ShieldItem(ArmorItem):
-    pass
+class ShieldItem(ArmorItem, EquippableItem):
+    def __init__(self) -> None:
+        super().__init__()
+        self.name = "Shield"
+        self.description = "A wooden shield. Dry rotted and could fall apart at any moment."
+        
+        
+        self.actions = {
+            **self.universal_actions,
+        }
+        
+    def use_item(self, action_input: str):
+        if action_input in self.actions.keys():
+            action = self.actions[action_input]
+            if action in self.universal_actions.values():
+
+                self.perform_universal_action(action, self)
 
 class FirearmItem(WeaponItem):
     pass

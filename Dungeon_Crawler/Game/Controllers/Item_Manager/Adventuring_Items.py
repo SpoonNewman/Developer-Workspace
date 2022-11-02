@@ -45,6 +45,7 @@ class TorchItem(AdventuringItem, EquippableItem):
             **self.universal_actions,
         }
 
+
     def use_item(self, action_input: str):
         if action_input in self.actions.keys():
             action = self.actions[action_input]

@@ -17,6 +17,7 @@ class PlayerStandardActions(Enum):
     PICKUP_BOOK = "Pickup Book"
     INVENTORY = "Inventory"
     LOOK_AROUND = "Look Around"
+    PICKUP_SHIELD = "Pickup Shield"
 
 class UniversalPlayerActionKeys(Enum):
     KILL_SELF = "k"
