@@ -24,8 +24,11 @@ class EventTypes():
         cls.ON_SFX_STOP = OnSfxStopEvent().__class__.__name__
         cls.ON_ITEM_DROP = OnItemDrop().__class__.__name__
         cls.ON_NEXT_EVENT_CHANGE = OnNextEventChange().__class__.__name__
+        cls.ON_CURRENT_EVENT_CHANGE = OnCurrentEventChange().__class__.__name__
+        cls.ON_RECORD_PLAYER_ACTION = OnRecordPlayerAction().__class__.__name__
 
         return [
+            cls.ON_RECORD_PLAYER_ACTION,
             cls.ON_KILL_SELF,
             cls.ON_INVENTORY_DISPLAY,
             cls.ON_PRAY,
@@ -45,7 +48,8 @@ class EventTypes():
             cls.ON_SFX_PLAY,
             cls.ON_SFX_STOP,
             cls.ON_ITEM_DROP,
-            cls.ON_NEXT_EVENT_CHANGE
+            cls.ON_NEXT_EVENT_CHANGE,
+            cls.ON_CURRENT_EVENT_CHANGE
         ]
 
 class GameEvent():
@@ -133,4 +137,15 @@ class OnGameInitializeEvent(GameEvent):
 class OnNextEventChange(GameEvent):
     def __init__(self) -> None:
         super().__init__()
-        self.next_event = None 
+        self.next_event = None
+
+class OnCurrentEventChange(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+        self.current_event = None
+
+class OnRecordPlayerAction(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+        self.action = None
+        self.scene = None

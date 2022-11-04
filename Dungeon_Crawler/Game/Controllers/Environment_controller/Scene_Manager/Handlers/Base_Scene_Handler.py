@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import Dict
 from Controllers.EventController import EventController
 
-from Controllers.game_events import OnStaggeredMessageDisplayEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent
+from Controllers.game_events import OnStaggeredMessageDisplayEvent, OnRecordPlayerAction, OnMessageDisplayEvent
 
 class BaseSceneHandler():
     @classmethod
@@ -12,7 +12,7 @@ class BaseSceneHandler():
 
     @classmethod
     @abstractmethod
-    def trigger_event_sequence():
+    def trigger_event():
         raise NotImplementedError("This is using base class abstract property, please make your own!")
 
     @classmethod
@@ -28,10 +28,11 @@ class BaseSceneHandler():
             cls.room_exits = room_exits
 
     @classmethod
-    def handle_actions(cls, possible_actions):
-        evt = OnShowAvailableActionsEvent(possible_actions=possible_actions)
+    def record_action(cls, action, scene):
+        evt = OnRecordPlayerAction()
+        evt.action = action
+        evt.scene = scene
         EventController.broadcast_event(evt)
-        return str(cls.get_player_input())
 
     @classmethod
     def get_player_input(cls):

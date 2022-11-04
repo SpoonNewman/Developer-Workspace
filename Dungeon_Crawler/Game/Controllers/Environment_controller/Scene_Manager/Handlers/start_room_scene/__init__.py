@@ -20,7 +20,7 @@ class StartRoomScene(BaseSceneHandler):
 
 
     @classmethod
-    def trigger_event_sequence(cls, player_action: str):
+    def trigger_event(cls, player_action: str):
         if player_action in cls.possible_actions.keys():
             if cls.possible_actions[player_action] == PlayerStandardActions.MOVE_FORWARD.value:
                 move_evt = OnMessageDisplayEvent()
@@ -42,4 +42,4 @@ class StartRoomScene(BaseSceneHandler):
             cls.display_description(description=cls.description)
         else:
             print("That action is unsupported, try again")
-            cls.trigger_event_sequence(player_action=player_action)
+            cls.trigger_event(player_action=player_action)

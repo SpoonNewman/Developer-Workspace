@@ -45,3 +45,7 @@ class Press(BaseAction):
 
 class Push(BaseAction):
     pass
+
+class MoveForward(BaseAction):
+    def __init__(self):
+        self.__class__.__name__ = "Move Forward"

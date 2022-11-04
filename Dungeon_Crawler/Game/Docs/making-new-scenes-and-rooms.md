@@ -4,5 +4,5 @@ Adding a new room:
     - this will require creating an event sequence and adding it to the registry.
     - The following functions are required:
         - `handle_scene`
-        - `trigger_event_sequence`
+        - `trigger_event`
 

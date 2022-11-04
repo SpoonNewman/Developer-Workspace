@@ -20,7 +20,7 @@ class BaseRoom(ABC):
         raise NotImplementedError("This is using base class abstract property, please make your own!")
 
     @abstractmethod
-    def trigger_event(self):
+    def trigger_scene_event(self):
         raise NotImplementedError("This is using base class abstract property, please make your own!")
 
 class room(BaseRoom):
@@ -63,9 +63,9 @@ class room(BaseRoom):
             return self.scene_handler.scene_events
 
     
-    def trigger_event(self, input):
+    def trigger_scene_event(self, input, current_scene_event = None):
         if self.scene_handler:
-            self.scene_handler.trigger_event_sequence(input)
+            self.scene_handler.trigger_event(input, current_scene_event)
     
 
 class room_tunnel(room):

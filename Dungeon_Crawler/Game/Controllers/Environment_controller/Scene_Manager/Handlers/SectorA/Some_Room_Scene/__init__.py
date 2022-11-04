@@ -20,7 +20,7 @@ class SomeRoomScene(BaseSceneHandler):
             cls.display_description(description=cls.description)
 
     @classmethod
-    def trigger_event_sequence(cls, player_action: str):
+    def trigger_event(cls, player_action: str):
         if player_action in cls.possible_actions.keys() and cls.possible_actions[player_action] == PlayerStandardActions.MOVE_BACKWARD.value:
             move_evt = OnMessageDisplayEvent()
             move_evt.message = "\n\nYou move backward slowly through the room towards the exit to where we came from."
