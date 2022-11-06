@@ -64,6 +64,11 @@ class UIManager(BaseController):
 
         cls.post_update()
 
+    @classmethod
+    def clear_input_field(cls):
+        cls.player_input_surf.image.fill(cls.player_input_surf.surface_color)
+        pygame.draw.rect(cls.player_input_surf.image, LIGHT_BLACK_2, cls.player_input_surf.image.get_rect(), cls.border_width)
+        cls.text_cursor.rect.topleft=(cls.text_cursor.starting_left, cls.text_cursor.starting_top)
 
     @classmethod
     def display_message(cls, message: str, typewriter_delay: int, surface_key):
@@ -217,26 +222,26 @@ class TextCursor(pygame.sprite.Sprite):
     @classmethod
     def move_cursor(cls):
         # Check if we hit the bottom margin, then scroll
-        if cls.rect.top + (cls.text_height*2) >= cls.margin_bottom:
-            UIManager.player_input_surf.scroll_up(scroll_height=-cls.scroll_speed)
-            cls.rect.move_ip(0, -cls.scroll_speed)
+        # if cls.rect.top + (cls.text_height*2) >= cls.margin_bottom:
+        #     UIManager.player_input_surf.scroll_up(scroll_height=-cls.scroll_speed)
+        #     cls.rect.move_ip(0, -cls.scroll_speed)
 
-        else:
+        # else:
             # Check if we need to move to next line
-            if cls.rect.left + (cls.text_width*2) >= WIDTH:
-                # Move to next line
-                cls.rect.left = cls.starting_left # Move to starting x, and incremented y
-                cls.rect.top += cls.text_height
-                cls.placement_on_line = cls.text_width
-            
-            # Check if we can print letter at spot
-            elif cls.rect.left + cls.margin_width < WIDTH:
-                # Check if we're at the starting place or not
-                if cls.rect.left == cls.text_width:
-                    cls.rect.topleft = (cls.starting_left, cls.text_height)
-                else:
-                    cls.rect.move_ip(cls.text_width, 0)
-                    cls.placement_on_line += cls.text_width
+        if cls.rect.left + (cls.text_width*2) >= WIDTH:
+            # Move to next line
+            cls.rect.left = cls.starting_left # Move to starting x, and incremented y
+            cls.rect.top += cls.text_height
+            cls.placement_on_line = cls.text_width
+        
+        # Check if we can print letter at spot
+        elif cls.rect.left + cls.margin_width < WIDTH:
+            # Check if we're at the starting place or not
+            if cls.rect.left == cls.text_width:
+                cls.rect.topleft = (cls.starting_left, cls.text_height)
+            else:
+                cls.rect.move_ip(cls.text_width, 0)
+                cls.placement_on_line += cls.text_width
 
 
 
@@ -273,7 +278,8 @@ class TextInput():
                         user_text = user_text[:-1]
                         # if TextCursor.rect.left >= 20:
                         UIManager.remove_text(pos=(TextCursor.rect.left - TextCursor.text_width, TextCursor.rect.top, TextCursor.rect.width, TextCursor.rect.height))
-                        TextCursor.rect.move_ip((-TextCursor.text_width, 0)) # Move cursor to the left
+                        TextCursor.rect.move_ip(-TextCursor.text_width, 0) # Move cursor to the left
+                        TextCursor.placement_on_line -= TextCursor.text_width
                         UIManager.post_update()
                         # elif TextCursor.rect.left == TextCursor.starting_left: #then move up by the text height and all the way to the right
                         #     TextCursor.remove_text(pos=(PlayerInputSurface.rect.right - (TextCursor.text_width*2), TextCursor.rect.top, TextCursor.rect.width, TextCursor.rect.height - TextCursor.text_height))

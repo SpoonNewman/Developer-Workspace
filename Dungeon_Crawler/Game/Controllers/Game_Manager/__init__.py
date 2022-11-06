@@ -114,6 +114,7 @@ class GameManager():
                 else:
                     current_location.trigger_description() # Trigger Sequence
                 
+                UIManager.clear_input_field() # Wipe the input box
                 input_evt = OnMessageDisplayEvent()
                 input_evt.message = "What do you do?  "
                 input_evt.surface_key = SurfacesRegistry.PLAYER_INPUT_SURFACE
