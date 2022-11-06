@@ -73,8 +73,11 @@ class OnShowItemActionsEvent(GameEvent):
         self.possible_actions = None
 
 class OnMessageDisplayEvent(GameEvent):
-    def __init__(self, message: str = None) -> None:
-        self.message = message
+    def __init__(self) -> None:
+        self.message = None
+        self.surface_key = None
+        # self.typewriter_delay = None
+
 
 class OnKillSelfEvent(GameEvent):
     def __init__(self) -> None:

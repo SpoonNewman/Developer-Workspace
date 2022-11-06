@@ -3,6 +3,7 @@ from Controllers.base_controller import BaseController
 from time import sleep
 from Controllers.Player_Registry_Actions import UniversalPlayerActions
 from Controllers.UI_Controller import UIManager
+from Controllers.Surfaces_Registry import SurfacesRegistry
 
 class MessagesController(BaseController):
     default_typewriter_delay = None
@@ -49,17 +50,21 @@ Please select an action by entering a number:
         cls.display_message(message=cls.standard_messages_list["intro_message"])
 
     @classmethod
-    def display_message(cls, event = None, message = None) -> None:
+    def display_message(cls, event = None, message = None, surface_key = SurfacesRegistry.DESCRIPTION_SURFACE) -> None:
         msg: str = event.message if event and event.message else message
         typewriter_delay: int = event.typewriter_delay if event and hasattr(event, "typewriter_delay") else cls.default_typewriter_delay
-        message_end_character: str = event.message_end_character if event and hasattr(event, "message_end_character") else ''
+        surface = event.surface_key if event and hasattr(event, "surface_key") else surface_key
 
-        msg += "\n" # Add the new line to the end to account for the window
-        UIManager.display_message(message=msg, typewriter_delay=typewriter_delay)
-        pass
-        # for char in msg:
-        #     sleep(typewriter_delay)
-        #     print(char, end=message_end_character, flush=True)
+        UIManager.display_message(message=msg, typewriter_delay=typewriter_delay, surface_key=surface)
+        # cls.print_to_terminal(msg=message, delay=typewriter_delay)
+
+    @classmethod
+    def print_to_terminal(cls, msg, delay, end_character = ''):
+        # msg += "\n"
+        if msg:
+            for char in msg:
+                sleep(delay)
+                print(char, end=end_character, flush=True)
 
     @classmethod
     def display_staggered_messages(cls, event):

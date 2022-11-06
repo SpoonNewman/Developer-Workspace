@@ -1,3 +1,4 @@
+from cgitb import handler
 import sys
 import json
 import pygame
@@ -9,8 +10,9 @@ from Controllers.game_events import OnGameStartEvent, OnDieEvent, OnMessageDispl
 from Controllers.Music_Controller import MusicController, MusicSoundRegistry
 from pygame import mixer
 from Controllers.game_events import OnSfxPlayEvent
-from Controllers.UI_Controller import UIManager
+from Controllers.UI_Controller import UIManager, TextInput
 from Controllers.game_events import OnGameInitializeEvent, OnCurrentEventChange
+from Controllers.Surfaces_Registry import SurfacesRegistry
 from constants import GameConstants
 
 class GameManager():
@@ -52,6 +54,7 @@ class GameManager():
         EventController.add_listener(event_type=EventTypes.ON_NEXT_EVENT_CHANGE, handler_functions=[PlayerController.set_next_event])
         EventController.add_listener(event_type=EventTypes.ON_CURRENT_EVENT_CHANGE, handler_functions=[PlayerController.set_current_event])
         EventController.add_listener(event_type=EventTypes.ON_RECORD_PLAYER_ACTION, handler_functions=[PlayerController.record_action])
+        # EventController.add_listener(event_type=EventTypes.ON_MESSAGE_PLAYER_INPUT_PROMPT, handler_functions=[UIManager.display_message_to_input_surf])
 
     @classmethod
     def initialize_game_settings(cls, event):
@@ -97,26 +100,81 @@ class GameManager():
     @classmethod
     def begin_game_loop(cls, event):
         while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    cls.kill_program()
+            pygame.event.pump()
+            if cls.is_new_game:
+                cls.begin_intro()
+                cls.is_new_game = False
+            
+            current_location = PlayerController.get_current_location() # Check that player location is set
+            
+            if current_location:
+                initial_scene_state = PlayerController.get_current_event()
+                if initial_scene_state:
+                    PlayerController.trigger_current_event(initial_scene_state)
                 else:
-                    if cls.is_new_game:
-                        cls.begin_intro()
-                        cls.is_new_game = False
+                    current_location.trigger_description() # Trigger Sequence
+                
+                input_evt = OnMessageDisplayEvent()
+                input_evt.message = "What do you do?  "
+                input_evt.surface_key = SurfacesRegistry.PLAYER_INPUT_SURFACE
+                EventController.broadcast_event(input_evt)
+                # cls.update_clock()
+
+                # region using TextInput object
+                player_input = TextInput.get_input() #""
+                # endregion 
+                #
+                # region flawed Input loop
+                #  player_input = ""
+                # while in_input_loop:
+                #     for event in pygame.event.get():
+                #         if event.type == pygame.QUIT:
+                #             cls.kill_program(None)
+                #         elif event.type == pygame.KEYDOWN:
+                #             if event.key == pygame.K_RETURN:
+                #                 in_input_loop = False
+                #                 break
+                #             player_input += event.unicode
+                #             input_evt = OnMessageDisplayEvent()
+                #             input_evt.message = player_input
+                #             input_evt.surface_key = SurfacesRegistry.PLAYER_INPUT_SURFACE
+                #             input_evt.typewriter_delay = 0
+                #             EventController.broadcast_event(input_evt)
+                #             cls.update_clock()
+                #         cls.update_clock()
+                # endregion
+
+                            # player_input = input("What do you do?    ") # Get input
+                updated_scene_state = PlayerController.get_current_event()
+                current_location.trigger_scene_event(player_input, updated_scene_state) # Perform actions/updates
+            cls.update_clock()
+
+    # @classmethod
+    # def begin_game_loop_alt(cls, event):
+    #     while True:
+    #         for event in pygame.event.get():
+    #             if event.type == pygame.QUIT:
+    #                 cls.kill_program(None)
+    #             else:
+    #                 if cls.is_new_game:
+    #                     cls.begin_intro()
+    #                     cls.is_new_game = False
                     
-                    current_location = PlayerController.get_current_location() # Check that player location is set
+    #                 current_location = PlayerController.get_current_location() # Check that player location is set
                     
-                    if current_location:
-                        initial_scene_state = PlayerController.get_current_event()
-                        if initial_scene_state:
-                            PlayerController.trigger_current_event(initial_scene_state)
-                        else:
-                            current_location.trigger_description() # Trigger Sequence
-                    
-                        player_input = input("What do you do?    ") # Get input
-                        updated_scene_state = PlayerController.get_current_event()
-                        current_location.trigger_scene_event(player_input, updated_scene_state) # Perform actions/updates
+    #                 if current_location:
+    #                     initial_scene_state = PlayerController.get_current_event()
+    #                     if initial_scene_state:
+    #                         PlayerController.trigger_current_event(initial_scene_state)
+    #                     else:
+    #                         current_location.trigger_description() # Trigger Sequence
+    #                     player_input = input("what do you choose?")
+    #                     updated_scene_state = PlayerController.get_current_event()
+    #                     current_location.trigger_scene_event(player_input, updated_scene_state) # Perform actions/updates
+    #                     cls.update_clock()
+
+    #                         # player_input = input("What do you do?    ") # Get input
+    #         cls.update_clock()
                     # repeat
 
     @classmethod
