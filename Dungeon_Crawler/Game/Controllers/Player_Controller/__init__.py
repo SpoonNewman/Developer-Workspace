@@ -156,10 +156,6 @@ class PlayerController(BaseController):
                 evt.stat_value = 1
             EventController.broadcast_event(event_object=evt)
 
-        # cls.set_health(health=cls.max_health_capacity)
-        # cls.set_mana(mana=cls.max_mana_capacity)
-        # cls.set_faith(faith=cls.max_faith_capacity)
-
     @classmethod
     def set_stat(cls, event):
         # event = kwargs.get("event_object")
