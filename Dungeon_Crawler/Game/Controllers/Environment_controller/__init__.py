@@ -27,7 +27,8 @@ class EnvironmentController(BaseController):
         for room in cls.registered_rooms.values():
             setattr(room, "registered_rooms", cls.registered_rooms)
 
-        pass
+        for room in cls.registered_rooms.values():
+            room.initialize_exits()
 
     @classmethod
     def get_rooms_from_config(cls) -> dict:

@@ -2,28 +2,25 @@ from typing import Dict
 from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.EventController import EventController, EventTypes
 from Controllers.game_events import OnLocationChangeEvent, OnShowAvailableActionsEvent, OnMessageDisplayEvent, OnKillSelfEvent
-from Controllers.Environment_controller.Event_Sequence_Manager.Sequences.Base_Sequence import BaseSequence
+from Controllers.Environment_controller.Scene_Manager.Handlers.Base_Scene_Handler import BaseSceneHandler
 from Controllers.Player_Registry_Actions import UniversalPlayerActions
+from Controllers.Environment_controller.Scene_Manager.Handlers.Base_Scene_Handler import BaseSceneHandler
 
 
-class SomeRoomSequence(BaseSequence):
+class SomeRoomScene(BaseSceneHandler):
+    description = ""
     possible_actions = {
         "1": PlayerStandardActions.KILL_SELF.value,
         "2": PlayerStandardActions.MOVE_BACKWARD.value,
     }
 
     @classmethod
-    def handle_sequence(cls, room_exits = None, registered_rooms: Dict = {}):
-        cls.setup_rooms(room_exits=room_exits, registered_rooms=registered_rooms)
-        cls.action_input_handler()
-    
-    @classmethod
-    def action_input_handler(cls):
-        player_input = cls.handle_actions(possible_actions=cls.possible_actions)
-        cls.trigger_event_sequence(player_action=player_input)
+    def trigger_event(cls, player_state = None):
+        if not player_state:
+            cls.display_description(description=cls.description)
 
     @classmethod
-    def trigger_event_sequence(cls, player_action: str):
+    def trigger_event(cls, player_action: str):
         if player_action in cls.possible_actions.keys() and cls.possible_actions[player_action] == PlayerStandardActions.MOVE_BACKWARD.value:
             move_evt = OnMessageDisplayEvent()
             move_evt.message = "\n\nYou move backward slowly through the room towards the exit to where we came from."

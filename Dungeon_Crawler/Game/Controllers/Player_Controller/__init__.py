@@ -8,15 +8,30 @@ from Controllers.game_events import OnMessageDisplayEvent, OnSfxPlayEvent
 from Controllers.Item_Manager.Adventuring_Items import TorchItem
 from Controllers.game_events import OnShowItemActionsEvent
 
-
+class PlayerActionRecord():
+    def __init__(self, action, scene):
+        self.action = action
+        self.scene = scene
 
 
 class PlayerController(BaseController):
     __is_dead: bool = False
     __current_location = None
     __inventory = []
+    __next_event = None
+    __current_event = None
+    __previous_actions = []
+    __visited_locations_events = []
+    # __is_show_room_description = True
 
     max_inventory_capacity = 30
+
+    @classmethod
+    def record_action(cls, event = None, action = None, scene = None):
+        action = event.action if event else action
+        scene = event.scene if event else scene
+        record = PlayerActionRecord(action=action, scene=scene)
+        cls.__previous_actions.append(record) 
 
     @classmethod
     def get_current_capacity(cls):
@@ -41,6 +56,7 @@ class PlayerController(BaseController):
         else:
             print("Cannot add item to inventory. You are at max capacity.")
             return False
+
     @classmethod
     def drop_from_inventory(cls, event):
         item = event.item
@@ -53,7 +69,36 @@ class PlayerController(BaseController):
                 print(f"You have dropped {item.name} from your satchel")
         #item is removed from inventory
 
+    @classmethod
+    def trigger_current_event(cls, scene):
+        is_first_visit = False if scene in cls.get_visited_event_location() else True
+        if is_first_visit:
+            cls.set_visited_event_location(cls.__current_event)
+            cls.__current_event.handle_event()
 
+    @classmethod
+    def set_visited_event_location(cls, event):
+        cls.__visited_locations_events.append(event)
+
+    @classmethod
+    def get_visited_event_location(cls):
+        return cls.__visited_locations_events
+
+    @classmethod
+    def get_current_event(cls, *args, **kwargs):
+        return cls.__current_event
+
+    @classmethod
+    def set_current_event(cls, event):
+        cls.__current_event = event.current_event
+
+    @classmethod
+    def set_next_event(cls, event):
+        cls.__next_event = event.next_event
+
+    @classmethod
+    def get_next_event(cls, *args, **kwargs):
+        return cls.__next_event
 
     # region Class Properties
     @classmethod
@@ -75,8 +120,9 @@ class PlayerController(BaseController):
         location = event.location if event and hasattr(event, "location") else location
 
         cls.__current_location = location
-        if location:
-            location.trigger_room_sequences()
+        # if location:
+        #     location.trigger_description()
+
 
     @classmethod
     def __init__(cls) -> None:
