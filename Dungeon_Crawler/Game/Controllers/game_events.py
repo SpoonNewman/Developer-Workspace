@@ -26,6 +26,7 @@ class EventTypes():
         cls.ON_NEXT_EVENT_CHANGE = OnNextEventChange().__class__.__name__
         cls.ON_CURRENT_EVENT_CHANGE = OnCurrentEventChange().__class__.__name__
         cls.ON_RECORD_PLAYER_ACTION = OnRecordPlayerAction().__class__.__name__
+        cls.ON_PLAYER_STAT_CHANGE = OnPlayerStatChange().__class__.__name__
 
         return [
             cls.ON_RECORD_PLAYER_ACTION,
@@ -49,7 +50,8 @@ class EventTypes():
             cls.ON_SFX_STOP,
             cls.ON_ITEM_DROP,
             cls.ON_NEXT_EVENT_CHANGE,
-            cls.ON_CURRENT_EVENT_CHANGE
+            cls.ON_CURRENT_EVENT_CHANGE,
+            cls.ON_PLAYER_STAT_CHANGE
         ]
 
 class GameEvent():
@@ -152,3 +154,9 @@ class OnRecordPlayerAction(GameEvent):
         super().__init__()
         self.action = None
         self.scene = None
+
+class OnPlayerStatChange(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+        self.stat_type = None
+        self.stat_value = None

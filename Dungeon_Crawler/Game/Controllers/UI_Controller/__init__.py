@@ -1,3 +1,4 @@
+from enum import Enum
 import random
 import pygame
 from time import sleep
@@ -5,6 +6,7 @@ from Controllers.base_controller import BaseController
 from Controllers.Surfaces_Registry import SurfacesRegistry
 from Controllers.EventController import EventController
 from Controllers.game_events import OnDieEvent
+from Controllers.Player_Controller import PlayerStatusCharacteristic
 
 WIDTH = 1280
 HEIGHT = 720
@@ -22,6 +24,9 @@ ORANGE = (255,69,0)
 WHITE = (255,255,255)
 YELLOW = (255,255,0)
 MAX_LETTER_COUNT = 40
+
+class subsurface_keys(Enum):
+        HEALTH = "health"
 
 class UIManager(BaseController):
     @classmethod
@@ -108,6 +113,17 @@ class UIManager(BaseController):
         cls.post_update()
 
     @classmethod
+    def update_player_status(cls, event):
+        if event:
+            stat_type = event.stat_type
+            stat_value = event.stat_value
+            
+            rendered_stat_value = UIManager.font.render(str(f"{stat_type}: {stat_value}"), True, WHITE, cls.message_side_panel_surf.surface_color)
+            stat_surface = cls.message_side_panel_surf.subsurfaces[stat_type]
+            stat_surface_position = (stat_surface.get_rect().left, stat_surface.get_rect().centery)
+            stat_surface.blit(rendered_stat_value, stat_surface_position)
+
+    @classmethod
     def post_update(cls):
         cls.all_sprites.update()
         cls.window.blit(cls.background, (0, 0))
@@ -151,6 +167,24 @@ class MessagesSidePanelSurface(pygame.sprite.Sprite):
         cls.surface_color = LIGHT_BLACK_1
         cls.image.fill(cls.surface_color)
         cls.rect = UIManager.background.blit(cls.image, (0, 0)) # Draw onto the window
+        cls.text_width = 17
+        cls.stats_buffer = 100
+        cls.stats_margin_left = 100
+        cls.stats_margin_top = 20
+        cls.stats_margin_width = 145
+        cls.stats_height = 30
+
+
+        # Build subsurfaces
+        cls.health_subsurf = cls.image.subsurface(cls.stats_margin_left, cls.stats_margin_top + cls.stats_buffer, cls.stats_margin_width, cls.stats_height)
+        cls.mana_subsurf = cls.image.subsurface(cls.stats_margin_left, cls.stats_margin_top*3 + cls.stats_buffer, cls.stats_margin_width, cls.stats_height)
+        cls.faith_subsurf = cls.image.subsurface(cls.stats_margin_left, cls.stats_margin_top*5 + cls.stats_buffer, cls.stats_margin_width, cls.stats_height)
+
+        cls.subsurfaces = {
+            PlayerStatusCharacteristic.HEALTH.name: cls.health_subsurf,
+            PlayerStatusCharacteristic.MANA.name: cls.mana_subsurf,
+            PlayerStatusCharacteristic.FAITH.name: cls.faith_subsurf
+        }
 
 
 class BaseCursor(pygame.sprite.Sprite):
@@ -192,11 +226,6 @@ class DescriptionCursor(pygame.sprite.Sprite):
             
             # Check if we can print letter at spot
             elif cls.rect.left + cls.margin_width < WIDTH:
-                # Check if we're at the starting place or not
-                # if cls.rect.left == cls.text_width:
-                #     cls.rect.topleft = (cls.starting_left, cls.text_height)
-                # # else:
-
                     cls.rect.move_ip(cls.text_width, 0)
                     cls.placement_on_line += cls.text_width
 
@@ -221,13 +250,6 @@ class TextCursor(pygame.sprite.Sprite):
 
     @classmethod
     def move_cursor(cls):
-        # Check if we hit the bottom margin, then scroll
-        # if cls.rect.top + (cls.text_height*2) >= cls.margin_bottom:
-        #     UIManager.player_input_surf.scroll_up(scroll_height=-cls.scroll_speed)
-        #     cls.rect.move_ip(0, -cls.scroll_speed)
-
-        # else:
-            # Check if we need to move to next line
         if cls.rect.left + (cls.text_width*2) >= WIDTH:
             # Move to next line
             cls.rect.left = cls.starting_left # Move to starting x, and incremented y
@@ -242,10 +264,6 @@ class TextCursor(pygame.sprite.Sprite):
             else:
                 cls.rect.move_ip(cls.text_width, 0)
                 cls.placement_on_line += cls.text_width
-
-
-
-
 
 class TextInput():
     @classmethod
@@ -265,7 +283,7 @@ class TextInput():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     quit_evt = OnDieEvent()
-                    EventController.broadcast(quit_evt)
+                    EventController.broadcast_event(quit_evt)
                     
                 if event.type == pygame.KEYDOWN and event.unicode == "\r":
                     return user_text
@@ -274,16 +292,11 @@ class TextInput():
         
                     # Check for backspace
                     if event.key == pygame.K_BACKSPACE:
-                        # get text input from 0 to -1 i.e. end.
                         user_text = user_text[:-1]
-                        # if TextCursor.rect.left >= 20:
                         UIManager.remove_text(pos=(TextCursor.rect.left - TextCursor.text_width, TextCursor.rect.top, TextCursor.rect.width, TextCursor.rect.height))
                         TextCursor.rect.move_ip(-TextCursor.text_width, 0) # Move cursor to the left
                         TextCursor.placement_on_line -= TextCursor.text_width
                         UIManager.post_update()
-                        # elif TextCursor.rect.left == TextCursor.starting_left: #then move up by the text height and all the way to the right
-                        #     TextCursor.remove_text(pos=(PlayerInputSurface.rect.right - (TextCursor.text_width*2), TextCursor.rect.top, TextCursor.rect.width, TextCursor.rect.height - TextCursor.text_height))
-                        #     TextCursor.rect.move_ip((PlayerInputSurface.rect.right - (TextCursor.text_width*2), -TextCursor.text_height)) # Move the line
 
 
                     elif len(user_text) < MAX_LETTER_COUNT:
