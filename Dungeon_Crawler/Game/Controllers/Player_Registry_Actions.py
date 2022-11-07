@@ -1,6 +1,22 @@
 from enum import Enum
 from Controllers.EventController import EventController
 from Controllers.game_events import OnKillSelfEvent, OnInventoryDisplay, OnPrayEvent
+from Controllers.Actions_Manager import ActionsManager
+
+class ActionRegistry():
+    valid_actions = ActionsManager.actions
+    
+    one_word_actions = [
+        "jump",
+        "crouch",
+        "pray",
+        "blaspheme",
+        "investigate",
+    ]
+
+    item_interactive_actions = []
+
+    movement_actions = []
 
 class PlayerStandardActions(Enum):
     KILL_SELF = "Kill Self"
@@ -14,7 +30,7 @@ class PlayerStandardActions(Enum):
     BLASPHEME = "Blaspheme"
     INVESTIGATE = "Investigate"
     ACTIVATE_SWITCH = "Activate Switch"
-    PICKUP_BOOK = "Pickup Book"
+    # PICKUP_BOOK = "Pickup Book"
     INVENTORY = "Inventory"
     LOOK_AROUND = "Look Around"
 

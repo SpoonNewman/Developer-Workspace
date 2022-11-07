@@ -16,11 +16,13 @@ class UniversalAction(Enum):
     CANCEL = "c"
 
 class GameItem():
-    def __init__(self) -> None:
-        self.name = "unknown item"
-        self.inv_socket_weight = 0
-        self.description = ""
-        self.pickup_sfx_name = None
+    def __init__(self, name="unknown item", description="", located_in_event=None, inv_socket_weight=0, pickup_sfx_name=None, type="unknown") -> None:
+        self.name = name
+        self.description = description
+        self.type = type
+        self.location_scene_event = located_in_event
+        self.inv_socket_weight = inv_socket_weight
+        self.pickup_sfx_name = pickup_sfx_name
         self.universal_actions = {
             UniversalAction.DROP.value: "Drop",
             UniversalAction.EQUIP.value: "Equip",
