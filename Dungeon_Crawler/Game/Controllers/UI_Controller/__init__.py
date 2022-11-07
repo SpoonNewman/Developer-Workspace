@@ -283,7 +283,7 @@ class TextInput():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     quit_evt = OnDieEvent()
-                    EventController.broadcast(quit_evt)
+                    EventController.broadcast_event(quit_evt)
                     
                 if event.type == pygame.KEYDOWN and event.unicode == "\r":
                     return user_text
