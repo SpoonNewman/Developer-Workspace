@@ -1,12 +1,16 @@
-from itertools import accumulate
+from enum import Enum
 from time import sleep
 from Controllers.base_controller import BaseController
 from Controllers.Player_Registry_Actions import PlayerStandardActions
 from Controllers.EventController import EventController, EventTypes
 from Controllers.Item_Manager.Item_Registry import ItemRegistry
-from Controllers.game_events import OnMessageDisplayEvent, OnSfxPlayEvent
+from Controllers.game_events import OnMessageDisplayEvent, OnSfxPlayEvent, OnPlayerStatChange, OnShowItemActionsEvent
 from Controllers.Item_Manager.Adventuring_Items import TorchItem
-from Controllers.game_events import OnShowItemActionsEvent
+
+class PlayerStatusCharacteristic(Enum):
+    HEALTH = 0
+    MANA = 1
+    FAITH = 2
 
 class PlayerActionRecord():
     def __init__(self, action, scene):
@@ -22,9 +26,14 @@ class PlayerController(BaseController):
     __current_event = None
     __previous_actions = []
     __visited_locations_events = []
-    # __is_show_room_description = True
+    __mana_current = 0
+    __faith_current = 0
+    __health_current = 0
 
     max_inventory_capacity = 30
+    max_mana_capacity = 80
+    max_faith_capacity = 40
+    max_health_capacity = 100
 
     @classmethod
     def record_action(cls, event = None, action = None, scene = None):
@@ -40,7 +49,6 @@ class PlayerController(BaseController):
             for item in cls.__inventory:
                 current_capacity += item.inv_socket_weight
         return current_capacity
-        # return accumulate(list(filter(lambda item: item.inv_socket_weight, cls.__inventory)))[-1] if cls.__inventory else 0
 
     @classmethod
     def get_inventory(cls):
@@ -120,8 +128,6 @@ class PlayerController(BaseController):
         location = event.location if event and hasattr(event, "location") else location
 
         cls.__current_location = location
-        # if location:
-        #     location.trigger_description()
 
 
     @classmethod
@@ -132,9 +138,56 @@ class PlayerController(BaseController):
     def initialize_player_settings(cls, **kwargs):
         game_settings = kwargs.get("settings")
         cls.set_starting_inventory()
+        cls.set_starting_stats()
         config_start_room = game_settings["starting_room"]
         starting_room = cls.registered_rooms[config_start_room] if game_settings["starting_room"] else cls.registered_rooms["start_room"]
         cls.set_current_location(location=starting_room)
+
+    @classmethod
+    def set_starting_stats(cls):
+        for stat in PlayerStatusCharacteristic.__members__.keys():
+            evt = OnPlayerStatChange()
+            evt.stat_type = stat
+            if stat == PlayerStatusCharacteristic.FAITH.name:
+                evt.stat_value = cls.max_faith_capacity
+            elif stat == PlayerStatusCharacteristic.HEALTH.name:
+                evt.stat_value = cls.max_health_capacity
+            elif stat == PlayerStatusCharacteristic.MANA.name:
+                evt.stat_value = cls.max_mana_capacity
+            else:
+                evt.stat_value = 1
+            EventController.broadcast_event(event_object=evt)
+
+    @classmethod
+    def set_stat(cls, event):
+        # event = kwargs.get("event_object")
+        if event:
+            stat_type = event.stat_type
+            stat_value = event.stat_value
+
+            if stat_type == PlayerStatusCharacteristic.FAITH:
+                cls.set_faith(faith=stat_value)
+            elif stat_type == PlayerStatusCharacteristic.HEALTH:
+                cls.set_health(health=stat_value)
+            elif stat_type == PlayerStatusCharacteristic.MANA:
+                cls.set_mana(mana=stat_value)
+            else:
+                print(f"Didn't understand the stat type: {stat_type}")
+
+    @classmethod
+    def set_health(cls, health: int):
+        if health <= cls.max_health_capacity:
+            cls.__health_current = health
+        else:
+            cls.__health_current = cls.max_health_capacity
+
+    @classmethod
+    def set_mana(cls, mana: int):
+        cls.__mana_current = mana
+
+    @classmethod
+    def set_faith(cls, faith: int):
+        cls.__faith_current = faith
 
     @classmethod
     def set_starting_inventory(cls, **kwargs):
