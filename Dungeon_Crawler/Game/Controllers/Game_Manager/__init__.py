@@ -99,6 +99,8 @@ class GameManager():
     @classmethod
     def begin_game_loop(cls, event):
         while True:
+            # if UIManager.main_menu.is_enabled():
+            #     UIManager.main_menu.start_main_loop()
             pygame.event.pump()
             if cls.is_new_game:
                 cls.begin_intro()
