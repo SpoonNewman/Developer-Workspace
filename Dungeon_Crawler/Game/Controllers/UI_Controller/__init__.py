@@ -5,7 +5,7 @@ from time import sleep
 from Controllers.base_controller import BaseController
 from Controllers.Surfaces_Registry import SurfacesRegistry
 from Controllers.EventController import EventController
-from Controllers.game_events import OnDieEvent
+from Controllers.game_events import OnDieEvent, OnVolumeChangeEvent
 from Controllers.Player_Controller import PlayerStatusCharacteristic
 
 
@@ -188,7 +188,17 @@ class AudioMenu():
             width=cls.menu_width
         )
 
+        cls.volume_slider = cls.menu.add.range_slider(
+            "Volume", 50, (0, 100), 1, cls.change_volume
+        )
+
         cls.menu.add.button("Back", pygame_menu.events.BACK)
+
+    @classmethod
+    def change_volume(cls, volume):
+        evt = OnVolumeChangeEvent()
+        evt.volume_value = volume
+        EventController.broadcast_event(event_object=evt)
 
 class GameplayMenu():
     @classmethod

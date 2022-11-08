@@ -22,6 +22,7 @@ class EventTypes():
         cls.ON_MUSIC_TRACK_PLAY = OnMusicTrackPlayEvent().__class__.__name__
         cls.ON_SFX_PLAY = OnSfxPlayEvent().__class__.__name__
         cls.ON_SFX_STOP = OnSfxStopEvent().__class__.__name__
+        cls.ON_VOLUME_CHANGE = OnVolumeChangeEvent().__class__.__name__
         cls.ON_ITEM_DROP = OnItemDrop().__class__.__name__
         cls.ON_NEXT_EVENT_CHANGE = OnNextEventChange().__class__.__name__
         cls.ON_CURRENT_EVENT_CHANGE = OnCurrentEventChange().__class__.__name__
@@ -48,6 +49,7 @@ class EventTypes():
             cls.ON_MUSIC_TRACK_PLAY,
             cls.ON_SFX_PLAY,
             cls.ON_SFX_STOP,
+            cls.ON_VOLUME_CHANGE,
             cls.ON_ITEM_DROP,
             cls.ON_NEXT_EVENT_CHANGE,
             cls.ON_CURRENT_EVENT_CHANGE,
@@ -121,6 +123,10 @@ class OnSfxPlayEvent(GameEvent):
 class OnSfxStopEvent(GameEvent):
     def __init__(self) -> None:
         self.sfx_name = None
+
+class OnVolumeChangeEvent(GameEvent):
+    def __init__(self) -> None:
+        self.volume_value = None
 
 class OnInventoryDisplay(GameEvent):
     def __init__(self) -> None:
