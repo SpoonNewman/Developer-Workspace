@@ -18,6 +18,7 @@ from constants import GameConstants
 class GameManager():
     game_settings = {}
     is_new_game = True
+    is_at_opening_menu = True
     clock = pygame.time.Clock()
     fps = 60
 
@@ -100,9 +101,13 @@ class GameManager():
     @classmethod
     def begin_game_loop(cls, event):
         while True:
-            # if UIManager.main_menu.is_enabled():
-            #     UIManager.main_menu.start_main_loop()
             pygame.event.pump()
+            if cls.is_at_opening_menu:
+                UIManager.opening_menu.menu.enable()
+                while UIManager.opening_menu.menu.is_enabled():
+                    UIManager.display_opening_menu()
+                    cls.is_at_opening_menu = False
+
             if cls.is_new_game:
                 cls.begin_intro()
                 cls.is_new_game = False

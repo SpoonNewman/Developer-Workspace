@@ -48,6 +48,7 @@ class UIManager(BaseController):
         cls.message_side_panel_surf = MessagesSidePanelSurface()
         cls.text_cursor = TextCursor()
         cls.description_cursor = DescriptionCursor()
+        cls.opening_menu = OpeningMenu()
         cls.settings_menu = SettingsMenu()
         
         cls.font = pygame.font.SysFont("monospace", 18)
@@ -71,10 +72,17 @@ class UIManager(BaseController):
 
         cls.post_update()
 
+    # region
     @classmethod
     def display_settings(cls):
         cls.settings_menu.menu.draw(cls.background)
         cls.settings_menu.menu.update(pygame.event.get())
+        cls.post_update()
+
+    @classmethod
+    def display_opening_menu(cls):
+        cls.opening_menu.menu.draw(cls.background)
+        cls.opening_menu.menu.update(pygame.event.get())
         cls.post_update()
     
     @classmethod
@@ -141,13 +149,50 @@ class UIManager(BaseController):
         cls.window.blit(cls.background, (0, 0))
         pygame.display.flip()
 
-class SettingsMenu():
+    # endregion
+
+class OpeningMenu():
     @classmethod
     def __init__(cls):
         cls.theme = pygame_menu.themes.THEME_DARK
         cls.menu_height = 400
         cls.menu_width = 600
+        cls.title = "Dungeon Crawl"
+
+        cls.menu = pygame_menu.Menu(
+            enabled=False,
+            height=cls.menu_height,
+            onclose=pygame_menu.events.RESET,
+            theme=cls.theme,
+            title=cls.title,
+            width=cls.menu_width
+        )
+
+        cls.settings_menu = SettingsMenu(
+            use_back_button=True,
+            use_return_to_game_button=False
+        ).menu
+
+        cls.menu.add.button("Start", cls.start_game)
+        cls.menu.add.button(cls.settings_menu.get_title(), cls.settings_menu)
+        cls.menu.add.button("Exit", exit)
+
+    @classmethod
+    def start_game(cls):
+        cls.menu.close()
+        cls.menu.disable()
+        UIManager.post_update()
+
+class SettingsMenu():
+    @classmethod
+    def __init__(cls, use_back_button=False, use_return_to_game_button=True):
+        cls.theme = pygame_menu.themes.THEME_DARK
+        cls.menu_height = 400
+        cls.menu_width = 600
         cls.title = "Settings"
+        cls.exit_game_button = None
+        cls.back_button = None
+        cls.return_to_game_button = None
 
         cls.menu = pygame_menu.Menu(
             enabled=False,
@@ -162,11 +207,16 @@ class SettingsMenu():
         cls.gameplay_menu = GameplayMenu().menu
         cls.video_menu = VideoMenu().menu
 
-        cls.menu.add.button("Return to Game", cls.close_menu)
+        if use_return_to_game_button:
+            cls.return_to_game_button = cls.menu.add.button("Return to Game", cls.close_menu)
+
         cls.menu.add.button(cls.audio_menu.get_title(), cls.audio_menu)
-        cls.menu.add.button(cls.gameplay_menu.get_title(), cls.gameplay_menu)
         cls.menu.add.button(cls.video_menu.get_title(), cls.video_menu)
-        cls.menu.add.button("Quit Game", exit)
+        cls.menu.add.button(cls.gameplay_menu.get_title(), cls.gameplay_menu)
+        if use_back_button:
+            cls.back_button = cls.menu.add.button("Back", pygame_menu.events.BACK)
+        else:
+            cls.exit_game_button = cls.menu.add.button("Quit Game", exit)
 
     @classmethod
     def close_menu(cls):
