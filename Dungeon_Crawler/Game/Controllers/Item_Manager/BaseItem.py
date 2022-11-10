@@ -65,4 +65,14 @@ class GameItem():
         print("This item has no use to you right now.")
 
 class EquippableItem(GameItem):
+    def __init__(self) -> None:
+        super().__init__()
     preferred_slot = None
+
+class HandEquippableItem(EquippableItem):
+    def __init__(self) -> None:
+        super().__init__()
+
+class BodyEquippableItem(EquippableItem):
+    def __init__(self) -> None:
+        super().__init__()

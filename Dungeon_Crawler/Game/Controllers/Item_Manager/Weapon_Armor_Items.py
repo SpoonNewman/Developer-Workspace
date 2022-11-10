@@ -1,5 +1,5 @@
-from Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem
-from Controllers.Item_Manager.BaseItem import EquippableItem
+from Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem, EquippableItem, HandEquippableItem, BodyEquippableItem
+from Controllers.Player_Controller.item_slots import ItemSlots
 
 
 class WeaponItemsRegistry(BaseItemRegistry):
@@ -26,12 +26,33 @@ class ArmorItemsRegistry(BaseItemRegistry):
            cls.SHIELD
         ]
 
-class WeaponItem(GameItem):
+class WeaponItem(HandEquippableItem):
     def __init__(self) -> None:
+        super().__init__()
         self.inv_socket_weight = 1
 
-class ArmorItem(GameItem):
-    pass
+class ArmorItem(BodyEquippableItem):
+    def __init__(self) -> None:
+        super().__init__()
+
+class ChestPlateItem(ArmorItem):
+    def __init__(self) -> None:
+        super().__init__()
+        self.name = "Chest Plate"
+        self.description = "A steel chest plate badly dented and rusted."
+        self.preferred_slot = ItemSlots.CHEST.value
+        
+        
+        self.actions = {
+            **self.universal_actions,
+        }
+    
+    def use_item(self, action_input: str):
+        if action_input in self.actions.keys():
+            action = self.actions[action_input]
+            if action in self.universal_actions.values():
+
+                self.perform_universal_action(action, self)
 
 class SwordItem(WeaponItem):
     def __init__(self) -> None:
@@ -44,7 +65,7 @@ class ClubItem(WeaponItem):
     def __init__(self) -> None:
         self.inv_socket_weight = 2
 
-class ShieldItem(ArmorItem, EquippableItem):
+class ShieldItem(WeaponItem):
     def __init__(self) -> None:
         super().__init__()
         self.name = "Shield"
