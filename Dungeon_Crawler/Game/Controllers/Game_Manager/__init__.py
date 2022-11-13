@@ -48,6 +48,7 @@ class GameManager():
         EventController.add_listener(event_type=EventTypes.ON_MUSIC_TRACK_PLAY, handler_functions=[MusicController.play_music_by_track])
         EventController.add_listener(event_type=EventTypes.ON_SFX_PLAY, handler_functions=[MusicController.play_sfx])
         EventController.add_listener(event_type=EventTypes.ON_SFX_STOP, handler_functions=[MusicController.stop_sfx])
+        EventController.add_listener(event_type=EventTypes.ON_VOLUME_CHANGE, handler_functions=[MusicController.change_volume])
         EventController.add_listener(event_type=EventTypes.ON_INVENTORY_DISPLAY, handler_functions=[PlayerController.display_inventory])
         EventController.add_listener(event_type=EventTypes.ON_SHOW_ITEM_ACTIONS, handler_functions=[MessagesController.show_item_actions])
         EventController.add_listener(event_type=EventTypes.ON_ITEM_DROP, handler_functions=[PlayerController.drop_from_inventory])
@@ -99,6 +100,8 @@ class GameManager():
     @classmethod
     def begin_game_loop(cls, event):
         while True:
+            # if UIManager.main_menu.is_enabled():
+            #     UIManager.main_menu.start_main_loop()
             pygame.event.pump()
             if cls.is_new_game:
                 cls.begin_intro()

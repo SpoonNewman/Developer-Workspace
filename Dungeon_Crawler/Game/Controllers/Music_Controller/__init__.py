@@ -66,3 +66,9 @@ class MusicController(BaseController):
         
         mixer.Sound.stop(cls.active_sounds[event.sfx_name])
         cls.active_sounds.pop(event.sfx_name)
+
+    @classmethod
+    def change_volume(cls, event):
+        if event:
+            volume = event.volume_value
+            mixer.music.set_volume(volume*0.01)
