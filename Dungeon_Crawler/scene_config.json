@@ -1,0 +1,34 @@
+[
+    {
+        "name": "start_scene",
+        "scene_handler": "start_room_scene",
+        "scene_type": "standard",
+        "scene_connections": [
+            "intro_tunnel_0"
+        ]
+    },
+    {
+        "name": "intro_tunnel_0",
+        "event_handler": "tunnel_a1_scene",
+        "scene_type": "standard",
+        "scene_connections": ["intro_chamber_0", "start_room"]
+    },
+    {
+        "name": "some_room",
+        "event_handler": "some_room_scene",
+        "scene_type": "standard",
+        "scene_connections": [""]
+    },
+    {
+        "name": "intro_tunnel_1",
+        "event_handler": "",
+        "scene_type": "standard",
+        "scene_connections": ["intro_chamber_0"]
+    },
+    {
+        "name": "intro_chamber_0",
+        "event_handler": "chamber_a1_scene",
+        "scene_type": "standard",
+        "scene_connections": ["intro_tunnel_1"]
+    }
+]

@@ -22,10 +22,10 @@ class BaseSceneHandler():
         EventController.broadcast_event(evt)
  
     @classmethod
-    def setup_rooms(cls, room_exits = None, registered_rooms: Dict = {}, room_description: list[str] = None):
-        cls.registered_rooms=registered_rooms
-        if room_exits and len(room_exits) > 0:
-            cls.room_exits = room_exits
+    def setup_scene_connections(cls, scene_connections = None, registered_scenes: Dict = {}):
+        cls.registered_scenes=registered_scenes
+        if scene_connections and len(scene_connections) > 0:
+            cls.scene_connections = scene_connections
 
     @classmethod
     def record_action(cls, action, scene):
@@ -40,10 +40,3 @@ class BaseSceneHandler():
         evt.message = "\nWhat do you choose?  "
         evt.typewriter_display = 0
         EventController.broadcast_event(evt)
-
-        # Do an event loop and grab the input, then return it
-        # while True:
-        #     input_obj = TextInput()
-        #     user_input = input_obj.get_input()
-        #     del input_obj
-        #     return user_input

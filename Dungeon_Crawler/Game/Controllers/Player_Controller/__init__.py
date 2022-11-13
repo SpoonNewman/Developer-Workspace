@@ -139,9 +139,9 @@ class PlayerController(BaseController):
         game_settings = kwargs.get("settings")
         cls.set_starting_inventory()
         cls.set_starting_stats()
-        config_start_room = game_settings["starting_room"]
-        starting_room = cls.registered_rooms[config_start_room] if game_settings["starting_room"] else cls.registered_rooms["start_room"]
-        cls.set_current_location(location=starting_room)
+        config_start_scene = game_settings["starting_scene"]
+        starting_scene = cls.registered_scenes[config_start_scene] if game_settings["starting_scene"] else cls.registered_scenes["start_scene"]
+        cls.set_current_location(location=starting_scene)
 
     @classmethod
     def set_starting_stats(cls):
@@ -193,14 +193,6 @@ class PlayerController(BaseController):
     def set_starting_inventory(cls, **kwargs):
         torch = TorchItem()
         cls.add_to_inventory(item=torch)
-
-    @classmethod
-    def get_available_actions(cls, room):  
-        pass
-    
-    @classmethod
-    def actions_by_room_type(cls, room_type: str):
-        return []
 
     @classmethod
     def pickup_item(cls, event):

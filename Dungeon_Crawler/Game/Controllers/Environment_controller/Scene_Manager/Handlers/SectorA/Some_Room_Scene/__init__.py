@@ -26,10 +26,10 @@ class SomeRoomScene(BaseSceneHandler):
             move_evt.message = "\n\nYou move backward slowly through the room towards the exit to where we came from."
             EventController.broadcast_event(move_evt)
             
-            forward_exit = list(filter(lambda exit: exit in cls.registered_rooms.keys(), cls.room_exits))[0]
+            forward_exit = list(filter(lambda exit: exit in cls.registered_scenes.keys(), cls.scene_connections))[0]
             
-            evt = OnLocationChangeEvent(location=cls.registered_rooms[forward_exit])
-            evt.location = cls.registered_rooms[forward_exit]
+            evt = OnLocationChangeEvent(location=cls.registered_scenes[forward_exit])
+            evt.location = cls.registered_scenes[forward_exit]
             EventController.broadcast_event(evt)
 
         elif player_action in UniversalPlayerActions.actions.keys():

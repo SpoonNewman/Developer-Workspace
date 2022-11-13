@@ -36,7 +36,7 @@ class GameManager():
     def initialize_event_subscriptions(cls):
         """Initialize the events and their subscriptions.
         """
-        EventController.add_listener(event_type=EventTypes.ON_GAME_INITIALIZE, handler_functions=[cls.initialize_game_settings, cls.initialize_game_room_map, cls.initialize_enemy_settings, cls.initialize_player_settings])
+        EventController.add_listener(event_type=EventTypes.ON_GAME_INITIALIZE, handler_functions=[cls.initialize_game_settings, cls.initialize_game_scene_map, cls.initialize_enemy_settings, cls.initialize_player_settings])
         EventController.add_listener(event_type=EventTypes.ON_GAME_START, handler_functions=[cls.begin_game_loop])
         EventController.add_listener(event_type=EventTypes.ON_ITEM_PICKUP, handler_functions=[PlayerController.pickup_item])
         EventController.add_listener(event_type=EventTypes.ON_KILL_SELF, handler_functions=[cls.play_kill_self])
@@ -90,8 +90,8 @@ class GameManager():
         MessagesController.display_intro_message()
 
     @classmethod
-    def initialize_game_room_map(cls, event):
-        EnvironmentController.initialize_rooms()
+    def initialize_game_scene_map(cls, event):
+        EnvironmentController.initialize_scenes()
 
     @classmethod
     def initialize_enemy_settings(cls, event):
