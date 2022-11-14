@@ -1,7 +1,7 @@
-from Controllers.Environment_controller.Event_Sequence_Manager.Events.base_story_event import BaseStoryEvent
+from Controllers.Environment_controller.Scene_Manager.Events.Base_Scene_Event import BaseSceneEvent
 
 
-class EventsGoblinAttackIntro(BaseStoryEvent):
+class EventsGoblinAttackIntro(BaseSceneEvent):
     def __init__(self) -> None:
         super().__init__()
 

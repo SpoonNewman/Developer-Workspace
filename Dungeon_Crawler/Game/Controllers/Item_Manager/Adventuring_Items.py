@@ -21,15 +21,19 @@ class AdventuringItemsRegistry(BaseItemRegistry):
         ]
 
 class AdventuringItem(GameItem):
-    def __init__(self) -> None:
-        super().__init__()
-        self.inv_socket_weight = 1
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+        if not kwargs.get("inv_socket_weight"):
+            self.inv_socket_weight = 1
 
-class BookItem(AdventuringItem, EquippableItem):
-    def __init__(self) -> None:
-        super().__init__()
-        self.name = "Book"
-        self.pickup_sfx_name = MusicSoundRegistry.BOOK_PAGE
+class BookItem(AdventuringItem):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(**kwargs)
+        # self.name = "Book"
+        if not kwargs.get("type"):
+            self.type = "book"
+        if not kwargs.get("pickup_sfx_name"):
+            self.pickup_sfx_name = MusicSoundRegistry.BOOK_PAGE
 
 class TorchItem(AdventuringItem, EquippableItem):
     def __init__(self) -> None:
