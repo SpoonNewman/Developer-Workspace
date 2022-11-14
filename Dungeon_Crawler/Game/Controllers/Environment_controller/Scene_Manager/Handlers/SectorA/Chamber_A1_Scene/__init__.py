@@ -6,6 +6,7 @@ from Controllers.Player_Registry_Actions import ActionRegistry
 from Controllers.Environment_controller.Scene_Manager.Handlers.Base_Scene_Handler import BaseSceneHandler
 from Controllers.Item_Manager.Adventuring_Items import BookItem
 from Controllers.Actions_Manager.simple_actions import MoveForward
+from Controllers.Item_Manager.Weapon_Armor_Items import ChestPlateItem
 
 class ChamberA1Scene(BaseSceneHandler):
     description = [
@@ -21,7 +22,8 @@ class ChamberA1Scene(BaseSceneHandler):
     valid_actions = dict(map(lambda item_kv: (item_kv[0].lower(), item_kv[1]), ActionRegistry.valid_actions.items()))
     previous_actions = []
     items = {
-        "book": BookItem(name="Mouldering Book", description="An old book that is damp and covererd in mold.", located_in_event=SceneEventsRegistry.registry["SecretShrineInvestigationPart1"])
+        "book": BookItem(name="Mouldering Book", description="An old book that is damp and covererd in mold.", located_in_event=SceneEventsRegistry.registry["SecretShrineInvestigationPart1"]),
+        "chestplate": ChestPlateItem(located_in_event=SceneEventsRegistry.registry["SecretShrineInvestigationPart1"])
     }
 
     valid_directions = ["forward"]
@@ -45,6 +47,13 @@ class ChamberA1Scene(BaseSceneHandler):
             cls.items.pop("book")
             cls.record_action(action=full_action, scene=current_scene)
             return SceneEventsRegistry.registry["SecretShrineInvestigationPart2"]
+        elif full_action == "pickup chestplate":
+            pickup_chestplate_evt = OnItemPickupEvent()
+            pickup_chestplate_evt.item = cls.items["chestplate"]
+            EventController.broadcast_event(pickup_chestplate_evt)
+            cls.items.pop("chestplate")
+            cls.record_action(action=full_action, scene=current_scene)
+            return current_scene
         elif full_action == PlayerStandardActions.MOVE_FORWARD.value.lower():
             if current_scene.__class__.__name__ == SceneEventsRegistry.registry["SecretShrineInvestigationPart2"].__class__.__name__:
                 return SceneEventsRegistry.registry["SecretShrineInvestigationPart3"]
@@ -92,8 +101,8 @@ class ChamberA1Scene(BaseSceneHandler):
     @classmethod
     def handle_player_input(cls, action, object, raw_action, current_scene_event = None):
         if action == "pickup":
-            if current_scene_event and cls.items.get("book") and current_scene_event.__class__.__name__ == cls.items["book"].location_scene_event.__class__.__name__:
-                if object and cls.items.get("book") and object == cls.items["book"].type:
+            if current_scene_event:
+                if object and cls.items.get("book") and object == cls.items["book"].type and current_scene_event.__class__.__name__ == cls.items["book"].location_scene_event.__class__.__name__:
                     event = cls.handle_scene_events(full_action=raw_action, current_scene=current_scene_event)
                     if event and not isinstance(event, str):
                         event_change_evt = OnCurrentEventChange()
@@ -101,9 +110,17 @@ class ChamberA1Scene(BaseSceneHandler):
                         EventController.broadcast_event(event_change_evt)
                     pass
                 else:
-                    print("You look around and find multiple books but they are unreadable, covered in mold, and wet. None of these are usable...")
-            else:
-                print("There are no books nearby. Try looking closer.")
+                    print("There are no books nearby. Try looking closer.")
+
+                if object and cls.items.get("chestplate") and object == cls.items["chestplate"].type and current_scene_event.__class__.__name__ == cls.items["chestplate"].location_scene_event.__class__.__name__:
+                    event = cls.handle_scene_events(full_action=raw_action, current_scene=current_scene_event)
+                    if event and not isinstance(event, str):
+                        event_change_evt = OnCurrentEventChange()
+                        event_change_evt.current_event = event
+                        EventController.broadcast_event(event_change_evt)
+                    pass
+                else:
+                    print("Are you blind? There is no chestplate nearby.")
         elif raw_action in cls.scene_events:
             event = cls.handle_scene_events(full_action=raw_action, current_scene=current_scene_event)
             if event and not isinstance(event, str):

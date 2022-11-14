@@ -94,6 +94,8 @@ class PlayerController(BaseController):
             if item.__class__.__name__ in ItemRegistry.get_registered_items():
                 cls.__inventory.append(item)
                 return True
+            else:
+                print("That item is not registered")
         else:
             print("Cannot add item to inventory. You are at max capacity.")
             return False
