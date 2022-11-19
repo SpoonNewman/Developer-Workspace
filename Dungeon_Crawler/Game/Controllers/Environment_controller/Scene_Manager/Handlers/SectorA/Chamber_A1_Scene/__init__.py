@@ -102,25 +102,28 @@ class ChamberA1Scene(BaseSceneHandler):
     def handle_player_input(cls, action, object, raw_action, current_scene_event = None):
         if action == "pickup":
             if current_scene_event:
-                if object and cls.items.get("book") and object == cls.items["book"].type and current_scene_event.__class__.__name__ == cls.items["book"].location_scene_event.__class__.__name__:
-                    event = cls.handle_scene_events(full_action=raw_action, current_scene=current_scene_event)
-                    if event and not isinstance(event, str):
-                        event_change_evt = OnCurrentEventChange()
-                        event_change_evt.current_event = event
-                        EventController.broadcast_event(event_change_evt)
-                    pass
-                else:
-                    print("There are no books nearby. Try looking closer.")
+                if object:
+                    if cls.items.get("book") and object == cls.items["book"].type:
+                        if current_scene_event.__class__.__name__ == cls.items["book"].location_scene_event.__class__.__name__:
+                            event = cls.handle_scene_events(full_action=raw_action, current_scene=current_scene_event)
+                            if event and not isinstance(event, str):
+                                event_change_evt = OnCurrentEventChange()
+                                event_change_evt.current_event = event
+                                EventController.broadcast_event(event_change_evt)
+                            pass
+                        else:
+                            print("There are no books nearby. Try looking closer.")
 
-                if object and cls.items.get("chestplate") and object == cls.items["chestplate"].type and current_scene_event.__class__.__name__ == cls.items["chestplate"].location_scene_event.__class__.__name__:
-                    event = cls.handle_scene_events(full_action=raw_action, current_scene=current_scene_event)
-                    if event and not isinstance(event, str):
-                        event_change_evt = OnCurrentEventChange()
-                        event_change_evt.current_event = event
-                        EventController.broadcast_event(event_change_evt)
-                    pass
-                else:
-                    print("Are you blind? There is no chestplate nearby.")
+                    if cls.items.get("chestplate") and object == cls.items["chestplate"].type:
+                        if current_scene_event.__class__.__name__ == cls.items["chestplate"].location_scene_event.__class__.__name__:
+                            event = cls.handle_scene_events(full_action=raw_action, current_scene=current_scene_event)
+                            if event and not isinstance(event, str):
+                                event_change_evt = OnCurrentEventChange()
+                                event_change_evt.current_event = event
+                                EventController.broadcast_event(event_change_evt)
+                            pass
+                        else:
+                            print("Are you blind? There is no chestplate nearby.")
         elif raw_action in cls.scene_events:
             event = cls.handle_scene_events(full_action=raw_action, current_scene=current_scene_event)
             if event and not isinstance(event, str):
