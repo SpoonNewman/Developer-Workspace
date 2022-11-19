@@ -6,7 +6,7 @@ from Controllers.base_controller import BaseController
 from Controllers.Surfaces_Registry import SurfacesRegistry
 from Controllers.EventController import EventController
 from Controllers.game_events import OnDieEvent, OnVolumeChangeEvent
-from Controllers.Player_Controller import PlayerStatusCharacteristic
+from Controllers.Player_Controller import PlayerStatusCharacteristic, PlayerController
 
 
 WIDTH = 1280
@@ -42,6 +42,8 @@ class UIManager(BaseController):
         
         cls.window.blit(cls.background, (0, 0))
         cls.border_width = 8
+        cls.font = pygame.font.SysFont("monospace", 18)
+        cls.rect = cls.window.get_rect()
         
         cls.player_input_surf = PlayerInputSurface()
         cls.message_description_surf = MessagesDescriptionSurface()
@@ -51,8 +53,6 @@ class UIManager(BaseController):
         cls.opening_menu = OpeningMenu()
         cls.settings_menu = SettingsMenu()
         
-        cls.font = pygame.font.SysFont("monospace", 18)
-        cls.rect = cls.window.get_rect()
         
 
 
@@ -313,6 +313,82 @@ class MessagesDescriptionSurface(pygame.sprite.Sprite):
         cls.image = cls.copy_image.copy()
         UIManager.background.blit(cls.image, (WIDTH/4, 0))
 
+class InventoryTable():
+    @classmethod
+    def __init__(cls, menu):
+        cls.table_name = "inventory-window-table"
+        cls.table = menu.add.table(table_id=cls.table_name, margin=(20, 20))
+        cls.table.default_cell_padding = 10
+        cls.default_row_background_color = BLACK
+        cls.table.default_cell_align = pygame_menu.locals.ALIGN_CENTER
+        cls.table.add_row(["NAME", "DESCRIPTION", "WEIGHT"], cell_font=UIManager.font)
+        cls.current_rows = []
+
+    @classmethod
+    def clear_rows(cls):
+        for row in cls.current_rows:
+            cls.table.remove_row(row)
+
+class InventoryWindow():
+    @classmethod
+    def __init__(cls):
+        cls.theme = pygame_menu.themes.THEME_DARK
+        cls.menu_height = 600
+        cls.menu_width = 1200
+        cls.title = "Inventory"
+        cls.exit_game_button = None
+        cls.back_button = None
+        cls.return_to_game_button = None
+
+        cls.menu = pygame_menu.Menu(
+            enabled=False,
+            height=cls.menu_height,
+            onclose=pygame_menu.events.RESET,
+            theme=cls.theme,
+            title=cls.title,
+            width=cls.menu_width
+        )
+
+        cls.inventory_table = InventoryTable(menu=cls.menu)
+
+        # cls.menu.add.button("Back", pygame_menu.events.BACK)
+    @classmethod
+    def set_inventory_items(cls, items):
+        cls.inventory_table.clear_rows()
+        for item in items:
+            row = cls.inventory_table.table.add_row(cells=[item.name, item.description, str(item.inv_socket_weight)], cell_font=UIManager.font)
+            cls.inventory_table.current_rows.append(row)
+        # cls.inventory_table.inv_items = items
+
+    @classmethod
+    def display_settings(cls):
+        cls.menu.draw(cls.background)
+        cls.menu.update(pygame.event.get())
+        cls.post_update()
+
+    @classmethod
+    def close_menu(cls):
+        cls.menu.close()
+        UIManager.post_update()
+
+class SidePanelButton(pygame.sprite.Sprite):
+    def __init__(self, button_text: str, position, debug_color = DARK_GRAY_1) -> None:
+        pygame.sprite.Sprite.__init__(self)
+        self.size = (75, 25)
+        self.image = pygame.Surface(self.size)
+        self.surface_color = DARK_GRAY_2
+        self.border_color = GRAY
+        self.border_width = 4
+        self.image.fill(self.surface_color)
+        self.text = UIManager.font.render(button_text, True, WHITE, self.surface_color)
+        self.text_position = (5, 5)
+        self.image.blit(self.text, self.text_position)
+        self.rect = MessagesSidePanelSurface.image.blit(self.image, position) # Draw onto the window
+        self.text_width = 17
+
+        # pygame.draw.rect(self.image, self.border_color, self.rect, self.border_width) # Border
+        
+
 class MessagesSidePanelSurface(pygame.sprite.Sprite):
     @classmethod
     def __init__(cls):
@@ -334,14 +410,30 @@ class MessagesSidePanelSurface(pygame.sprite.Sprite):
         cls.health_subsurf = cls.image.subsurface(cls.stats_margin_left, cls.stats_margin_top + cls.stats_buffer, cls.stats_margin_width, cls.stats_height)
         cls.mana_subsurf = cls.image.subsurface(cls.stats_margin_left, cls.stats_margin_top*3 + cls.stats_buffer, cls.stats_margin_width, cls.stats_height)
         cls.faith_subsurf = cls.image.subsurface(cls.stats_margin_left, cls.stats_margin_top*5 + cls.stats_buffer, cls.stats_margin_width, cls.stats_height)
-
+        
         cls.subsurfaces = {
             PlayerStatusCharacteristic.HEALTH.name: cls.health_subsurf,
             PlayerStatusCharacteristic.MANA.name: cls.mana_subsurf,
             PlayerStatusCharacteristic.FAITH.name: cls.faith_subsurf
         }
 
+        cls.inventory_window = InventoryWindow()
+        cls.inventory_window_menu = cls.inventory_window.menu
 
+        cls.show_inventory_btn = SidePanelButton(button_text="INV", position=(10, 15))
+        cls.show_character_btn = SidePanelButton(button_text="CHAR", position=(100, 15))
+        cls.show_help_btn = SidePanelButton(button_text="HELP", position=(190, 15))
+
+    def display_inventory_window(cls):
+        cls.inventory_window_menu.draw(UIManager.background)
+        cls.inventory_window_menu.update(pygame.event.get())
+        UIManager.post_update()
+    
+    def toggle_inventory_menu(cls):
+        cls.inventory_window_menu.toggle()
+
+
+# region Cursors
 class BaseCursor(pygame.sprite.Sprite):
     pass
 
@@ -439,6 +531,20 @@ class TextInput():
                 if event.type == pygame.QUIT:
                     quit_evt = OnDieEvent()
                     EventController.broadcast_event(quit_evt)
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_click_position = pygame.mouse.get_pos()
+                    # is click position in the side panel
+                    # activate the side panel click
+                    if mouse_click_position[0] >= UIManager.message_side_panel_surf.show_inventory_btn.rect.left and mouse_click_position[0] <= UIManager.message_side_panel_surf.show_inventory_btn.rect.right and mouse_click_position[1] >= UIManager.message_side_panel_surf.show_inventory_btn.rect.top and mouse_click_position[1] <= UIManager.message_side_panel_surf.show_inventory_btn.rect.bottom:
+                        UIManager.message_side_panel_surf.toggle_inventory_menu()
+                        UIManager.message_side_panel_surf.inventory_window.set_inventory_items(PlayerController.get_inventory())
+                        while True:
+                            if UIManager.message_side_panel_surf.inventory_window_menu.is_enabled():
+                                UIManager.message_side_panel_surf.display_inventory_window()
+                            else:
+                                break
+                        
                     
                 if event.type == pygame.KEYDOWN and event.unicode == "\r":
                     return user_text
@@ -468,4 +574,5 @@ class TextInput():
 
             # if UIManager.settings_menu.menu.is_enabled():
             #     UIManager.display_settings()
+        # endregion
                 
