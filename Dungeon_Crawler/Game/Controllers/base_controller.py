@@ -1,2 +1,3 @@
 class BaseController():
-    registered_rooms = {}
+    registered_scenes = {}
+    ui_sprites = None

@@ -14,6 +14,7 @@ class EventTypes():
         cls.ON_SHOW_ITEM_ACTIONS = OnShowItemActionsEvent().__class__.__name__
         cls.ON_INTRO_DISPLAY = OnIntroDisplayEvent().__class__.__name__
         cls.ON_GAME_START = OnGameStartEvent().__class__.__name__
+        cls.ON_GAME_INITIALIZE = OnGameInitializeEvent().__class__.__name__
         cls.ON_PLAYER_ACTION = OnPlayerActionEvent().__class__.__name__
         cls.ON_ITEM_PICKUP = OnItemPickupEvent().__class__.__name__
         cls.ON_PLAYER_INVESTIGATE = OnPlayerInvestgateEvent().__class__.__name__
@@ -21,10 +22,16 @@ class EventTypes():
         cls.ON_MUSIC_TRACK_PLAY = OnMusicTrackPlayEvent().__class__.__name__
         cls.ON_SFX_PLAY = OnSfxPlayEvent().__class__.__name__
         cls.ON_SFX_STOP = OnSfxStopEvent().__class__.__name__
+        cls.ON_VOLUME_CHANGE = OnVolumeChangeEvent().__class__.__name__
         cls.ON_ITEM_DROP = OnItemDrop().__class__.__name__
         cls.ON_ITEM_EQUIP = OnItemEquip().__class__.__name__
+        cls.ON_NEXT_EVENT_CHANGE = OnNextEventChange().__class__.__name__
+        cls.ON_CURRENT_EVENT_CHANGE = OnCurrentEventChange().__class__.__name__
+        cls.ON_RECORD_PLAYER_ACTION = OnRecordPlayerAction().__class__.__name__
+        cls.ON_PLAYER_STAT_CHANGE = OnPlayerStatChange().__class__.__name__
 
         return [
+            cls.ON_RECORD_PLAYER_ACTION,
             cls.ON_KILL_SELF,
             cls.ON_INVENTORY_DISPLAY,
             cls.ON_PRAY,
@@ -35,6 +42,7 @@ class EventTypes():
             cls.ON_SHOW_ITEM_ACTIONS,
             cls.ON_INTRO_DISPLAY,
             cls.ON_GAME_START,
+            cls.ON_GAME_INITIALIZE,
             cls.ON_PLAYER_ACTION,
             cls.ON_ITEM_PICKUP,
             cls.ON_PLAYER_INVESTIGATE,
@@ -43,7 +51,12 @@ class EventTypes():
             cls.ON_SFX_PLAY,
             cls.ON_SFX_STOP,
             cls.ON_ITEM_DROP,
-            cls.ON_ITEM_EQUIP
+            cls.ON_ITEM_EQUIP,
+            cls.ON_VOLUME_CHANGE,
+            cls.ON_ITEM_DROP,
+            cls.ON_NEXT_EVENT_CHANGE,
+            cls.ON_CURRENT_EVENT_CHANGE,
+            cls.ON_PLAYER_STAT_CHANGE
         ]
 
 class GameEvent():
@@ -67,8 +80,11 @@ class OnShowItemActionsEvent(GameEvent):
         self.possible_actions = None
 
 class OnMessageDisplayEvent(GameEvent):
-    def __init__(self, message: str = None) -> None:
-        self.message = message
+    def __init__(self) -> None:
+        self.message = None
+        self.surface_key = None
+        # self.typewriter_delay = None
+
 
 class OnKillSelfEvent(GameEvent):
     def __init__(self) -> None:
@@ -111,6 +127,10 @@ class OnSfxStopEvent(GameEvent):
     def __init__(self) -> None:
         self.sfx_name = None
 
+class OnVolumeChangeEvent(GameEvent):
+    def __init__(self) -> None:
+        self.volume_value = None
+
 class OnInventoryDisplay(GameEvent):
     def __init__(self) -> None:
         super().__init__()
@@ -129,3 +149,29 @@ class OnItemEquip(GameEvent):
         super().__init__()
         self.item = None
         self.slot = None
+
+class OnGameInitializeEvent(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+
+class OnNextEventChange(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+        self.next_event = None
+
+class OnCurrentEventChange(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+        self.current_event = None
+
+class OnRecordPlayerAction(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+        self.action = None
+        self.scene = None
+
+class OnPlayerStatChange(GameEvent):
+    def __init__(self) -> None:
+        super().__init__()
+        self.stat_type = None
+        self.stat_value = None

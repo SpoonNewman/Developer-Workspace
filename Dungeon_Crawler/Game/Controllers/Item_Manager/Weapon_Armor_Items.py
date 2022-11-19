@@ -21,9 +21,11 @@ class ArmorItemsRegistry(BaseItemRegistry):
     @classmethod
     def get_registered_items(cls):
         cls.SHIELD = ShieldItem().__class__.__name__
+        cls.CHESTPLATE = ChestPlateItem().__class__.__name__
         
         return [
-           cls.SHIELD
+           cls.SHIELD,
+           cls.CHESTPLATE
         ]
 
 class WeaponItem(HandEquippableItem):
@@ -32,16 +34,17 @@ class WeaponItem(HandEquippableItem):
         self.inv_socket_weight = 1
 
 class ArmorItem(BodyEquippableItem):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
 
 class ChestPlateItem(ArmorItem):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
         self.name = "Chest Plate"
         self.description = "A steel chest plate badly dented and rusted."
         self.preferred_slot = ItemSlots.CHEST.value
-        
+        if not kwargs.get("type"):
+            self.type = "chestplate"
         
         self.actions = {
             **self.universal_actions,

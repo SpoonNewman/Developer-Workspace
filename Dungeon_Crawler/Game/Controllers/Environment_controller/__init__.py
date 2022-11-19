@@ -1,4 +1,4 @@
-from . import room_types
+from .scene_types import SceneTypes, standard_scene
 import json
 
 from Controllers.base_controller import BaseController
@@ -9,74 +9,69 @@ class EnvironmentController(BaseController):
         pass
     
     @classmethod
-    def initialize_rooms(cls) -> None:
-        """Initialize the room map with the correctly parsed depedency tree (sorted Breadth-First).
+    def initialize_scenes(cls) -> None:
+        """Initialize the scene map with the correctly parsed depedency tree (sorted Breadth-First).
 
         Raises:
             ValueError: Raised when the searching for the room exit name in our collection of rooms is in error.
         """
-        rooms_map = cls.get_rooms_from_config()
+        scenes_map = cls.get_scenes_from_config()
         
         # Order the rooms map by Breadth-First ordering
-        ordered_rooms_map = cls.sort_dependency_tree(rooms_map)
+        ordered_scenes_map = cls.sort_dependency_tree(scenes_map)
 
-        # Build all the rooms
-        for room in ordered_rooms_map:
-            cls.registered_rooms[room["name"]] = cls.build_room(room_config=room)
+        # Build all the scenes
+        for scene in ordered_scenes_map:
+            cls.registered_scenes[scene["name"]] = cls.build_scene(scene_config=scene)
 
-        for room in cls.registered_rooms.values():
-            setattr(room, "registered_rooms", cls.registered_rooms)
-
-        pass
+        for scene in cls.registered_scenes.values():
+            scene.registered_scenes = cls.registered_scenes
 
     @classmethod
-    def get_rooms_from_config(cls) -> dict:
+    def get_scenes_from_config(cls) -> dict:
         """Loads the configuration object from the json file.
 
         Returns:
-            dict: The map of the room configuration.
+            dict: The map of the scene configuration.
         """
-        with open("room_config.json") as config:
+        with open("scene_config.json") as config:
             return json.load(config)
 
     @classmethod
-    def sort_dependency_tree (cls, rooms_map) -> dict:
-        """Sorts and orders the depedency tree
+    def sort_dependency_tree (cls, scenes_map) -> dict:
+        """Sorts and orders the depedency tree by number of scene connections.
 
         Args:
-            rooms_map (Dict[str, Any]): The configuration dictionary object representing the map of the rooms
+            scenes_map (Dict[str, Any]): The configuration dictionary object representing the map of the scenes
 
         Returns:
-            Dict: The sorted room map.
+            Dict: The sorted scene map.
         """
-        temp_rooms_map = []
-        # this currently only supports rooms with up to 4 possible exits
-        # TODO: Would be cool to set the upper limit of this loop with the number
-        # representing the highest number of dependencies in the collection of room objects
-        for loop_pass in range(0, 5):
-            temp_rooms_map += list(filter(lambda room: len(room["room_exits"]) == loop_pass, rooms_map))
+        upper_limit_scene_connections = 0
+        for scene in scenes_map:
+            upper_limit_scene_connections = len(scene["scene_connections"]) if len(scene["scene_connections"]) > upper_limit_scene_connections else upper_limit_scene_connections
 
-        return temp_rooms_map
+        temp_scenes_map = []
+        for loop_pass in range(0, upper_limit_scene_connections+1):
+            temp_scenes_map += list(filter(lambda scene: len(scene["scene_connections"]) == loop_pass, scenes_map))
+
+        return temp_scenes_map
 
     @classmethod
-    def build_room(cls, room_config):
-        """Creates a room object based on a dictionary configuration object.
+    def build_scene(cls, scene_config):
+        """Creates a scene object based on a dictionary configuration object.
 
         Args:
-            room_config (Dict[str, str | list[str] ]): The dictionary representing the desired configuration of rooms in the game.
+            scene_config (Dict[str, str | list[str] ]): The dictionary representing the desired configuration of rooms in the game.
 
         Raises:
-            NotImplementedError: Raised when the `room type` does not match one of the supported values.
+            NotImplementedError: Raised when the `scene type` does not match one of the supported values.
 
         Returns:
             Room: Returns a <Room> object or one of it's children
         """
-        room_type = room_config["room_type"]
-        if room_type == room_types.types.ROOM.value:
-            return room_types.room(room_configuration=room_config)
-        elif room_type == room_types.types.TUNNEL.value:
-            return room_types.room_tunnel(room_configuration=room_config)
-        elif room_type == room_types.types.CHAMBER.value:
-            return room_types.chamber(room_configuration=room_config)
+        scene_type = scene_config["scene_type"]
+        if scene_type == SceneTypes.STANDARD.name.lower():
+            return standard_scene(scene_configuration=scene_config)
         else:
-            raise NotImplementedError("The room type that you passed in is not yet supported! Please create it or bug the devs")
+            raise NotImplementedError("The scene type that you passed in is not yet supported! Please create it or bug the devs")
