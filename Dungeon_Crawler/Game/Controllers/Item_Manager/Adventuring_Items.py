@@ -38,7 +38,7 @@ class TorchItem(AdventuringItem):
     def __init__(self) -> None:
         super().__init__()
         self.name = "Torch"
-        self.description = "A wooden stick with oil and rag. When lit aflame it provides light. Be careful using this in small areas."
+        self.description = "A wooden stick with oil and rag. When lit aflame it provides light."
         
         self.is_lit = False
         

@@ -151,6 +151,15 @@ class UIManager(BaseController):
 
     # endregion
 
+class BaseMenu():
+    @classmethod
+    def close_menu(cls):
+        cls.menu.reset(100)
+        if cls.menu.is_enabled():
+            cls.menu.close()
+        UIManager.all_sprites.draw(UIManager.background)
+        UIManager.post_update()
+
 class OpeningMenu():
     @classmethod
     def __init__(cls):
@@ -183,7 +192,7 @@ class OpeningMenu():
         cls.menu.disable()
         UIManager.post_update()
 
-class SettingsMenu():
+class SettingsMenu(BaseMenu):
     @classmethod
     def __init__(cls, use_back_button=False, use_return_to_game_button=True):
         cls.theme = pygame_menu.themes.THEME_DARK
@@ -197,7 +206,7 @@ class SettingsMenu():
         cls.menu = pygame_menu.Menu(
             enabled=False,
             height=cls.menu_height,
-            onclose=pygame_menu.events.RESET,
+            onclose=cls.close_menu,
             theme=cls.theme,
             title=cls.title,
             width=cls.menu_width
@@ -217,11 +226,7 @@ class SettingsMenu():
             cls.back_button = cls.menu.add.button("Back", pygame_menu.events.BACK)
         else:
             cls.exit_game_button = cls.menu.add.button("Quit Game", exit)
-
-    @classmethod
-    def close_menu(cls):
-        cls.menu.close()
-        UIManager.post_update()
+    
 
 class AudioMenu():
     @classmethod
@@ -329,7 +334,7 @@ class InventoryTable():
         for row in cls.current_rows:
             cls.table.remove_row(row)
 
-class InventoryWindow():
+class InventoryWindow(BaseMenu):
     @classmethod
     def __init__(cls):
         cls.theme = pygame_menu.themes.THEME_DARK
@@ -343,7 +348,7 @@ class InventoryWindow():
         cls.menu = pygame_menu.Menu(
             enabled=False,
             height=cls.menu_height,
-            onclose=pygame_menu.events.RESET,
+            onclose=cls.close_menu,
             theme=cls.theme,
             title=cls.title,
             width=cls.menu_width
@@ -351,25 +356,12 @@ class InventoryWindow():
 
         cls.inventory_table = InventoryTable(menu=cls.menu)
 
-        # cls.menu.add.button("Back", pygame_menu.events.BACK)
     @classmethod
     def set_inventory_items(cls, items):
         cls.inventory_table.clear_rows()
         for item in items:
             row = cls.inventory_table.table.add_row(cells=[item.name, item.description, str(item.inv_socket_weight)], cell_font=UIManager.font)
             cls.inventory_table.current_rows.append(row)
-        # cls.inventory_table.inv_items = items
-
-    @classmethod
-    def display_settings(cls):
-        cls.menu.draw(cls.background)
-        cls.menu.update(pygame.event.get())
-        cls.post_update()
-
-    @classmethod
-    def close_menu(cls):
-        cls.menu.close()
-        UIManager.post_update()
 
 class SidePanelButton(pygame.sprite.Sprite):
     def __init__(self, button_text: str, position, debug_color = DARK_GRAY_1) -> None:
