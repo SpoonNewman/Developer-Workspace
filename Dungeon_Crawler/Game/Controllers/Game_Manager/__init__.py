@@ -18,6 +18,7 @@ from constants import GameConstants
 class GameManager():
     game_settings = {}
     is_new_game = True
+    is_at_opening_menu = True
     clock = pygame.time.Clock()
     fps = 60
 
@@ -36,7 +37,7 @@ class GameManager():
     def initialize_event_subscriptions(cls):
         """Initialize the events and their subscriptions.
         """
-        EventController.add_listener(event_type=EventTypes.ON_GAME_INITIALIZE, handler_functions=[cls.initialize_game_settings, cls.initialize_game_room_map, cls.initialize_enemy_settings, cls.initialize_player_settings])
+        EventController.add_listener(event_type=EventTypes.ON_GAME_INITIALIZE, handler_functions=[cls.initialize_game_settings, cls.initialize_game_scene_map, cls.initialize_enemy_settings, cls.initialize_player_settings])
         EventController.add_listener(event_type=EventTypes.ON_GAME_START, handler_functions=[cls.begin_game_loop])
         EventController.add_listener(event_type=EventTypes.ON_ITEM_PICKUP, handler_functions=[PlayerController.pickup_item])
         EventController.add_listener(event_type=EventTypes.ON_KILL_SELF, handler_functions=[cls.play_kill_self])
@@ -48,6 +49,7 @@ class GameManager():
         EventController.add_listener(event_type=EventTypes.ON_MUSIC_TRACK_PLAY, handler_functions=[MusicController.play_music_by_track])
         EventController.add_listener(event_type=EventTypes.ON_SFX_PLAY, handler_functions=[MusicController.play_sfx])
         EventController.add_listener(event_type=EventTypes.ON_SFX_STOP, handler_functions=[MusicController.stop_sfx])
+        EventController.add_listener(event_type=EventTypes.ON_VOLUME_CHANGE, handler_functions=[MusicController.change_volume])
         EventController.add_listener(event_type=EventTypes.ON_INVENTORY_DISPLAY, handler_functions=[PlayerController.display_inventory])
         EventController.add_listener(event_type=EventTypes.ON_SHOW_ITEM_ACTIONS, handler_functions=[MessagesController.show_item_actions])
         EventController.add_listener(event_type=EventTypes.ON_ITEM_DROP, handler_functions=[PlayerController.drop_from_inventory])
@@ -89,8 +91,8 @@ class GameManager():
         MessagesController.display_intro_message()
 
     @classmethod
-    def initialize_game_room_map(cls, event):
-        EnvironmentController.initialize_rooms()
+    def initialize_game_scene_map(cls, event):
+        EnvironmentController.initialize_scenes()
 
     @classmethod
     def initialize_enemy_settings(cls, event):
@@ -100,6 +102,12 @@ class GameManager():
     def begin_game_loop(cls, event):
         while True:
             pygame.event.pump()
+            if cls.is_at_opening_menu:
+                UIManager.opening_menu.menu.enable()
+                while UIManager.opening_menu.menu.is_enabled():
+                    UIManager.display_opening_menu()
+                    cls.is_at_opening_menu = False
+
             if cls.is_new_game:
                 cls.begin_intro()
                 cls.is_new_game = False

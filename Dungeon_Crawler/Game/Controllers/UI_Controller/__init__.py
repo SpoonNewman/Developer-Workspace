@@ -1,12 +1,13 @@
 from enum import Enum
-import random
+import pygame_menu
 import pygame
 from time import sleep
 from Controllers.base_controller import BaseController
 from Controllers.Surfaces_Registry import SurfacesRegistry
 from Controllers.EventController import EventController
-from Controllers.game_events import OnDieEvent
+from Controllers.game_events import OnDieEvent, OnVolumeChangeEvent
 from Controllers.Player_Controller import PlayerStatusCharacteristic
+
 
 WIDTH = 1280
 HEIGHT = 720
@@ -47,6 +48,8 @@ class UIManager(BaseController):
         cls.message_side_panel_surf = MessagesSidePanelSurface()
         cls.text_cursor = TextCursor()
         cls.description_cursor = DescriptionCursor()
+        cls.opening_menu = OpeningMenu()
+        cls.settings_menu = SettingsMenu()
         
         cls.font = pygame.font.SysFont("monospace", 18)
         cls.rect = cls.window.get_rect()
@@ -68,6 +71,23 @@ class UIManager(BaseController):
         # pygame.draw.rect(cls.background, FUCHSIA, cls.background_rect, 5)
 
         cls.post_update()
+
+    # region
+    @classmethod
+    def display_settings(cls):
+        cls.settings_menu.menu.draw(cls.background)
+        cls.settings_menu.menu.update(pygame.event.get())
+        cls.post_update()
+
+    @classmethod
+    def display_opening_menu(cls):
+        cls.opening_menu.menu.draw(cls.background)
+        cls.opening_menu.menu.update(pygame.event.get())
+        cls.post_update()
+    
+    @classmethod
+    def toggle_settings_menu(cls):
+        cls.settings_menu.menu.toggle()
 
     @classmethod
     def clear_input_field(cls):
@@ -128,6 +148,141 @@ class UIManager(BaseController):
         cls.all_sprites.update()
         cls.window.blit(cls.background, (0, 0))
         pygame.display.flip()
+
+    # endregion
+
+class OpeningMenu():
+    @classmethod
+    def __init__(cls):
+        cls.theme = pygame_menu.themes.THEME_DARK
+        cls.menu_height = 400
+        cls.menu_width = 600
+        cls.title = "Dungeon Crawl"
+
+        cls.menu = pygame_menu.Menu(
+            enabled=False,
+            height=cls.menu_height,
+            onclose=pygame_menu.events.RESET,
+            theme=cls.theme,
+            title=cls.title,
+            width=cls.menu_width
+        )
+
+        cls.settings_menu = SettingsMenu(
+            use_back_button=True,
+            use_return_to_game_button=False
+        ).menu
+
+        cls.menu.add.button("Start", cls.start_game)
+        cls.menu.add.button(cls.settings_menu.get_title(), cls.settings_menu)
+        cls.menu.add.button("Exit", exit)
+
+    @classmethod
+    def start_game(cls):
+        cls.menu.close()
+        cls.menu.disable()
+        UIManager.post_update()
+
+class SettingsMenu():
+    @classmethod
+    def __init__(cls, use_back_button=False, use_return_to_game_button=True):
+        cls.theme = pygame_menu.themes.THEME_DARK
+        cls.menu_height = 400
+        cls.menu_width = 600
+        cls.title = "Settings"
+        cls.exit_game_button = None
+        cls.back_button = None
+        cls.return_to_game_button = None
+
+        cls.menu = pygame_menu.Menu(
+            enabled=False,
+            height=cls.menu_height,
+            onclose=pygame_menu.events.RESET,
+            theme=cls.theme,
+            title=cls.title,
+            width=cls.menu_width
+        )
+
+        cls.audio_menu = AudioMenu().menu
+        cls.gameplay_menu = GameplayMenu().menu
+        cls.video_menu = VideoMenu().menu
+
+        if use_return_to_game_button:
+            cls.return_to_game_button = cls.menu.add.button("Return to Game", cls.close_menu)
+
+        cls.menu.add.button(cls.audio_menu.get_title(), cls.audio_menu)
+        cls.menu.add.button(cls.video_menu.get_title(), cls.video_menu)
+        cls.menu.add.button(cls.gameplay_menu.get_title(), cls.gameplay_menu)
+        if use_back_button:
+            cls.back_button = cls.menu.add.button("Back", pygame_menu.events.BACK)
+        else:
+            cls.exit_game_button = cls.menu.add.button("Quit Game", exit)
+
+    @classmethod
+    def close_menu(cls):
+        cls.menu.close()
+        UIManager.post_update()
+
+class AudioMenu():
+    @classmethod
+    def __init__(cls):
+        cls.theme = pygame_menu.themes.THEME_DARK
+        cls.menu_height = SettingsMenu.menu_height
+        cls.menu_width = SettingsMenu.menu_width
+        cls.title = "Audio"
+
+        cls.menu = pygame_menu.Menu(
+            height=cls.menu_height, 
+            theme=cls.theme,
+            title=cls.title,
+            width=cls.menu_width
+        )
+
+        cls.volume_slider = cls.menu.add.range_slider(
+            "Volume", 50, (0, 100), 1, cls.change_volume
+        )
+
+        cls.menu.add.button("Back", pygame_menu.events.BACK)
+
+    @classmethod
+    def change_volume(cls, volume):
+        evt = OnVolumeChangeEvent()
+        evt.volume_value = volume
+        EventController.broadcast_event(event_object=evt)
+
+class GameplayMenu():
+    @classmethod
+    def __init__(cls):
+        cls.theme = pygame_menu.themes.THEME_DARK
+        cls.menu_height = SettingsMenu.menu_height
+        cls.menu_width = SettingsMenu.menu_width
+        cls.title = "Gameplay"
+
+        cls.menu = pygame_menu.Menu(
+            height=cls.menu_height, 
+            theme=cls.theme,
+            title=cls.title,
+            width=cls.menu_width
+        )
+
+        cls.menu.add.button("Back", pygame_menu.events.BACK)
+
+class VideoMenu():
+    @classmethod
+    def __init__(cls):
+        cls.theme = pygame_menu.themes.THEME_DARK
+        cls.menu_height = SettingsMenu.menu_height
+        cls.menu_width = SettingsMenu.menu_width
+        cls.title = "Video"
+
+        cls.menu = pygame_menu.Menu(
+            height=cls.menu_height, 
+            theme=cls.theme,
+            title=cls.title,
+            width=cls.menu_width
+        )
+
+        cls.menu.add.button("Back", pygame_menu.events.BACK)
 
 class PlayerInputSurface(pygame.sprite.Sprite):
     @classmethod
@@ -298,9 +453,19 @@ class TextInput():
                         TextCursor.placement_on_line -= TextCursor.text_width
                         UIManager.post_update()
 
+                    elif event.key == pygame.K_ESCAPE:
+                        UIManager.toggle_settings_menu()
+                        while True:
+                            if UIManager.settings_menu.menu.is_enabled():
+                                UIManager.display_settings()
+                            else:
+                                break
 
                     elif len(user_text) < MAX_LETTER_COUNT:
                         user_text += event.unicode
                         UIManager.render_letter_to_input(letter=event.unicode)
                         UIManager.post_update()
 
+            # if UIManager.settings_menu.menu.is_enabled():
+            #     UIManager.display_settings()
+                
