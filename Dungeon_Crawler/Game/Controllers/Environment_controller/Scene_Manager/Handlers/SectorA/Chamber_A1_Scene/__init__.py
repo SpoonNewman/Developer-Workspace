@@ -23,7 +23,7 @@ class ChamberA1Scene(BaseSceneHandler):
     previous_actions = []
     items = {
         "book": BookItem(name="Mouldering Book", description="An old book that is damp and covererd in mold.", located_in_event=SceneEventsRegistry.registry["SecretShrineInvestigationPart1"]),
-        "chestplate": ChestPlateItem(located_in_event=SceneEventsRegistry.registry["SecretShrineInvestigationPart1"])
+        "chestplate": ChestPlateItem(located_in_event=SceneEventsRegistry.registry["SecretShrineInvestigationPart1"], inv_socket_weight=10)
     }
 
     valid_directions = ["forward"]

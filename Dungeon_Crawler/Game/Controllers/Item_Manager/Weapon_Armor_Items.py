@@ -43,8 +43,10 @@ class ChestPlateItem(ArmorItem):
         self.name = "Chest Plate"
         self.description = "A steel chest plate badly dented and rusted."
         self.preferred_slot = ItemSlots.CHEST.value
+        self.inv_socket_weight = 4 if not kwargs.get("inv_socket_weight") else kwargs.get("inv_socket_weight")
         if not kwargs.get("type"):
             self.type = "chestplate"
+        
         
         self.actions = {
             **self.universal_actions,
