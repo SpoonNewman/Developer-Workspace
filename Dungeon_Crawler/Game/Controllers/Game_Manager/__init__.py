@@ -53,6 +53,7 @@ class GameManager():
         EventController.add_listener(event_type=EventTypes.ON_INVENTORY_DISPLAY, handler_functions=[PlayerController.display_inventory])
         EventController.add_listener(event_type=EventTypes.ON_SHOW_ITEM_ACTIONS, handler_functions=[MessagesController.show_item_actions])
         EventController.add_listener(event_type=EventTypes.ON_ITEM_DROP, handler_functions=[PlayerController.drop_from_inventory])
+        EventController.add_listener(event_type=EventTypes.ON_ITEM_EQUIP, handler_functions=[PlayerController.equip_item])
         EventController.add_listener(event_type=EventTypes.ON_NEXT_EVENT_CHANGE, handler_functions=[PlayerController.set_next_event])
         EventController.add_listener(event_type=EventTypes.ON_CURRENT_EVENT_CHANGE, handler_functions=[PlayerController.set_current_event])
         EventController.add_listener(event_type=EventTypes.ON_RECORD_PLAYER_ACTION, handler_functions=[PlayerController.record_action])

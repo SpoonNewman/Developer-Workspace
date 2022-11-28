@@ -1,8 +1,9 @@
 from abc import abstractmethod
 from enum import Enum
-from operator import itemgetter
 from Controllers.EventController import EventController
 from Controllers.game_events import OnSfxPlayEvent, OnSfxStopEvent, OnItemDrop
+from Controllers.Player_Controller.item_slots import ItemSlots
+from Controllers.game_events import OnItemEquip
 
 class BaseItemRegistry():
     @classmethod
@@ -40,7 +41,14 @@ class GameItem():
             evt.item = item
             EventController.broadcast_event(evt)
         elif player_action == self.universal_actions[UniversalAction.EQUIP.value]:
-            pass
+            # PlayerController.equip_item(item=item, slot=item_slots.RIGHT_HAND)
+            equip_evt = OnItemEquip()
+            equip_evt.item = item
+            equip_evt.slot = None
+            if issubclass(item.__class__, EquippableItem) and hasattr(item, "preferred_slot"):
+                equip_evt.slot = item.preferred_slot
+            EventController.broadcast_event(equip_evt)
+
         else:
             raise ValueError("That item action is not yet supported!")
 
@@ -58,3 +66,15 @@ class GameItem():
     def use_item(self, **kwargs):
         print("This item has no use to you right now.")
 
+class EquippableItem(GameItem):
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
+    preferred_slot = None
+
+class HandEquippableItem(EquippableItem):
+    def __init__(self) -> None:
+        super().__init__()
+
+class BodyEquippableItem(EquippableItem):
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)

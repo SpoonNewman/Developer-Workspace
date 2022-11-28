@@ -6,6 +6,9 @@ from Controllers.EventController import EventController, EventTypes
 from Controllers.Item_Manager.Item_Registry import ItemRegistry
 from Controllers.game_events import OnMessageDisplayEvent, OnSfxPlayEvent, OnPlayerStatChange, OnShowItemActionsEvent
 from Controllers.Item_Manager.Adventuring_Items import TorchItem
+from Controllers.game_events import OnShowItemActionsEvent
+from Controllers.Player_Controller.item_slots import ItemSlots
+from Controllers.Item_Manager.BaseItem import HandEquippableItem, BodyEquippableItem
 
 class PlayerStatusCharacteristic(Enum):
     HEALTH = 0
@@ -30,6 +33,12 @@ class PlayerController(BaseController):
     __faith_current = 0
     __health_current = 0
 
+    equipped_items = {
+        ItemSlots.RIGHT_HAND.value : "",
+        ItemSlots.LEFT_HAND.value : ""
+
+    }
+
     max_inventory_capacity = 30
     max_mana_capacity = 80
     max_faith_capacity = 40
@@ -51,6 +60,30 @@ class PlayerController(BaseController):
         return current_capacity
 
     @classmethod
+    def equip_item(cls, event_object):
+        item = event_object.item
+        if item not in cls.equipped_items.values():
+            if isinstance(item, HandEquippableItem):
+                if not cls.equipped_items[ItemSlots.RIGHT_HAND.value] and not cls.equipped_items[ItemSlots.LEFT_HAND.value]:
+                    print(f"You have grabbed the {item.name} from your satchel with your right hand")
+                    cls.equipped_items[ItemSlots.RIGHT_HAND.value] = item
+                elif cls.equipped_items[ItemSlots.RIGHT_HAND.value] and not cls.equipped_items[ItemSlots.LEFT_HAND.value]:
+                    print(f"You have grabbed the {item.name} from your satchel with your left hand")
+                    cls.equipped_items[ItemSlots.LEFT_HAND.value] = item
+                elif not cls.equipped_items[ItemSlots.RIGHT_HAND.value] and cls.equipped_items[ItemSlots.LEFT_HAND.value]:
+                    print(f"You have grabbed the {item.name} from your satchel with your right hand")
+                    cls.equipped_items[ItemSlots.RIGHT_HAND.value] = item 
+                else:
+                    print("Cannot equip item. There are no free hands.")
+            elif isinstance(item, BodyEquippableItem):
+                cls.equipped_items[item.preferred_slot] = item
+        else: print("Item is already equipped")
+
+
+        # slot = event_object.slot
+        
+
+    @classmethod
     def get_inventory(cls):
         return cls.__inventory
 
@@ -61,6 +94,8 @@ class PlayerController(BaseController):
             if item.__class__.__name__ in ItemRegistry.get_registered_items():
                 cls.__inventory.append(item)
                 return True
+            else:
+                print("That item is not registered")
         else:
             print("Cannot add item to inventory. You are at max capacity.")
             return False
