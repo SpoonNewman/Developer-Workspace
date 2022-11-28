@@ -331,8 +331,9 @@ class InventoryTable():
 
     @classmethod
     def clear_rows(cls):
-        for row in cls.current_rows:
+        for index, row in enumerate(cls.current_rows):
             cls.table.remove_row(row)
+            cls.current_rows.pop(index)
 
 class InventoryWindow(BaseMenu):
     @classmethod
@@ -357,11 +358,16 @@ class InventoryWindow(BaseMenu):
         cls.inventory_table = InventoryTable(menu=cls.menu)
 
     @classmethod
+    def close_menu(cls):
+        if len(cls.inventory_table.current_rows) > 0:
+            cls.inventory_table.clear_rows()
+        super().close_menu()
+
+    @classmethod
     def set_inventory_items(cls, items):
-        cls.inventory_table.clear_rows()
         for item in items:
-            row = cls.inventory_table.table.add_row(cells=[item.name, item.description, str(item.inv_socket_weight)], cell_font=UIManager.font)
-            cls.inventory_table.current_rows.append(row)
+            row_frame = cls.inventory_table.table.add_row(cells=[item.name, item.description, str(item.inv_socket_weight)], cell_font=UIManager.font)
+            cls.inventory_table.current_rows.append(row_frame)
 
 class SidePanelButton(pygame.sprite.Sprite):
     def __init__(self, button_text: str, position, debug_color = DARK_GRAY_1) -> None:
