@@ -323,6 +323,7 @@ class InventoryTable():
     def __init__(cls, menu):
         cls.table_name = "inventory-window-table"
         cls.table = menu.add.table(table_id=cls.table_name, margin=(20, 20))
+        cls.table.set_onmouseover(cls.do_thing)
         cls.table.default_cell_padding = 10
         cls.default_row_background_color = BLACK
         cls.table.default_cell_align = pygame_menu.locals.ALIGN_CENTER
@@ -332,8 +333,14 @@ class InventoryTable():
     @classmethod
     def clear_rows(cls):
         for index, row in enumerate(cls.current_rows):
-            cls.table.remove_row(row)
+            cls.table.remove_row(row["frame"])
             cls.current_rows.pop(index)
+
+    @classmethod
+    def do_thing(cls):
+        print("Activating the row")
+        # cls.table.force_menu_surface_update()
+
 
 class InventoryWindow(BaseMenu):
     @classmethod
@@ -366,8 +373,14 @@ class InventoryWindow(BaseMenu):
     @classmethod
     def set_inventory_items(cls, items):
         for item in items:
+            # TODO: Saturate the current_rows as a list of dict items so we can get the size of the row rect AND data about the item
             row_frame = cls.inventory_table.table.add_row(cells=[item.name, item.description, str(item.inv_socket_weight)], cell_font=UIManager.font)
-            cls.inventory_table.current_rows.append(row_frame)
+            row_object = {
+                "frame": row_frame,
+                "item": item,
+                "frame_rect": row_frame.get_rect()
+            }
+            cls.inventory_table.current_rows.append(row_object)
 
 class SidePanelButton(pygame.sprite.Sprite):
     def __init__(self, button_text: str, position, debug_color = DARK_GRAY_1) -> None:
@@ -542,7 +555,6 @@ class TextInput():
                                 UIManager.message_side_panel_surf.display_inventory_window()
                             else:
                                 break
-                        
                     
                 if event.type == pygame.KEYDOWN and event.unicode == "\r":
                     return user_text
