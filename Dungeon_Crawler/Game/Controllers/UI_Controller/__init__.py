@@ -321,9 +321,9 @@ class MessagesDescriptionSurface(pygame.sprite.Sprite):
 class InventoryTable():
     @classmethod
     def __init__(cls, menu):
+        cls.current_table_decorator = None
         cls.table_name = "inventory-window-table"
         cls.table = menu.add.table(table_id=cls.table_name, margin=(20, 20))
-        cls.table.set_onmouseover(cls.do_thing)
         cls.table.default_cell_padding = 10
         cls.default_row_background_color = BLACK
         cls.table.default_cell_align = pygame_menu.locals.ALIGN_CENTER
@@ -337,17 +337,77 @@ class InventoryTable():
             cls.current_rows.pop(index)
 
     @classmethod
-    def do_thing(cls):
+    def activate_row(cls, event):
         print("Activating the row")
-        # cls.table.force_menu_surface_update()
+        # pygame.draw.rect(InventoryWindow.menu., LIGHT_BLACK_2, cls.message_side_panel_surf.image.get_rect(), 5)
+        table_rect = cls.table.get_rect()
+        cls.current_table_decorator = cls.table.get_decorator()
+        cls.current_table_decorator.add_rectangle(table_rect.x, table_rect.y, table_rect.w, table_rect.y, GREEN)
+
+    @classmethod
+    def deactivate_row(cls, event):
+        if cls.current_table_decorator:
+            cls.current_table_decorator.remove_all()
+
+    @classmethod
+    def handle_row(cls, event):
+        if cls.is_on_row(event):
+            if event.type in [pygame.MOUSEBUTTONDOWN, pygame.MOUSEMOTION]:
+                cls.activate_row(event)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = event.pos
+                    row = cls.on_row_click(mouse_pos)
+                    if row["row_index"] != 0:
+                        return row
+                    
+        else:
+            cls.deactivate_row(event)
+
+    @classmethod
+    def is_on_row(cls, event) -> bool:
+        table_rect = cls.table.get_rect(to_real_position=True, apply_padding=False)
+        pos_x, pos_y = event.pos
+        return pos_x >= table_rect.left and pos_x <= table_rect.right and pos_y >= table_rect.top and pos_y <= table_rect.bottom
+
+    @classmethod
+    def on_row_click(cls, mouse_pos):
+        row_rects = cls.map_row_rects()
+        row_clicked_on = cls.get_row_clicked(row_rects, mouse_pos)
+        return row_clicked_on
+
+    @classmethod
+    def map_row_rects(cls) -> list:
+        widget_rects = list(map(lambda widget: widget.get_rect(), cls.table.get_widgets()))
+        row_rects = [x for x in range(int(len(widget_rects) / 3))]
+        for index, row in enumerate(row_rects):
+            row = {}
+            row["row_index"] = index
+            for widget_tracker in range(0, 3):
+                row[f"cell_{widget_tracker}"] = widget_rects.pop(0)
+            row_rects[index] = row
+        return row_rects
+
+    @classmethod
+    def get_row_clicked(cls, row_rects, mouse_pos):
+        for row in row_rects:
+            row_height = (row["cell_0"].top, row["cell_0"].top + row["cell_0"].h) # default starting point
+            row_width = [row["cell_0"].left, row["cell_0"].left] # TODO: Get a tuple of size for each row. Need starting point and ending point
+            for key, cell in row.items():
+                if key != "row_index":
+                    row_width[1] += cell.w
+            
+            # check whether the mouse click is within the row width and the row height
+            if mouse_pos[0] >= row_width[0] and mouse_pos[0] <= row_width[1] and mouse_pos[1] >= row_height[0] and mouse_pos[1] <= row_height[1]:
+                return row
+        return None
 
 
 class InventoryWindow(BaseMenu):
     @classmethod
     def __init__(cls):
         cls.theme = pygame_menu.themes.THEME_DARK
-        cls.menu_height = 600
-        cls.menu_width = 1200
+        cls.menu_height = HEIGHT
+        cls.menu_width = WIDTH
         cls.title = "Inventory"
         cls.exit_game_button = None
         cls.back_button = None
@@ -549,10 +609,16 @@ class TextInput():
                     # activate the side panel click
                     if mouse_click_position[0] >= UIManager.message_side_panel_surf.show_inventory_btn.rect.left and mouse_click_position[0] <= UIManager.message_side_panel_surf.show_inventory_btn.rect.right and mouse_click_position[1] >= UIManager.message_side_panel_surf.show_inventory_btn.rect.top and mouse_click_position[1] <= UIManager.message_side_panel_surf.show_inventory_btn.rect.bottom:
                         UIManager.message_side_panel_surf.toggle_inventory_menu()
-                        UIManager.message_side_panel_surf.inventory_window.set_inventory_items(PlayerController.get_inventory())
+                        inventory_items = PlayerController.get_inventory()
+                        UIManager.message_side_panel_surf.inventory_window.set_inventory_items(inventory_items)
                         while True:
                             if UIManager.message_side_panel_surf.inventory_window_menu.is_enabled():
                                 UIManager.message_side_panel_surf.display_inventory_window()
+                                for event in pygame.event.get():
+                                    if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEMOTION:
+                                        row = UIManager.message_side_panel_surf.inventory_window.inventory_table.handle_row(event)
+                                        if row:
+                                            print(f"Selecting item: {inventory_items[row['row_index']-1]}")
                             else:
                                 break
                     
