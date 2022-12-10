@@ -423,6 +423,9 @@ class InventoryWindow(BaseMenu):
         )
 
         cls.inventory_table = InventoryTable(menu=cls.menu)
+        cls.item_details = ItemDetailsMenu(item=None)
+
+        cls.link_to_item_details = cls.menu.add.menu_link(cls.item_details.menu)
 
     @classmethod
     def close_menu(cls):
@@ -441,6 +444,39 @@ class InventoryWindow(BaseMenu):
                 "frame_rect": row_frame.get_rect()
             }
             cls.inventory_table.current_rows.append(row_object)
+
+    @classmethod
+    def toggle_item_details(cls):
+        cls.item_details.menu.toggle()
+
+    @classmethod
+    def set_item_details(cls, item):
+        cls.item_details.set_item(item)
+        cls.link_to_item_details.open()
+
+class ItemDetailsMenu():
+    @classmethod
+    def __init__(cls, item = None):
+        cls.theme = pygame_menu.themes.THEME_DARK
+        cls.menu_height = InventoryWindow.menu_height
+        cls.menu_width = InventoryWindow.menu_width
+        cls.title = "Item Details"
+        cls.current_item = item
+
+        cls.menu = pygame_menu.Menu(
+            enabled=False,
+            height=cls.menu_height, 
+            theme=cls.theme,
+            title=cls.title,
+            width=cls.menu_width,
+            onclose=pygame_menu.events.BACK
+        )
+
+
+    @classmethod
+    def set_item(cls, item):
+        print("Setting item in the details screen")
+        cls.current_item = item
 
 class SidePanelButton(pygame.sprite.Sprite):
     def __init__(self, button_text: str, position, debug_color = DARK_GRAY_1) -> None:
@@ -619,6 +655,11 @@ class TextInput():
                                         row = UIManager.message_side_panel_surf.inventory_window.inventory_table.handle_row(event)
                                         if row:
                                             print(f"Selecting item: {inventory_items[row['row_index']-1]}")
+                                            selected_item = inventory_items[row['row_index']-1]
+                                            UIManager.message_side_panel_surf.inventory_window.toggle_item_details()
+                                            if UIManager.message_side_panel_surf.inventory_window.item_details.menu.is_enabled():
+                                                UIManager.message_side_panel_surf.inventory_window.set_item_details(item=selected_item)
+
                             else:
                                 break
                     
