@@ -24,6 +24,7 @@ class MusicController(BaseController):
     sfx_path = "./Game/assets/sfx/"
 
     default_music_volume = 0.6
+    current_music_volume = None
     default_music_fadeout_time = 2200
     default_fade_in_time = 1600
 
@@ -33,7 +34,14 @@ class MusicController(BaseController):
     def initialize_music(cls, **kwargs):
         if kwargs.get("play_audio"):
             mixer.init()
+            saved_music_volume = kwargs.get("saved_volume")
+            cls.current_music_volume = saved_music_volume * .1 if isinstance(saved_music_volume, int) and saved_music_volume >= 0 and saved_music_volume <= 10 else .4
             cls.play_default_music()
+            
+    @classmethod
+    def get_music_volume(cls):
+        return cls.current_music_volume
+
 
     @classmethod
     def play_default_music(cls, **kwargs):

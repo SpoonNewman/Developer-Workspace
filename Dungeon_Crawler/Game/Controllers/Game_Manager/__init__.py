@@ -20,7 +20,7 @@ class GameManager():
     is_new_game = True
     is_at_opening_menu = True
     clock = pygame.time.Clock()
-    fps = 60
+    max_fps = 144
 
     @classmethod
     def __init__(cls) -> None:
@@ -61,9 +61,9 @@ class GameManager():
 
     @classmethod
     def initialize_game_settings(cls, event):
+        MusicController.initialize_music(play_audio=cls.game_settings["play_audio"], saved_volume=cls.game_settings["sfx_and_music_volume"])
         UIManager.initialize()
         cls.initialize_message_settings()
-        MusicController.initialize_music(play_audio=cls.game_settings["play_audio"])
 
     @classmethod
     def initialize_player_settings(cls, event):
@@ -85,7 +85,7 @@ class GameManager():
 
     @classmethod
     def update_clock(cls):
-        cls.clock.tick(cls.fps)
+        cls.clock.tick(cls.max_fps)
 
     @classmethod
     def begin_intro(cls):

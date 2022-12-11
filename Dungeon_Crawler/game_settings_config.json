@@ -2,5 +2,6 @@
     "play_audio": true,
     "message_typewriter_speed": "VERY_FAST",
     "starting_scene": "intro_chamber_0",
-    "starting_event": ""
+    "starting_event": "",
+    "sfx_and_music_volume": 7
 }

@@ -7,6 +7,7 @@ from Controllers.Surfaces_Registry import SurfacesRegistry
 from Controllers.EventController import EventController
 from Controllers.game_events import OnDieEvent, OnVolumeChangeEvent
 from Controllers.Player_Controller import PlayerStatusCharacteristic, PlayerController
+from Controllers.Music_Controller import MusicController
 
 
 WIDTH = 1280
@@ -235,6 +236,7 @@ class AudioMenu():
         cls.menu_height = SettingsMenu.menu_height
         cls.menu_width = SettingsMenu.menu_width
         cls.title = "Audio"
+        cls.default_volume: float = MusicController.get_music_volume()
 
         cls.menu = pygame_menu.Menu(
             height=cls.menu_height, 
@@ -244,7 +246,7 @@ class AudioMenu():
         )
 
         cls.volume_slider = cls.menu.add.range_slider(
-            "Volume", 50, (0, 100), 1, cls.change_volume
+            "Volume", cls.default_volume * 100, (0, 100), 1, cls.change_volume
         )
 
         cls.menu.add.button("Back", pygame_menu.events.BACK)
