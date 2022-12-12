@@ -1,5 +1,6 @@
-from Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem
+from Controllers.Item_Manager.BaseItem import BaseItemRegistry, GameItem, EquippableItem
 from Controllers.Music_Controller import MusicSoundRegistry
+
 
 
 class AdventuringItemsRegistry(BaseItemRegistry):
@@ -34,7 +35,7 @@ class BookItem(AdventuringItem):
         if not kwargs.get("pickup_sfx_name"):
             self.pickup_sfx_name = MusicSoundRegistry.BOOK_PAGE
 
-class TorchItem(AdventuringItem):
+class TorchItem(AdventuringItem, EquippableItem):
     def __init__(self) -> None:
         super().__init__()
         self.name = "Torch"
@@ -47,6 +48,7 @@ class TorchItem(AdventuringItem):
             "2": "Douse",
             **self.universal_actions,
         }
+
 
     def use_item(self, action_input: str):
         if action_input in self.actions.keys():
