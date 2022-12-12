@@ -342,7 +342,7 @@ class InventoryTable():
         # pygame.draw.rect(InventoryWindow.menu., LIGHT_BLACK_2, cls.message_side_panel_surf.image.get_rect(), 5)
         table_rect = cls.table.get_rect()
         cls.current_table_decorator = cls.table.get_decorator()
-        cls.current_table_decorator.add_rectangle(table_rect.x, table_rect.y, table_rect.w, table_rect.y, GREEN)
+        # cls.current_table_decorator.add_rectangle(table_rect.x, table_rect.y, table_rect.w, table_rect.y, GREEN)
 
     @classmethod
     def deactivate_row(cls, event):
@@ -401,6 +401,18 @@ class InventoryTable():
                 return row
         return None
 
+class PopoverContextMenu(pygame.sprite.Sprite):
+    @classmethod
+    def __init__(cls, item):
+        pygame.sprite.Sprite.__init__(cls)
+        cls.size = (200, 200)
+        cls.surface = pygame.Surface(cls.size)
+        cls.surface_color = WHITE
+        cls.surface.fill(cls.surface_color)
+        cls.rect = cls.surface.get_rect()
+        cls.item = item
+
+
 
 class InventoryWindow(BaseMenu):
     @classmethod
@@ -412,6 +424,8 @@ class InventoryWindow(BaseMenu):
         cls.exit_game_button = None
         cls.back_button = None
         cls.return_to_game_button = None
+        cls.context_popover = None
+        cls.context_popover_enabled = False
 
         cls.menu = pygame_menu.Menu(
             enabled=False,
@@ -424,8 +438,6 @@ class InventoryWindow(BaseMenu):
 
         cls.inventory_table = InventoryTable(menu=cls.menu)
         cls.item_details = ItemDetailsMenu(item=None)
-
-        cls.link_to_item_details = cls.menu.add.menu_link(cls.item_details.menu)
 
     @classmethod
     def close_menu(cls):
@@ -446,13 +458,17 @@ class InventoryWindow(BaseMenu):
             cls.inventory_table.current_rows.append(row_object)
 
     @classmethod
-    def toggle_item_details(cls):
-        cls.item_details.menu.toggle()
+    def set_item_details(cls, item):
+        if not cls.context_popover:
+            cls.context_popover_enabled = True
+            popover_surface = PopoverContextMenu(item=item)
+            cls.context_popover = cls.menu.add.surface(popover_surface.surface)
 
     @classmethod
-    def set_item_details(cls, item):
-        cls.item_details.set_item(item)
-        cls.link_to_item_details.open()
+    def unset_item_details(cls):
+        if cls.context_popover:
+            cls.context_popover_enabled = False
+            cls.menu.remove_widget(cls.context_popover)
 
 class ItemDetailsMenu():
     @classmethod
@@ -656,10 +672,12 @@ class TextInput():
                                         if row:
                                             print(f"Selecting item: {inventory_items[row['row_index']-1]}")
                                             selected_item = inventory_items[row['row_index']-1]
-                                            UIManager.message_side_panel_surf.inventory_window.toggle_item_details()
-                                            if UIManager.message_side_panel_surf.inventory_window.item_details.menu.is_enabled():
-                                                UIManager.message_side_panel_surf.inventory_window.set_item_details(item=selected_item)
-
+                                            UIManager.message_side_panel_surf.inventory_window.set_item_details(item=selected_item)
+                                            while UIManager.message_side_panel_surf.inventory_window.context_popover_enabled:
+                                                for event in pygame.event.get():
+                                                    if event.type == pygame.MOUSEBUTTONDOWN:
+                                                        pass
+                                                
                             else:
                                 break
                     
