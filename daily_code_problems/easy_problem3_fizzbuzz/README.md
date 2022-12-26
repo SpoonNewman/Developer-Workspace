@@ -5,6 +5,9 @@ Given an integer n, return a string array answer (1-indexed) where:
 - answer[i] == "Buzz" if i is divisible by 5.
 - answer[i] == i (as a string) if none of the above conditions are true.
  
+# n is the length of an array 
+# an array is going to be strings of 1 ... n 
+# ... = up to 
 
 ## Example 1:
 
