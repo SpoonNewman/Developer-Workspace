@@ -1,14 +1,30 @@
 def eat_ghost(power_pellet_active: bool, is_touching_ghost: bool):
-    pass
+    if power_pellet_active == True and is_touching_ghost == True:
+        return True
+    else:
+        return False
+
 
 def score(is_touching_pellet: bool, is_touching_dot: bool):
-    pass
+    if is_touching_pellet == True or is_touching_dot == True:
+        return True
+    else:
+        return False
 
 def lose(is_power_active: bool, is_touching_ghost: bool):
-    pass
+    if is_power_active != True and is_touching_ghost == True:
+        return True
+    else:
+        return False
+
 
 def win(has_eaten_all_dots: bool, is_power_active: bool, is_touching_ghost: bool):
-    pass
+    if has_eaten_all_dots == True and lose(is_power_active, is_touching_ghost) != True:
+        return True
+    else:
+        return False
+
+
 
 if __name__ == "__main__":
     # These are tests for the various cases
@@ -19,7 +35,7 @@ if __name__ == "__main__":
 
     assert score(True, False) is True
     assert score(False, True) is True
-    assert score(True, True) is False
+    assert score(True, True) is True
     assert score(False, False) is False
 
     assert lose(False, True) is True
