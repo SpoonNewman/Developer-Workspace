@@ -15,8 +15,17 @@ def value_of_card(card):
     2.  'A' (ace card) = 1
     3.  '2' - '10' = numerical value.
     """
-
-    pass
+    
+    face_cards = ['J', 'K', 'Q']
+    if card in face_cards:
+        return 10
+    elif card == 'A':
+        return 1
+    elif int(card) in list(range(2, 11)):
+        return int(card)
+    
+     
+    
 
 
 def higher_card(card_one, card_two):
